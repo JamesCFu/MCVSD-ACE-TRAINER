@@ -56,8 +56,8 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, setActiveView, onStartPrac
     <div className="max-w-5xl mx-auto pb-20">
       <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h2 className="text-4xl font-black text-slate-900 tracking-tight">Scholar's Hub</h2>
-          <p className="text-slate-500 mt-2 font-medium">Elevating your potential for the MCVSD admissions.</p>
+          <h2 className="text-4xl font-black text-slate-900 tracking-tight">Blast Off Training Academy</h2>
+          <p className="text-slate-500 mt-2 font-medium">Elevating knowledge in ALL areas. Preparing you for YOUR future. </p>
         </div>
         <button 
           onClick={() => setActiveView('profile')}

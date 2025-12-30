@@ -311,15 +311,15 @@ const App: React.FC = () => {
         return (
           <div className="max-w-4xl mx-auto pb-20">
              <header className="mb-12">
-                <h2 className="text-4xl font-black text-slate-900 tracking-tighter uppercase">Diagnostic Remediation</h2>
-                <p className="text-slate-500 font-medium italic">Correct your failures to purge them from the Academy Registry.</p>
+                <h2 className="text-4xl font-black text-slate-900 tracking-tighter uppercase">Mistake Review Log</h2>
+                <p className="text-slate-500 font-medium italic">Review and correct you missed questions. Grow from your mistakes.</p>
              </header>
              <div className="space-y-8">
                 {stats.incorrectQuestions.length === 0 ? (
                   <div className="text-center py-24 bg-white rounded-[3rem] border-4 border-dashed border-slate-100">
-                    <div className="text-6xl mb-6 opacity-30">🛡️</div>
-                    <p className="text-slate-400 font-black uppercase tracking-[0.3em]">Registry Integrity: 100%</p>
-                    <p className="text-slate-300 text-sm mt-2">No failures currently logged in the system.</p>
+                    <div className="text-6xl mb-6 opacity-30">📚</div>
+                    <p className="text-slate-400 font-black uppercase tracking-[0.3em]">Registry Clear: 100%</p>
+                    <p className="text-slate-300 text-sm mt-2">No mistakes currently logged in the system.</p>
                   </div>
                 ) : (
                   stats.incorrectQuestions.map((q, i) => {
@@ -348,12 +348,12 @@ const App: React.FC = () => {
                                   setCorrectionAnswer(null);
                                   setCorrectionState('idle');
                                 }}
-                                className="px-8 py-4 bg-indigo-600 text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-lg hover:bg-indigo-700 hover:scale-[1.02] active:scale-95 transition-all"
+                                className="px-16 py-4 bg-indigo-600 text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-lg hover:bg-indigo-700 hover:scale-[1.02] active:scale-95 transition-all"
                               >
                                 Initiate Correction Sequence
                               </button>
                               <div className="bg-slate-900 text-slate-400 p-4 rounded-2xl flex-1 text-xs italic font-medium">
-                                Mastery hint available in sequence mode.
+                                25 xp granted on correction. 
                               </div>
                             </div>
                           ) : (
@@ -381,7 +381,7 @@ const App: React.FC = () => {
                                         const pass = idx === q.correctAnswer;
                                         if (pass) {
                                           setCorrectionState('correct');
-                                          awardXP(100);
+                                          awardXP(25);
                                           setTimeout(() => {
                                             resolveMistake(q.id);
                                             setCorrectingId(null);
@@ -412,7 +412,7 @@ const App: React.FC = () => {
                               
                               {correctionState === 'correct' && (
                                 <div className="mt-6 py-4 bg-emerald-600 text-white rounded-2xl text-center font-black uppercase text-xs tracking-[0.3em] animate-pulse">
-                                  Registry Synchronized (+100 XP)
+                                  Registry Synchronized (+25 XP)
                                 </div>
                               )}
 
@@ -420,7 +420,7 @@ const App: React.FC = () => {
                                 onClick={() => setCorrectingId(null)}
                                 className="w-full py-4 text-[10px] font-black uppercase text-slate-400 hover:text-slate-600 transition-colors"
                               >
-                                Abort Correction
+                                Exit Correction
                               </button>
                             </div>
                           )}

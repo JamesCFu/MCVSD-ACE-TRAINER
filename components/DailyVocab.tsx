@@ -44,7 +44,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
   const dailyWords = useMemo(() => {
     if (!words || words.length === 0) return [];
     
-    const WORDS_PER_DAY = 20;
+    const WORDS_PER_DAY = 25;
     const REVIEW_WORDS_COUNT = 5;
     
     // 1. Sequential 20 words for the day
@@ -130,7 +130,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
       const newMatches = new Set(matches);
       newMatches.add(id);
       setMatches(newMatches);
-      onAwardXP(15);
+      onAwardXP(67);
       onRecordAnswer(true, Category.VOCABULARY);
       setSelectedMatch(null);
     } else if (selectedMatch.id !== id && selectedMatch.type !== type) {
@@ -160,7 +160,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
 
   const handleMarkAsDone = () => {
     if (stats.dailyVocabCompleted) return;
-    onAwardXP(500);
+    onAwardXP(450);
     setStats(prev => ({
       ...prev,
       dailyVocabCompleted: true,
@@ -183,7 +183,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh]">
         <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-6"></div>
-        <h3 className="text-2xl font-black text-slate-800 tracking-tight text-center uppercase">Calibrating Lexicon</h3>
+        <h3 className="text-2xl font-black text-slate-800 tracking-tight text-center uppercase">Setting Up Wordlist</h3>
       </div>
     );
   }
@@ -193,12 +193,12 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
       <header className="mb-8 flex flex-col md:flex-row justify-between items-start gap-6">
         <div className="flex-1">
           <div className="flex items-center gap-4 mb-2">
-            <h2 className="text-4xl font-black text-slate-900 tracking-tight uppercase">Daily Focus ({dailyWords.length}/{words.length})</h2>
+            <h2 className="text-4xl font-black text-slate-900 tracking-tight uppercase">Daily Focus ({(dailyWords.length-5)*currentDay}/{words.length})</h2>
             {stats.dailyVocabCompleted && (
               <span className="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-emerald-200">Cycle Logged</span>
             )}
           </div>
-          <p className="text-slate-500 font-medium italic">Mastering 20 sequential and 5 random review terms for Stage {currentDay}.</p>
+          <p className="text-slate-500 font-medium italic">Mastering 25 main and 5 random review terms for Stage {currentDay}.</p>
         </div>
         
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
@@ -258,7 +258,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
               <div className={`relative w-full h-full transition-transform duration-700 transform-style-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
                  <div className="absolute w-full h-full backface-hidden bg-white border-2 border-indigo-600 rounded-[3rem] shadow-2xl flex flex-col items-center justify-center p-12 text-center">
                    <h2 className="text-6xl font-black text-slate-900 tracking-tighter uppercase">{dailyWords[cardIndex]?.word}</h2>
-                   <div className="mt-16 text-slate-300 text-[10px] font-black uppercase animate-pulse tracking-[0.3em]">Engage Reactor</div>
+                   <div className="mt-16 text-slate-300 text-[10px] font-black uppercase animate-pulse tracking-[0.3em]">Flip for Definition</div>
                  </div>
                  <div className="absolute w-full h-full backface-hidden rotate-y-180 bg-slate-900 border-2 border-indigo-50 rounded-[3rem] shadow-2xl flex flex-col items-center justify-center p-12 text-center text-white overflow-y-auto no-scrollbar">
                    <p className="text-2xl font-bold leading-relaxed px-4">{dailyWords[cardIndex]?.definition}</p>

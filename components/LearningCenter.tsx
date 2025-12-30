@@ -924,9 +924,9 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
               id: `match-err-${Date.now()}-${wrongWordObj.word}`,
               category: Category.VOCABULARY,
               questionText: `Identify the correct definition for "${wrongWordObj.word}":`,
-              options: [wrongWordObj.definition, 'Incorrect association'],
+              options: [wrongWordObj.definition, 'Incorrect match.'],
               correctAnswer: 0,
-              explanation: `Mismatched in Grid Trainer. Definition of ${wrongWordObj.word}: ${wrongWordObj.definition}`
+              explanation: `Mismatched in Matching Grid. Definition of ${wrongWordObj.word}: ${wrongWordObj.definition}`
           });
       }
 
@@ -1000,7 +1000,7 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
       
       const nextProgress = Math.min(100, raceProgress + distanceGain);
       setRaceProgress(nextProgress);
-      onAwardXP(20);
+      onAwardXP(50);
       onUpdateMastery(answer, 5);
       if (nextProgress >= 100) {
         // Race Finished
@@ -1131,7 +1131,7 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
                <div className="w-full max-w-lg h-96 relative perspective-1000 cursor-pointer" onClick={() => setIsFlipped(!isFlipped)}>
                   <div className={`relative w-full h-full transition-transform duration-700 transform-style-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
                      <div className="absolute w-full h-full backface-hidden bg-white border-2 border-indigo-600 rounded-[3rem] shadow-2xl flex flex-col items-center justify-center p-12 text-center">
-                       <span className="text-[10px] font-black text-indigo-400 uppercase mb-4 tracking-widest">Terminology Probe</span>
+                       <span className="text-[10px] font-black text-indigo-400 uppercase mb-4 tracking-widest">Terminology</span>
                        <h2 className="text-5xl font-black text-slate-900 tracking-tighter uppercase">{currentWords[cardIndex]?.word}</h2>
                        <p className="mt-4 text-indigo-600 font-black text-xs uppercase">{currentWords[cardIndex]?.partOfSpeech}</p>
                      </div>
@@ -1192,8 +1192,8 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
                       ) : matches.size === SESSION_WORD_COUNT ? (
                         <div className="col-span-full py-16 text-center bg-emerald-50 border-4 border-dashed border-emerald-200 rounded-[4rem]">
                           <div className="text-8xl mb-6">🏆</div>
-                          <h4 className="text-4xl font-black text-emerald-900 tracking-tighter uppercase mb-4">Set Synchronized</h4>
-                          <button onClick={() => { onAwardXP(250); pickNewSessionBatch(initialWords); }} className="px-12 py-6 bg-emerald-600 text-white rounded-3xl font-black uppercase text-sm">Next Training Cycle</button>
+                          <h4 className="text-4xl font-black text-emerald-900 tracking-tighter uppercase mb-4">Synchronize Set</h4>
+                          <button onClick={() => { onAwardXP(400); pickNewSessionBatch(initialWords); }} className="px-12 py-6 bg-emerald-600 text-white rounded-3xl font-black uppercase text-sm">Next Training Cycle</button>
                         </div>
                       ) : (
                         <div className="grid grid-cols-2 gap-10">
@@ -1288,14 +1288,14 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
                             <div className="absolute inset-0 bg-emerald-900/20"></div>
                             <div className="relative z-10">
                               <div className="text-9xl mb-8 animate-bounce">🏁</div>
-                              <h4 className="text-5xl font-black mb-4 tracking-tighter uppercase text-white">Race Complete</h4>
+                              <h4 className="text-5xl font-black mb-4 tracking-tighter uppercase text-white">Race Complete!</h4>
                               <div className="text-8xl font-mono font-black text-emerald-400 mb-12 tracking-tighter drop-shadow-2xl">{formatTime(elapsedRaceTime)}</div>
                               
                               {fastestRaceTime === elapsedRaceTime && (
                                 <div className="inline-block px-8 py-3 bg-yellow-500/20 border border-yellow-500 rounded-full text-yellow-300 font-black uppercase tracking-widest mb-10 animate-pulse">New Personal Record!</div>
                               )}
 
-                              <button onClick={() => setRaceStarted(false)} className="px-20 py-8 bg-white text-emerald-900 rounded-[3rem] font-black uppercase text-sm tracking-widest shadow-xl hover:scale-105 transition-all">Return to Hub</button>
+                              <button onClick={() => setRaceStarted(false)} className="px-20 py-8 bg-white text-emerald-900 rounded-[3rem] font-black uppercase text-sm tracking-widest shadow-xl hover:scale-105 transition-all">Return to Racing Center</button>
                             </div>
                           </div>
                        )}
@@ -1351,7 +1351,7 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
                                 const isCorrect = i === currentLesson.quickCheck.correctAnswer;
                                 onRecordAnswer(isCorrect, Category.GRAMMAR); 
                                 if(isCorrect) {
-                                  onAwardXP(50);
+                                  onAwardXP(40);
                                 } else {
                                   onLogMistake({
                                     id: `grammar-lesson-${currentLesson.topic}-${Date.now()}`,
@@ -1422,8 +1422,8 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
             <div className="bg-white p-12 rounded-[3.5rem] shadow-xl border border-slate-100 relative overflow-hidden">
                <div className="absolute top-0 left-0 h-1.5 bg-indigo-600 transition-all duration-500" style={{ width: `${(spellingIndex / spellingQuestions.length) * 100}%` }}></div>
                <div className="flex justify-between items-center mb-10">
-                  <span className="text-[10px] font-black uppercase text-indigo-500 tracking-[0.3em]">Orthography Unit</span>
-                  <span className="text-[10px] font-black uppercase text-slate-300 tracking-widest">{spellingIndex + 1} / {spellingQuestions.length} Evaluation</span>
+                  <span className="text-[10px] font-black uppercase text-indigo-500 tracking-[0.3em]">Spelling Unit</span>
+                  <span className="text-[10px] font-black uppercase text-slate-300 tracking-widest">{spellingIndex + 1} / {spellingQuestions.length} Evaluating</span>
                </div>
                
                <h3 className="text-2xl font-black text-slate-900 mb-10 tracking-tight leading-tight">{spellingQuestions[spellingIndex].questionText}</h3>
@@ -1470,7 +1470,7 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
           ) : (
             <div className="flex flex-col items-center justify-center py-20">
                <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-6"></div>
-               <p className="text-indigo-900 font-black uppercase tracking-widest text-[10px]">Booting Lexicon Engine...</p>
+               <p className="text-indigo-900 font-black uppercase tracking-widest text-[10px]">Booting Word List Engine...</p>
             </div>
           )}
         </div>
@@ -1483,7 +1483,7 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
             </div>
             {rootsMode === 'list' && (
               <div className="flex items-center gap-4 w-full md:w-auto">
-                <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">({filteredRoots.length}/{ROOT_DATA.length}) Segments</div>
+                <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">({filteredRoots.length}/{ROOT_DATA.length}) Results</div>
                 <div className="relative w-full md:w-64">
                   <input type="text" placeholder="Search Roots..." className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-xs font-bold shadow-sm focus:ring-2 focus:ring-indigo-500 outline-none" value={rootsSearchQuery} onChange={(e) => setRootsSearchQuery(e.target.value)} />
                   <svg className="absolute left-3 top-3 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -1511,9 +1511,9 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
                <div className="w-full max-w-lg h-96 relative perspective-1000 cursor-pointer" onClick={() => setRootIsFlipped(!rootIsFlipped)}>
                   <div className={`relative w-full h-full transition-transform duration-1000 transform-style-3d ${rootIsFlipped ? 'rotate-y-180' : ''}`}>
                      <div className="absolute w-full h-full backface-hidden bg-white border-2 border-indigo-600 rounded-[3rem] shadow-2xl flex flex-col items-center justify-center p-12 text-center">
-                        <span className="text-[10px] font-black text-indigo-400 uppercase mb-10 tracking-[0.3em]">Classical Origin</span>
+                        <span className="text-[10px] font-black text-indigo-400 uppercase mb-10 tracking-[0.3em]">Root/Prefix Term</span>
                         <h2 className="text-7xl font-black text-indigo-950 tracking-tighter">{shuffledRoots[rootCardIndex]?.root}</h2>
-                        <div className="mt-20 text-slate-300 text-[10px] font-black uppercase animate-pulse">Extract Core Meaning</div>
+                        <div className="mt-20 text-slate-300 text-[10px] font-black uppercase animate-pulse">Flip for Definition</div>
                      </div>
                      <div className="absolute w-full h-full backface-hidden rotate-y-180 bg-indigo-900 border-2 border-indigo-50 rounded-[3rem] shadow-2xl flex flex-col items-center justify-center p-12 text-center text-white overflow-y-auto no-scrollbar">
                         <h2 className="text-4xl font-black mb-8 leading-tight">{shuffledRoots[rootCardIndex]?.meaning}</h2>
@@ -1530,7 +1530,7 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
                   <button onClick={shuffleRoots} className="p-6 bg-white border rounded-[2rem] shadow-lg hover:border-indigo-400 transition-all"><svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg></button>
                   <button onClick={() => handleRootNav('next')} className="p-6 bg-white border rounded-[2rem] shadow-lg hover:border-indigo-400 transition-all"><svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7"></path></svg></button>
                </div>
-               <span className="mt-8 text-slate-400 font-black text-xs uppercase tracking-[0.2em]">{rootCardIndex + 1} / {shuffledRoots.length} Registry Segments</span>
+               <span className="mt-8 text-slate-400 font-black text-xs uppercase tracking-[0.2em]">{rootCardIndex + 1} / {shuffledRoots.length} Registry Terms</span>
             </div>
           )}
         </div>
