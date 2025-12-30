@@ -859,7 +859,6 @@ const LOCAL_SPELLING_POOL: Question[] = [
   { id: 'fs-18', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Ecstasy", "Ecstacy", "Extasy", "Estacy"], correctAnswer: 0, explanation: "Ends in -sy." },
   { id: 'fs-19', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Pronunciation", "Pronounciation", "Pronunsiation", "Protonciation"], correctAnswer: 0, explanation: "No 'o' in the second syllable (unlike 'pronounce')." },
   { id: 'fs-20', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Supersede", "Supercede", "Superseed", "Superceed"], correctAnswer: 0, explanation: "The only word ending in -sede." }
-
 ];
 
 const LOCAL_GRAMMAR_POOL: Question[] = [
