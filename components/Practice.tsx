@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Category, Question } from '../types';
-import { generateQuestions, generateVocabTest, generateGrammarTest, generateSpellingTest, generateMockTest, generateReadingTest } from '../geminiService';
+import { 
+  generateQuestions, 
+  generateVocabTest, 
+  generateGrammarTest, 
+  generateSpellingTest, 
+  generateMockTest, 
+  generateReadingTest 
+} from '../geminiService';
 
 interface PracticeProps {
   category: Category;
@@ -12,7 +19,7 @@ interface PracticeProps {
 
 const Practice: React.FC<PracticeProps> = ({ category, onFinish, onRecordOnly, onLogMistake, onExit }) => {
   const [questions, setQuestions] = useState<Question[]>([]);
-  const [passage, setPassage] = useState<string | null>(null);
+  const [passage, setPassage] = useState<string | null>(null); // State for the text
   const [userAnswers, setUserAnswers] = useState<Record<string, number>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -23,24 +30,34 @@ const Practice: React.FC<PracticeProps> = ({ category, onFinish, onRecordOnly, o
       try {
         let data: Question[] = [];
         
+        // 1. Specific Logic for Reading Lab
         if (category === Category.READING) {
            const readingData = await generateReadingTest();
-           // In readingData.ts, data is an array of objects: { passage: "...", questions: [] }
-           if (readingData && readingData.length > 0) {
-             setPassage(readingData[0].passage);
-             data = readingData[0].questions;
+           // Expecting an array of passages from readingData.ts
+           if (Array.isArray(readingData) && readingData.length > 0) {
+             setPassage(readingData[0].passage); // Set the full passage text
+             data = readingData[0].questions;    // Set the questions for that passage
+           } else if (readingData && readingData.passage) {
+             // Fallback if service returns a single object instead of array
+             setPassage(readingData.passage);
+             data = readingData.questions;
            }
-        } else if (category === Category.VOCABULARY) {
+        } 
+        // 2. Logic for other Labs
+        else if (category === Category.VOCABULARY) {
            data = await generateVocabTest(10);
+           setPassage(null); // Ensure no passage carries over
         } else if (category === Category.MOCK) {
            data = await generateMockTest();
+           setPassage(null);
         } else {
            data = await generateQuestions(category, 10);
+           setPassage(null);
         }
         
         setQuestions(data || []);
       } catch (err) {
-        console.error("Failed to load lab data:", err);
+        console.error("Lab Sync Error:", err);
       } finally {
         setLoading(false);
       }
@@ -62,19 +79,30 @@ const Practice: React.FC<PracticeProps> = ({ category, onFinish, onRecordOnly, o
     onFinish(category, score, questions.length, mistakes, questions);
   };
 
-  if (loading) return <div className="p-20 text-center font-black animate-pulse">SYNCHRONIZING WITH DATABASE...</div>;
+  if (loading) return (
+    <div className="flex flex-col items-center justify-center min-h-[50vh]">
+      <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+      <p className="font-black text-indigo-900 uppercase tracking-widest text-xs">Synchronizing Lab Data...</p>
+    </div>
+  );
 
   return (
     <div className="max-w-4xl mx-auto py-10 px-6">
-      <div className="flex justify-between items-center mb-10">
-        <h2 className="text-3xl font-black tracking-tighter text-slate-900">{category}</h2>
-        <button onClick={onExit} className="text-xs font-bold uppercase tracking-widest text-rose-500">Abort Session</button>
-      </div>
+      <header className="flex justify-between items-end mb-12">
+        <div>
+          <h2 className="text-3xl font-black text-slate-900 tracking-tighter">{category}</h2>
+          <p className="text-indigo-500 font-black uppercase text-[10px] tracking-[0.2em]">Diagnostic Session</p>
+        </div>
+        <button onClick={onExit} className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-rose-500 transition-colors">Terminate</button>
+      </header>
 
-      {/* READING PASSAGE SECTION */}
-      {passage && (
-        <div className="mb-12 bg-white p-8 md:p-12 rounded-[2.5rem] border-2 border-indigo-100 shadow-xl shadow-indigo-500/5">
-          <div className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-500 mb-6">Source Material</div>
+      {/* CONDITIONAL PASSAGE: Only shows for Reading Lab and if passage exists */}
+      {category === Category.READING && passage && (
+        <div className="mb-12 bg-white p-8 md:p-12 rounded-[2.5rem] border-2 border-indigo-50 shadow-xl">
+          <div className="flex items-center gap-3 mb-6">
+            <span className="px-3 py-1 bg-indigo-600 text-white text-[10px] font-black uppercase rounded-lg">Passage</span>
+            <div className="h-px flex-1 bg-indigo-50"></div>
+          </div>
           <div className="prose prose-slate max-w-none">
             <p className="text-lg leading-relaxed text-slate-800 font-medium whitespace-pre-wrap">
               {passage}
@@ -83,12 +111,14 @@ const Practice: React.FC<PracticeProps> = ({ category, onFinish, onRecordOnly, o
         </div>
       )}
 
-      <div className="space-y-8">
-        {questions.map((q, idx) => (
-          <div key={q.id} className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm">
-            <p className="text-xl font-bold mb-8 text-slate-900">
-              <span className="text-indigo-600 mr-3">{idx + 1}.</span> {q.questionText}
-            </p>
+      <div className="space-y-6">
+        {questions.length > 0 ? questions.map((q, idx) => (
+          <div key={q.id} className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm transition-all hover:shadow-md">
+            <div className="flex items-start gap-4 mb-6">
+              <span className="w-8 h-8 rounded-lg bg-slate-100 text-slate-900 flex items-center justify-center font-black text-xs shrink-0">{idx + 1}</span>
+              <p className="text-xl font-bold text-slate-900 leading-tight">{q.questionText}</p>
+            </div>
+            
             <div className="grid gap-3">
               {q.options.map((opt, i) => {
                 const isSelected = userAnswers[q.id] === i;
@@ -100,34 +130,46 @@ const Practice: React.FC<PracticeProps> = ({ category, onFinish, onRecordOnly, o
                     key={i}
                     disabled={isSubmitted}
                     onClick={() => setUserAnswers({ ...userAnswers, [q.id]: i })}
-                    className={`w-full text-left p-5 rounded-2xl border-2 transition-all font-bold 
-                      ${isSelected ? 'border-indigo-600 bg-indigo-50' : 'border-slate-50 bg-slate-50 hover:border-slate-200'}
-                      ${isCorrect ? 'border-emerald-500 bg-emerald-50 text-emerald-700' : ''}
-                      ${isWrong ? 'border-rose-500 bg-rose-50 text-rose-700' : ''}
+                    className={`w-full text-left p-5 rounded-2xl border-2 transition-all font-bold flex items-center gap-4
+                      ${isSelected ? 'border-indigo-600 bg-indigo-50 text-indigo-900' : 'border-slate-50 bg-slate-50/50 hover:border-slate-200'}
+                      ${isCorrect ? '!border-emerald-500 !bg-emerald-50 !text-emerald-700' : ''}
+                      ${isWrong ? '!border-rose-500 !bg-rose-50 !text-rose-700' : ''}
+                      ${isSubmitted && !isSelected && !isCorrect ? 'opacity-50' : ''}
                     `}
                   >
+                    <span className={`w-6 h-6 rounded flex items-center justify-center text-[10px] ${isSelected ? 'bg-indigo-600 text-white' : 'bg-white border text-slate-400'}`}>
+                      {String.fromCharCode(65 + i)}
+                    </span>
                     {opt}
                   </button>
                 );
               })}
             </div>
+
             {isSubmitted && (
-              <div className="mt-6 p-5 bg-slate-900 rounded-2xl text-slate-200 text-sm italic font-medium">
-                {q.explanation}
+              <div className="mt-6 p-6 bg-slate-900 rounded-2xl">
+                <p className="text-indigo-400 text-[9px] font-black uppercase tracking-[0.2em] mb-2">Analysis</p>
+                <p className="text-slate-300 text-sm italic leading-relaxed">{q.explanation}</p>
               </div>
             )}
           </div>
-        ))}
+        )) : (
+          <div className="text-center py-20 bg-white rounded-[2.5rem] border-2 border-dashed border-slate-200">
+             <p className="text-slate-400 font-bold">No diagnostic data found for this module.</p>
+          </div>
+        )}
       </div>
 
-      {!isSubmitted && (
-        <button 
-          onClick={handleSubmit}
-          disabled={Object.keys(userAnswers).length < questions.length}
-          className="mt-12 w-full py-6 bg-indigo-600 text-white rounded-[2rem] font-black text-lg tracking-widest disabled:opacity-50 transition-all hover:scale-[1.01]"
-        >
-          FINALIZE EVALUATION
-        </button>
+      {!isSubmitted && questions.length > 0 && (
+        <div className="mt-12 sticky bottom-8">
+          <button 
+            onClick={handleSubmit}
+            disabled={Object.keys(userAnswers).length < questions.length}
+            className="w-full py-6 bg-indigo-600 text-white rounded-[2rem] font-black text-sm uppercase tracking-[0.3em] shadow-2xl shadow-indigo-600/40 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:hover:scale-100"
+          >
+            Finalize Session
+          </button>
+        </div>
       )}
     </div>
   );
