@@ -948,46 +948,111 @@ const LOCAL_MATH_POOL: Question[] = [
 ];
 
 // 3. Mocked functions that no longer use an API key
+const shuffleArray = <T>(array: T[]): T[] => {
+  const newArr = [...array];
+  for (let i = newArr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+  }
+  return newArr;
+};
+
+// --- Service Functions (Mocked for Local Use) ---
+
 export const generateGrammarLesson = async (topic: string): Promise<GrammarLesson> => {
-  console.log("Loading static grammar lesson...");
+  // Simulate network delay
+  await new Promise(resolve => setTimeout(resolve, 300));
   return FALLBACK_GRAMMAR_DATA[topic] || FALLBACK_GRAMMAR_DATA["Comma Mastery: Essential vs Non-Essential"];
 };
 
 export const generateVocabulary = async (): Promise<VocabularyWord[]> => {
-  // Returns your pre-defined vocabulary from a local source
-  return []; // Replace with your FULL_PREP_VOCAB array
+  return FULL_PREP_VOCAB;
 };
 
-export const generateReadingTest = async (): Promise<any> => {
-  // Returns data from readingData.ts instead of AI
-  return fullReadingData[0]; 
+export const generateReadingTest = async (): Promise<any[]> => {
+  // Return random reading passage + questions
+  const shuffled = shuffleArray(fullReadingData);
+  return [shuffled[0]]; 
 };
 
-// Add empty mocks for other functions used in Practice.tsx to prevent crashes
-export const generateVocabTest = async (count: number) => [];
-export const generateGrammarTest = async (count: number) => [];
-export const generateSpellingTest = async (count: number) => [];
-export const generateMockTest = async () => [];
-export const generateShortDefinitions = async (word: string) => "Definition not available in offline mode.";
+export const generateVocabTest = async (count: number): Promise<Question[]> => {
+  const shuffledWords = shuffleArray(FULL_PREP_VOCAB).slice(0, count);
+  
+  return shuffledWords.map((word, index) => {
+    const isDefinitionQuestion = Math.random() > 0.5;
+    const distractors = shuffleArray(FULL_PREP_VOCAB.filter(w => w.word !== word.word))
+      .slice(0, 3)
+      .map(w => isDefinitionQuestion ? w.definition : w.word);
 
+    let options: string[];
+    let correctAnswer: number;
+    let questionText: string;
 
+    if (isDefinitionQuestion) {
+      questionText = `What is the definition of "${word.word}"?`;
+      options = shuffleArray([word.definition, ...distractors]);
+      correctAnswer = options.indexOf(word.definition);
+    } else {
+      questionText = `Which word means: "${word.definition}"?`;
+      options = shuffleArray([word.word, ...distractors]);
+      correctAnswer = options.indexOf(word.word);
+    }
 
-import path from 'path';
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-
-export default defineConfig(() => {
     return {
-      server: {
-        port: 3000,
-        host: '0.0.0.0',
-      },
-      plugins: [react()],
+      id: `vocab-q-${Date.now()}-${index}`,
+      category: Category.VOCABULARY,
+      questionText,
+      options,
+      correctAnswer,
+      explanation: `"${word.word}" (${word.partOfSpeech}) means ${word.definition}. Example: ${word.exampleSentence}`
+    };
+  });
+};
 
-      resolve: {
-        alias: {
-          '@': path.resolve(__dirname, '.'),
-        }
+export const generateGrammarTest = async (count: number): Promise<Question[]> => {
+  return shuffleArray(LOCAL_GRAMMAR_POOL).slice(0, count);
+};
+
+export const generateSpellingTest = async (count: number): Promise<Question[]> => {
+  return shuffleArray(LOCAL_SPELLING_POOL).slice(0, count);
+};
+
+export const generateMathTest = async (count: number): Promise<Question[]> => {
+    return shuffleArray(LOCAL_MATH_POOL).slice(0, count);
+};
+
+export const generateMockTest = async (): Promise<Question[]> => {
+  const vocab = await generateVocabTest(15);
+  const grammar = await generateGrammarTest(15);
+  const math = await generateMathTest(15);
+  const reading = await generateReadingTest(); // Returns a passage object, need to extract questions
+  
+  // Flatten reading questions
+  const readingQuestions = reading.flatMap((r: any) => r.questions).slice(0, 15);
+
+  return shuffleArray([...vocab, ...grammar, ...math, ...readingQuestions]);
+};
+
+export const generateQuestions = async (category: Category, count: number): Promise<Question[]> => {
+    switch (category) {
+        case Category.VOCABULARY: return generateVocabTest(count);
+        case Category.GRAMMAR: return generateGrammarTest(count);
+        case Category.SPELLING: return generateSpellingTest(count);
+        case Category.MATH: return generateMathTest(count);
+        case Category.MOCK: return generateMockTest();
+        case Category.READING: 
+            const readingData = await generateReadingTest();
+            return readingData[0].questions; 
+        default: return [];
+    }
+};
+
+export const generateShortDefinitions = async (words: VocabularyWord[]): Promise<{ word: string, shortDef: string }[]> => {
+  return words.map(w => ({
+    word: w.word,
+    shortDef: w.definition.split(' ').slice(0, 6).join(' ') + (w.definition.split(' ').length > 6 ? '...' : '')
+  }));
+};
       }
     };
 });
