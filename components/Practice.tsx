@@ -93,7 +93,7 @@ const Practice: React.FC<PracticeProps> = ({ category, onFinish, onRecordOnly, o
           <h2 className="text-3xl font-black text-slate-900 tracking-tighter">{category}</h2>
           <p className="text-indigo-500 font-black uppercase text-[10px] tracking-[0.2em]">Diagnostic Session</p>
         </div>
-        <button onClick={onExit} className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-rose-500 transition-colors">Terminate</button>
+        <button onClick={onExit} className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-rose-500 transition-colors">Exit Lab</button>
       </header>
 
       {/* CONDITIONAL PASSAGE: Only shows for Reading Lab and if passage exists */}
