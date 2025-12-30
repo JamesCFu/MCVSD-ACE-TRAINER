@@ -853,7 +853,7 @@ const LOCAL_SPELLING_POOL: Question[] = [
   { id: 'fs-12', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Connoisseur", "Conoisseur", "Connoiser", "Connaisseur"], correctAnswer: 0, explanation: "Double 'n', double 's'." },
   { id: 'fs-13', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Medieval", "Medeval", "Mideval", "Midieval"], correctAnswer: 0, explanation: "Medi- (middle) + eval (age)." },
   { id: 'fs-14', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Rhythm", "Rythm", "Rhythym", "Rithm"], correctAnswer: 0, explanation: "R-h-y-t-h-m. Two h's." },
-  { id: 'fs-15', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Vacuum", "Vaccum", "Vacume", "Vacuume"], correctAnswer: 0, explanation: "One 'c', two 'u's." }
+  { id: 'fs-15', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Vacuum", "Vaccum", "Vacume", "Vacuume"], correctAnswer: 0, explanation: "One 'c', two 'u's." },
   { id: 'fs-16', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Millennium", "Millenium", "Milennium", "Millinium"], correctAnswer: 0, explanation: "Double 'l', double 'n'." },
   { id: 'fs-17', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Pharaoh", "Pharoah", "Pharao", "Pheroah"], correctAnswer: 0, explanation: "Ends in -aoh." },
   { id: 'fs-18', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Ecstasy", "Ecstacy", "Extasy", "Estacy"], correctAnswer: 0, explanation: "Ends in -sy." },
