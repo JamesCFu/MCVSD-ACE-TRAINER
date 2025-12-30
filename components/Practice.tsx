@@ -74,8 +74,9 @@ const Practice: React.FC<PracticeProps> = ({ category, onFinish, onLogMistake, o
           </div>
         ))}
       </div>
-      
+
       {/* ... Footer / Submit Button ... */}
     </div>
   );
 };
+export default Practice;
