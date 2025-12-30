@@ -1,8 +1,7 @@
-import { GoogleGenAI, Type } from "@google/genai";
+
 import { Category, Question, VocabularyWord, GrammarLesson } from "./types";
 import { fullReadingData } from "./data/readingData"; 
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const GRAMMAR_TOPICS = [
   "Comma Mastery: Essential vs Non-Essential",
@@ -1037,43 +1036,15 @@ const getLocalQuestions = (category: Category, count: number): Question[] => {
 };
 
 export const generateQuestions = async (category: Category, count: number = 10): Promise<Question[]> => {
-  // Enhanced prompt to force difficulty
-  const systemInstruction = `You are a world-class tutor for the NJ MCVSD high school admissions test. 
-  Create ${count} VERY DIFFICULT, challenging questions for 8th grade honors students. 
- 
-  For MATH: Focus on multi-step WORD PROBLEMS involving algebra (systems of equations, rates), geometry (area/volume changes), and probability. Do NOT generate simple one-step arithmetic.
-  For GRAMMAR: Focus on subtle errors in complex sentences (dangling modifiers, subjunctive mood, pronoun-antecedent agreement with indefinite pronouns).
-  For SPELLING: Use difficult, commonly misspelled academic words (e.g., surveillance, maneuver, conscience).
+  // Use your imported fullReadingData for reading questions
+  if (category === Category.READING) {
+    const allQuestions = fullReadingData.flatMap(p => p.questions);
+    return allQuestions.sort(() => Math.random() - 0.5).slice(0, count);
+  }
   
-  Return strictly as a JSON array.`;
-  try {
-    const response = await runWithRetry(async () => {
-      const resp = await ai.models.generateContent({
-        model: 'gemini-3-pro-preview',
-        contents: `Generate ${count} ${category} questions. Return as JSON array.`,
-        config: {
-          systemInstruction,
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: Type.ARRAY,
-            items: {
-              type: Type.OBJECT,
-              properties: {
-                id: { type: Type.STRING },
-                category: { type: Type.STRING },
-                passage: { type: Type.STRING },
-                questionText: { type: Type.STRING },
-                options: { type: Type.ARRAY, items: { type: Type.STRING } },
-                correctAnswer: { type: Type.INTEGER },
-                explanation: { type: Type.STRING }
-              },
-              required: ["id", "category", "questionText", "options", "correctAnswer", "explanation"]
-            }
-          }
-        }
-      });
-      return resp;
-    });
+  // Return an empty array or your local fallback for other categories
+  return []; 
+};
     
     const parsed = JSON.parse(response.text || "[]");
     if (parsed.length === 0) throw new Error("Empty AI response");
@@ -1207,30 +1178,3 @@ export const generateVocabulary = async (): Promise<VocabularyWord[]> => {
   return FULL_PREP_VOCAB;
 };
 
-export const generateShortDefinitions = async (words: VocabularyWord[]): Promise<{ word: string, shortDef: string }[]> => {
-  try {
-    const response = await runWithRetry(async () => {
-      return await ai.models.generateContent({
-        model: 'gemini-3-flash-preview',
-        contents: `For these words, provide very short (4-6 words) definitions: ${JSON.stringify(words.map(w => w.word))}`,
-        config: {
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: Type.ARRAY,
-            items: {
-              type: Type.OBJECT,
-              properties: {
-                word: { type: Type.STRING },
-                shortDef: { type: Type.STRING }
-              },
-              required: ["word", "shortDef"]
-            }
-          }
-        }
-      });
-    });
-    return JSON.parse(response.text || "[]");
-  } catch {
-    return words.map(w => ({ word: w.word, shortDef: w.definition.split(' ').slice(0, 5).join(' ') + '...' }));
-  }
-};
