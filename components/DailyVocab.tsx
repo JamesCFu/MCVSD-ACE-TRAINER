@@ -30,7 +30,8 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
   // Flashcard State
   const [cardIndex, setCardIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
-
+  const [flashcardDeck, setFlashcardDeck] = useState<VocabularyWord[]>([]);
+  
   // Match Game State
   const [selectedMatch, setSelectedMatch] = useState<{ id: string, type: 'word' | 'def' } | null>(null);
   const [matches, setMatches] = useState<Set<string>>(new Set());
@@ -92,6 +93,10 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     return [...mainBatch, ...reviewBatch].sort((a, b) => a.word.localeCompare(b.word));
   }, [words, currentDay, currentSeed]);
 
+  useEffect(() => {
+    setFlashcardDeck(dailyWords);
+  }, [dailyWords]);
+  
   const matchingPairs = useMemo(() => {
     if (mode !== 'matching' || matchingGameWords.length === 0) {
       return { words: [], defs: [] };
@@ -151,9 +156,15 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
   };
 
   const handleFlashcardNav = (direction: 'next' | 'prev') => {
-    if (dailyWords.length === 0) return;
-    if (direction === 'next') setCardIndex((cardIndex + 1) % dailyWords.length);
-    else setCardIndex((cardIndex - 1 + dailyWords.length) % dailyWords.length);
+    if (flashcardDeck.length === 0) return;
+    if (direction === 'next') setCardIndex((cardIndex + 1) % flashcardDeck.length);
+    else setCardIndex((cardIndex - 1 + flashcardDeck.length) % flashcardDeck.length);
+    setIsFlipped(false); 
+  };
+
+  const handleShuffleDeck = () => {
+    setFlashcardDeck(prev => [...prev].sort(() => Math.random() - 0.5));
+    setCardIndex(0);
     setIsFlipped(false); 
   };
 
@@ -424,17 +435,18 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
            <div className="w-full max-w-2xl h-[28rem] relative perspective-1000 cursor-pointer" onClick={() => setIsFlipped(!isFlipped)}>
               <div className={`relative w-full h-full transition-transform duration-700 transform-style-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
                  <div className="absolute w-full h-full backface-hidden bg-white border-2 border-indigo-600 rounded-[3rem] shadow-2xl flex flex-col items-center justify-center p-12 text-center">
-                   <h2 className="text-6xl font-black text-slate-900 tracking-tighter uppercase">{dailyWords[cardIndex]?.word}</h2>
+                   <h2 className="text-6xl font-black text-slate-900 tracking-tighter uppercase">{flashcardDeck[cardIndex]?.word}</h2>
                    <div className="mt-16 text-slate-300 text-[10px] font-black uppercase animate-pulse tracking-[0.3em]">Flip for Definition</div>
                  </div>
                  <div className="absolute w-full h-full backface-hidden rotate-y-180 bg-slate-900 border-2 border-indigo-50 rounded-[3rem] shadow-2xl flex flex-col items-center justify-center p-12 text-center text-white overflow-y-auto no-scrollbar">
-                   <p className="text-2xl font-bold leading-relaxed px-4">{dailyWords[cardIndex]?.definition}</p>
-                   <div className="mt-8 pt-8 border-t border-white/10 w-full text-xs italic text-indigo-200">"{dailyWords[cardIndex]?.exampleSentence}"</div>
+                   <p className="text-2xl font-bold leading-relaxed px-4">{flashcardDeck[cardIndex]?.definition}</p>
+                   <div className="mt-8 pt-8 border-t border-white/10 w-full text-xs italic text-indigo-200">"{flashcardDeck[cardIndex]?.exampleSentence}"</div>
                  </div>
               </div>
            </div>
            <div className="flex items-center space-x-10 mt-16">
               <button onClick={() => handleFlashcardNav('prev')} className="p-5 bg-white border rounded-2xl shadow-sm hover:border-indigo-400 transition-all"><svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M15 19l-7-7 7-7"></path></svg></button>
+              <button onClick={handleShuffleDeck} className="p-5 bg-white border rounded-2xl shadow-sm hover:border-indigo-400 transition-all"><svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg></button>
               <button onClick={() => handleFlashcardNav('next')} className="p-5 bg-white border rounded-2xl shadow-sm hover:border-indigo-400 transition-all"><svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7"></path></svg></button>
            </div>
         </div>
