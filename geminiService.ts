@@ -1038,7 +1038,10 @@ export const generateQuestions = async (category: Category, count: number): Prom
         case Category.MOCK: return generateMockTest();
         case Category.READING: 
             const readingData = await generateReadingTest();
-            return readingData[0].questions; 
+            if (readingData && readingData.length > 0) {
+                return readingData[0].questions; 
+            }
+            return [];
         default: return [];
     }
 };
