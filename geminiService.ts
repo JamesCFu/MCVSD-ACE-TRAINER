@@ -969,10 +969,8 @@ export const generateGrammarTest = async (count: number) => [];
 export const generateSpellingTest = async (count: number) => [];
 export const generateMockTest = async () => [];
 export const generateShortDefinitions = async (word: string) => "Definition not available in offline mode.";
-2. Clean up vite.config.ts
-You can now remove the define block that was injecting the environment variables into your build.
 
-TypeScript
+
 
 import path from 'path';
 import { defineConfig } from 'vite';
@@ -985,7 +983,7 @@ export default defineConfig(() => {
         host: '0.0.0.0',
       },
       plugins: [react()],
-      // REMOVED: process.env.GEMINI_API_KEY definitions
+
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),
