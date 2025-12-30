@@ -42,7 +42,12 @@ const Practice: React.FC<PracticeProps> = ({ category, onFinish, onRecordOnly, o
           data = await generateMockTest();
         } else if (category === Category.READING) {
           const readingData = await generateReadingTest();
-          data = readingData.questions || (Array.isArray(readingData) ? readingData[0].questions : []);
+          if (Array.isArray(readingData) && readingData.length > 0) {
+          data = readingData[0].questions;
+        } else if (readingData && readingData.questions) {
+          data = readingData.questions;
+        }
+          
         } else {
           data = await generateQuestions(category, 10);
         }
