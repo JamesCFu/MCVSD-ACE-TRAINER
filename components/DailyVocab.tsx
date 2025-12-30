@@ -164,6 +164,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
 
   const handleShuffleDeck = () => {
     setFlashcardDeck(prev => [...prev].sort(() => Math.random() - 0.5));
+    setFlashcardDeck(shuffled);
     setCardIndex(0);
     setIsFlipped(false); 
   };
