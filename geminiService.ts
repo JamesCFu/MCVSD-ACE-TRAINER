@@ -1,0 +1,1236 @@
+import { GoogleGenAI, Type } from "@google/genai";
+import { Category, Question, VocabularyWord, GrammarLesson } from "./types";
+import { fullReadingData } from "./data/readingData"; 
+
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+
+export const GRAMMAR_TOPICS = [
+  "Comma Mastery: Essential vs Non-Essential",
+  "Semicolons, Colons, and Dashes",
+  "Modifier Placement (Dangling/Misplaced)",
+  "Subject-Verb Agreement Pitfalls",
+  "Parallel Structure in Lists",
+  "Active vs Passive Voice Strategies",
+  "Pronoun Case and Agreement",
+  "Verb Tense Consistency",
+  "Sentence Combining and Flow",
+  "Transition Words and Rhetorical Purpose",
+  "Commonly Confused Words (Academic)",
+  "Capitalization and Punctuation Nuance"
+];
+
+export const FALLBACK_GRAMMAR_DATA: Record<string, GrammarLesson> = {
+  "Comma Mastery: Essential vs Non-Essential": {
+    topic: "Comma Mastery: Essential vs Non-Essential",
+    explanation: "Commas set off non-essential information. Essential clauses are NOT set off by commas.",
+    examples: ["Non-essential: Mr. Thompson, who is my favorite teacher, gave us a test.", "Essential: The student who is wearing the red hat won the race."],
+    quickCheck: {
+      question: "Which sentence correctly punctuates a non-essential clause?",
+      options: ["The cat, that has white paws is sleeping.", "The book, which I borrowed from the library, is overdue.", "The players, who arrived late were benched.", "All students, who pass the test, will receive a certificate."],
+      correctAnswer: 1,
+      explanation: "'Which' usually introduces non-essential information and must be surrounded by commas."
+    }
+  }
+};
+
+const PDF_READING_DATA = fullReadingData;
+
+export const FULL_PREP_VOCAB: VocabularyWord[] = [
+  { word: "Abash", partOfSpeech: "v.", definition: "To make ashamed or embarrassed.", exampleSentence: "He was abashed by the public criticism.", synonyms: ["Disconcert", "rattle"], antonyms: ["Uphold", "embolden"] },
+  { word: "Abate", partOfSpeech: "v.", definition: "To become less active or intense.", exampleSentence: "The storm began to abate.", synonyms: ["Dwindle", "recede"], antonyms: ["Intensify", "increase"] },
+  { word: "Abdicate", partOfSpeech: "v.", definition: "To give up a position or power.", exampleSentence: "The king decided to abdicate.", synonyms: ["Renounce", "resign"], antonyms: ["Claim", "assume"] },
+  { word: "Abduct", partOfSpeech: "v.", definition: "To take away by force.", exampleSentence: "The villain tried to abduct the hero.", synonyms: ["Kidnap", "seize"], antonyms: ["Release", "free"] },
+  { word: "Aberration", partOfSpeech: "n.", definition: "A departure from what is normal.", exampleSentence: "A snowstorm in July is an aberration.", synonyms: ["Anomaly", "deviation"], antonyms: ["Normality", "regularity"] },
+  { word: "Abhor", partOfSpeech: "v.", definition: "To regard with disgust.", exampleSentence: "Most people abhor cruelty.", synonyms: ["Detest", "loathe"], antonyms: ["Admire", "love"] },
+  { word: "Abide", partOfSpeech: "v.", definition: "To accept or act in accordance with.", exampleSentence: "You must abide by the rules.", synonyms: ["Comply", "tolerate"], antonyms: ["Reject", "avoid"] },
+  { word: "Abject", partOfSpeech: "adj.", definition: "Extremely bad, unpleasant, or degrading.", exampleSentence: "They lived in abject poverty.", synonyms: ["Wretched", "base"], antonyms: ["Magnificent", "noble"] },
+  { word: "Abjure", partOfSpeech: "v.", definition: "To solemnly renounce.", exampleSentence: "He abjured his political allegiance.", synonyms: ["Forsake", "retract"], antonyms: ["Affirm", "sanction"] },
+  { word: "Abolish", partOfSpeech: "v.", definition: "To formally put an end to.", exampleSentence: "They worked to abolish slavery.", synonyms: ["Annul", "abrogate"], antonyms: ["Establish", "create"] },
+  { word: "Abortive", partOfSpeech: "adj.", definition: "Failing to produce intended results.", exampleSentence: "The rescue mission proved abortive.", synonyms: ["Futile", "vain"], antonyms: ["Productive", "successful"] },
+  { word: "Abound", partOfSpeech: "v.", definition: "To exist in large numbers.", exampleSentence: "Fish abound in the lake.", synonyms: ["Flourish", "teem"], antonyms: ["Lack", "deficient"] },
+  { word: "Abridge", partOfSpeech: "v.", definition: "To shorten or condense.", exampleSentence: "The publisher decided to abridge the novel.", synonyms: ["Condense", "truncate"], antonyms: ["Expand", "lengthen"] },
+  { word: "Absolve", partOfSpeech: "v.", definition: "To set free from blame.", exampleSentence: "The verdict will absolve him.", synonyms: ["Exonerate", "pardon"], antonyms: ["Condemn", "accuse"] },
+  { word: "Abstain", partOfSpeech: "v.", definition: "To choose not to do something.", exampleSentence: "Athletes often abstain from junk food.", synonyms: ["Refrain", "avoid"], antonyms: ["Indulge", "partake"] },
+  { word: "Abstemious", partOfSpeech: "adj.", definition: "Not self-indulgent in food or drink.", exampleSentence: "He was abstemious at the buffet.", synonyms: ["Temperate", "ascetic"], antonyms: ["Gluttonous", "greedy"] },
+  { word: "Abstruse", partOfSpeech: "adj.", definition: "Difficult to understand; obscure.", exampleSentence: "The theory was too abstruse.", synonyms: ["Recondite", "arcane"], antonyms: ["Lucid", "simple"] },
+  { word: "Abundant", partOfSpeech: "adj.", definition: "Existing in large quantities.", exampleSentence: "An abundant supply of food.", synonyms: ["Plentiful", "ample"], antonyms: ["Scarce", "sparse"] },
+  { word: "Abstract", partOfSpeech: "adj.", definition: "Existing in thought, but not physical.", exampleSentence: "Justice is an abstract concept.", synonyms: ["Conceptual", "theoretical"], antonyms: ["Concrete", "tangible"] },
+  { word: "Accede", partOfSpeech: "v.", definition: "To agree to a demand.", exampleSentence: "The principal acceded to the request.", synonyms: ["Consent", "yield"], antonyms: ["Refuse", "deny"] },
+  { word: "Accelerate", partOfSpeech: "v.", definition: "To move faster.", exampleSentence: "Exposure to light can accelerate the process.", synonyms: ["Hasten", "quicken"], antonyms: ["Decelerate", "slow"] },
+  { word: "Acclaim", partOfSpeech: "v.", definition: "To praise enthusiastically.", exampleSentence: "Critics began to acclaim the young actor.", synonyms: ["Commend", "applaud"], antonyms: ["Criticize", "berate"] },
+  { word: "Accord", partOfSpeech: "n.", definition: "An official agreement or treaty.", exampleSentence: "The nations signed a peace accord.", synonyms: ["Harmony", "treaty"], antonyms: ["Discord", "conflict"] },
+  { word: "Acerbic", partOfSpeech: "adj.", definition: "Sharp and forthright in speech.", exampleSentence: "She is known for her acerbic wit.", synonyms: ["Caustic", "biting"], antonyms: ["Mild", "kind"] },
+  { word: "Acrimonious", partOfSpeech: "adj.", definition: "Angry and bitter.", exampleSentence: "It was an acrimonious divorce.", synonyms: ["Rancorous", "vitriolic"], antonyms: ["Harmonious", "gentle"] },
+  { word: "Acumen", partOfSpeech: "n.", definition: "Ability to make good judgments.", exampleSentence: "His business acumen helped his success.", synonyms: ["Shrewdness", "insight"], antonyms: ["Ignorance", "folly"] },
+  { word: "Acute", partOfSpeech: "adj.", definition: "Perceptive understanding or insight.", exampleSentence: "She has an acute sense of hearing.", synonyms: ["Sharp", "keen"], antonyms: ["Dull", "obtuse"] },
+  { word: "Adamant", partOfSpeech: "adj.", definition: "Refusing to be persuaded.", exampleSentence: "He was adamant about not going.", synonyms: ["Inflexible", "resolute"], antonyms: ["Yielding", "soft"] },
+  { word: "Adhere", partOfSpeech: "v.", definition: "To stick fast to a surface.", exampleSentence: "Paint will not adhere to grease.", synonyms: ["Cleave", "stick"], antonyms: ["Detach", "disjoin"] },
+  { word: "Adherent", partOfSpeech: "n.", definition: "Someone who supports a particular party.", exampleSentence: "He is a faithful adherent.", synonyms: ["Follower", "disciple"], antonyms: ["Rival", "opponent"] },
+  { word: "Adjourn", partOfSpeech: "v.", definition: "To break off a meeting.", exampleSentence: "The judge adjourned the court.", synonyms: ["Suspend", "delay"], antonyms: ["Convene", "begin"] },
+  { word: "Adjunct", partOfSpeech: "n.", definition: "A thing added to something else.", exampleSentence: "Technology is an adjunct to teaching.", synonyms: ["Supplement", "addition"], antonyms: ["Essential", "core"] },
+  { word: "Admonish", partOfSpeech: "v.", definition: "To warn or reprimand firmly.", exampleSentence: "The teacher admonished the student.", synonyms: ["Scold", "reprove"], antonyms: ["Applaud", "praise"] },
+  { word: "Adroit", partOfSpeech: "adj.", definition: "Skillful in using hands or mind.", exampleSentence: "He was adroit at tax avoidance.", synonyms: ["Deft", "adept"], antonyms: ["Clumsy", "inept"] },
+  { word: "Adulatory", partOfSpeech: "adj.", definition: "Excessively praising.", exampleSentence: "The adulatory reviews were suspicious.", synonyms: ["Fawning", "sycophantic"], antonyms: ["Critical", "disparaging"] },
+  { word: "Adulation", partOfSpeech: "n.", definition: "Excessive praise.", exampleSentence: "The actor enjoyed the adulation.", synonyms: ["Worship", "flattery"], antonyms: ["Scorn", "criticism"] },
+  { word: "Adversary", partOfSpeech: "n.", definition: "One's opponent or enemy.", exampleSentence: "She faced her toughest adversary.", synonyms: ["Rival", "foe"], antonyms: ["Ally", "friend"] },
+  { word: "Adversity", partOfSpeech: "n.", definition: "Misfortune or affliction.", exampleSentence: "He showed courage in adversity.", synonyms: ["Hardship", "plight"], antonyms: ["Prosperity", "luck"] },
+  { word: "Advocate", partOfSpeech: "v.", definition: "To publicly recommend.", exampleSentence: "Doctors advocate a healthy diet.", synonyms: ["Champion", "support"], antonyms: ["Oppose", "attack"] },
+  { word: "Aesthetic", partOfSpeech: "adj.", definition: "Concerned with beauty.", exampleSentence: "The building has aesthetic appeal.", synonyms: ["Artistic", "visual"], antonyms: ["Ugly", "tasteless"] },
+  { word: "Affable", partOfSpeech: "adj.", definition: "Friendly and easy to talk to.", exampleSentence: "She was an affable host.", synonyms: ["Amiable", "genial"], antonyms: ["Surly", "unfriendly"] },
+  { word: "Affectation", partOfSpeech: "n.", definition: "Artificial behavior designed to impress.", exampleSentence: "His accent was an affectation.", synonyms: ["Pretension", "pose"], antonyms: ["Sincerity", "homesty"] },
+  { word: "Affinity", partOfSpeech: "n.", definition: "Natural liking for something.", exampleSentence: "He has an affinity for music.", synonyms: ["Fondness", "empathy"], antonyms: ["Aversion", "dislike"] },
+  { word: "Affluence", partOfSpeech: "n.", definition: "Wealth; deal of money.", exampleSentence: "The family lived in affluence.", synonyms: ["Prosperity", "riches"], antonyms: ["Poverty", "indigence"] },
+  { word: "Aggrandize", partOfSpeech: "v.", definition: "To increase power or status.", exampleSentence: "The king sought to aggrandize himself.", synonyms: ["Exaggerate", "exalt"], antonyms: ["Belittle", "humble"] },
+  { word: "Agility", partOfSpeech: "n.", definition: "Ability to move quickly.", exampleSentence: "The gymnast's agility was evident.", synonyms: ["Nimbleness", "grace"], antonyms: ["Clumsiness", "stiffness"] },
+  { word: "Agitate", partOfSpeech: "v.", definition: "To make someone troubled.", exampleSentence: "Loud noise agitated the baby.", synonyms: ["Disturb", "ruffle"], antonyms: ["Calm", "soothe"] },
+  { word: "Agrarian", partOfSpeech: "adj.", definition: "Relating to cultivated land.", exampleSentence: "It was an agrarian society.", synonyms: ["Rural", "farming"], antonyms: ["Urban", "industrial"] },
+  { word: "Alacrity", partOfSpeech: "n.", definition: "Brisk and cheerful readiness.", exampleSentence: "She accepted with alacrity.", synonyms: ["Eagerness", "zeal"], antonyms: ["Reluctance", "apathy"] },
+  { word: "Alacritous", partOfSpeech: "adj.", definition: "Brisk and cheerful readiness.", exampleSentence: "He responded with alacritous speed.", synonyms: ["Eager", "prompt"], antonyms: ["Lethargic", "slow"] },
+  { word: "Alderman", partOfSpeech: "n.", definition: "A member of a council.", exampleSentence: "The alderman voted against the law.", synonyms: ["Councilman"], antonyms: ["N/A"] },
+  { word: "Alien", partOfSpeech: "adj.", definition: "Belonging to a foreign country.", exampleSentence: "The customs were alien.", synonyms: ["Exotic", "strange"], antonyms: ["Native", "familiar"] },
+  { word: "Allay", partOfSpeech: "v.", definition: "To diminish or put at rest.", exampleSentence: "He allayed their fears.", synonyms: ["Pacify", "soothe"], antonyms: ["Aggravate", "excite"] },
+  { word: "Alleviate", partOfSpeech: "v.", definition: "To make suffering less severe.", exampleSentence: "Ice packs alleviate the swelling.", synonyms: ["Relieve", "ease"], antonyms: ["Worsen", "aggravate"] },
+  { word: "Allure", partOfSpeech: "n.", definition: "Quality of being powerfully attractive.", exampleSentence: "The allure of the big city.", synonyms: ["Attraction", "charm"], antonyms: ["Repulsion", "distaste"] },
+  { word: "Aloof", partOfSpeech: "adj.", definition: "Not friendly or forthcoming; cool.", exampleSentence: "He stood aloof from the group.", synonyms: ["Detached", "distant"], antonyms: ["Friendly", "social"] },
+  { word: "Altruistic", partOfSpeech: "adj.", definition: "Selfless concern for others.", exampleSentence: "A benevolent altruistic donor.", synonyms: ["Unselfish", "kind"], antonyms: ["Selfish", "greedy"] },
+  { word: "Amalgamate", partOfSpeech: "v.", definition: "To combine or unite.", exampleSentence: "The companies decided to amalgamate.", synonyms: ["Merge", "blend"], antonyms: ["Separate", "divide"] },
+  { word: "Ambiguous", partOfSpeech: "adj.", definition: "Open to more than one interpretation.", exampleSentence: "The ending was ambiguous.", synonyms: ["Vague", "equivocal"], antonyms: ["Clear", "explicit"] },
+  { word: "Ambivalent", partOfSpeech: "adj.", definition: "Having mixed or contradictory feelings.", exampleSentence: "She felt ambivalent about the promotion.", synonyms: ["Uncertain", "equivocal"], antonyms: ["Certain", "resolute"] },
+  { word: "Ameliorate", partOfSpeech: "v.", definition: "To make something bad better.", exampleSentence: "A cup of tea can ameliorate a cold.", synonyms: ["Improve", "enhance"], antonyms: ["Deteriorate", "worsen"] },
+  { word: "Amenable", partOfSpeech: "adj.", definition: "Responsive to suggestion.", exampleSentence: "They were amenable to the changes.", synonyms: ["Compliant", "docile"], antonyms: ["Stubborn", "obstinate"] },
+  { word: "Amicable", partOfSpeech: "adj.", definition: "Characterized by friendliness.", exampleSentence: "The meeting ended on an amicable note.", synonyms: ["Harmonious", "friendly"], antonyms: ["Hostile", "bitter"] },
+  { word: "Amnesty", partOfSpeech: "n.", definition: "An official pardon.", exampleSentence: "The government granted amnesty.", synonyms: ["Pardon", "reprieve"], antonyms: ["Punishment", "penalty"] },
+  { word: "Amorphous", partOfSpeech: "adj.", definition: "Without a clearly defined shape.", exampleSentence: "An amorphous cloud of smoke.", synonyms: ["Shapeless", "vague"], antonyms: ["Structured", "distinct"] },
+  { word: "Amplify", partOfSpeech: "v.", definition: "To increase volume or enlarge.", exampleSentence: "Amplify the signal.", synonyms: ["Augment", "boost"], antonyms: ["Lessen", "contract"] },
+  { word: "Anachronism", partOfSpeech: "n.", definition: "Something out of its proper time.", exampleSentence: "A smartphone in the 1920s is an anachronism.", synonyms: ["Misplacement"], antonyms: ["Consistency"] },
+  { word: "Anachronistic", partOfSpeech: "adj.", definition: "Out of its proper time.", exampleSentence: "A typewriter is anachronistic today.", synonyms: ["Antiquated", "archaic"], antonyms: ["Modern", "current"] },
+  { word: "Analogy", partOfSpeech: "n.", definition: "Comparison between two things.", exampleSentence: "He used an analogy to explain the brain.", synonyms: ["Comparison", "likeness"], antonyms: ["Difference", "contrast"] },
+  { word: "Analogous", partOfSpeech: "adj.", definition: "Comparable in a way that clarifies.", exampleSentence: "Brain is analogous to a processor.", synonyms: ["Comparable", "parallel"], antonyms: ["Dissimilar", "unrelated"] },
+  { word: "Animosity", partOfSpeech: "n.", definition: "Strong hostility.", exampleSentence: "Animosity between the rival teams.", synonyms: ["Hatred", "enmity"], antonyms: ["Goodwill", "friendship"] },
+  { word: "Annihilate", partOfSpeech: "v.", definition: "To destroy utterly.", exampleSentence: "Explosion would annihilate the city.", synonyms: ["Eradicate", "wreck"], antonyms: ["Create", "build"] },
+  { word: "Anomaly", partOfSpeech: "n.", definition: "Deviation from what is standard.", exampleSentence: "A cold snap in July is an anomaly.", synonyms: ["Aberration", "oddity"], antonyms: ["Normality", "standard"] },
+  { word: "Anomalous", partOfSpeech: "adj.", definition: "Deviating from what is standard.", exampleSentence: "The lab result was anomalous.", synonyms: ["Abnormal", "atypical"], antonyms: ["Standard", "normal"] },
+  { word: "Antagonist", partOfSpeech: "adj.", definition: "Active opposition or hostility.", exampleSentence: "He had an antagonistic relationship.", synonyms: ["Hostile", "clashing"], antonyms: ["Friendly", "kind"] },
+  { word: "Antagonism", partOfSpeech: "n.", definition: "Active hostility or opposition.", exampleSentence: "Long-standing antagonism between schools.", synonyms: ["Enmity", "rancor"], antonyms: ["Amity", "rapport"] },
+  { word: "Antediluvian", partOfSpeech: "adj.", definition: "Prehistoric or extremely old.", exampleSentence: "Museum displayed antediluvian tools.", synonyms: ["Ancient", "archaic"], antonyms: ["Modern", "fresh"] },
+  { word: "Antidote", partOfSpeech: "n.", definition: "Medicine to counteract poison.", exampleSentence: "An antidote for this specific toxin.", synonyms: ["Remedy", "cure"], antonyms: ["Poison", "toxin"] },
+  { word: "Antithetical", partOfSpeech: "adj.", definition: "Directly opposed or contrasted.", exampleSentence: "Greed is antithetical to charity.", synonyms: ["Contrary", "inverse"], antonyms: ["Identical", "same"] },
+  { word: "Apathy", partOfSpeech: "n.", definition: "Lack of interest or concern.", exampleSentence: "Student apathy led to low attendance.", synonyms: ["Indifference", "lethargy"], antonyms: ["Interest", "passion"] },
+  { word: "Apathetic", partOfSpeech: "adj.", definition: "Showing no interest or concern.", exampleSentence: "Citizens had grown apathetic toward politics.", synonyms: ["Indifferent", "unmoved"], antonyms: ["Enthusiastic", "eager"] },
+  { word: "Aperture", partOfSpeech: "n.", definition: "An opening, hole, or gap.", exampleSentence: "Camera's aperture controls light.", synonyms: ["Hole", "gap"], antonyms: ["Closure", "blockage"] },
+  { word: "Aplomb", partOfSpeech: "n.", definition: "Self-confidence or assurance.", exampleSentence: "She handled the interview with great aplomb.", synonyms: ["Self-confidence"], antonyms: ["Insecurity"] },
+  { word: "Appease", partOfSpeech: "v.", definition: "To pacify or placate someone.", exampleSentence: "The king tried to appease the angry crowd.", synonyms: ["Mollify", "satisfy"], antonyms: ["Provoke", "agitate"] },
+  { word: "Apposite", partOfSpeech: "adj.", definition: "Apt in the circumstances.", exampleSentence: "The quote was apposite.", synonyms: ["Pertinent", "germane"], antonyms: ["Irrelevant", "inept"] },
+  { word: "Apprehension", partOfSpeech: "n.", definition: "Anxiety or fear of the future.", exampleSentence: "He felt apprehension before the exam.", synonyms: ["Dread", "worry"], antonyms: ["Confidence", "calm"] },
+  { word: "Arbitrary", partOfSpeech: "adj.", definition: "Based on random choice.", exampleSentence: "An arbitrary decision.", synonyms: ["Random", "erratic"], antonyms: ["Logical", "consistent"] },
+  { word: "Archaic", partOfSpeech: "adj.", definition: "Very old or old-fashioned.", exampleSentence: "The company's archaic computer system.", synonyms: ["Obsolete", "ancient"], antonyms: ["Modern", "current"] },
+  { word: "Ardent", partOfSpeech: "adj.", definition: "Enthusiastic or passionate.", exampleSentence: "An ardent supporter of causes.", synonyms: ["Fervent", "zealous"], antonyms: ["Apathetic", "cold"] },
+  { word: "Arduous", partOfSpeech: "adj.", definition: "Involving strenuous effort.", exampleSentence: "It was an arduous climb.", synonyms: ["Laborious", "taxing"], antonyms: ["Effortless", "easy"] },
+  { word: "Arid", partOfSpeech: "adj.", definition: "Too dry to support vegetation.", exampleSentence: "The arid desert landscape.", synonyms: ["Parched", "dry"], antonyms: ["Humid", "fertile"] },
+  { word: "Articulate", partOfSpeech: "v.", definition: "To express fluently and coherently.", exampleSentence: "Important to articulate your thoughts.", synonyms: ["Enunciate", "state"], antonyms: ["Mumble", "garble"] },
+  { word: "Artifice", partOfSpeech: "n.", definition: "Clever devices used to deceive.", exampleSentence: "The magician used artifice.", synonyms: ["Trickery", "deceit"], antonyms: ["Honesty", "candor"] },
+  { word: "Ascertain", partOfSpeech: "v.", definition: "Find something out for certain.", exampleSentence: "Ascertain the cause of the accident.", synonyms: ["Determine", "confirm"], antonyms: ["Guess", "doubt"] },
+  { word: "Ascetic", partOfSpeech: "adj.", definition: "Suggesting severe self-discipline.", exampleSentence: "The monk led an ascetic life.", synonyms: ["Austere", "frugal"], antonyms: ["Hedonistic", "lush"] },
+  { word: "Assertion", partOfSpeech: "n.", definition: "Confident and forceful statement.", exampleSentence: "The author’s assertion was backed by studies.", synonyms: ["Claim", "declaration"], antonyms: ["Denial", "rejection"] },
+  { word: "Assiduous", partOfSpeech: "adj.", definition: "Showing great care and perseverance.", exampleSentence: "Mastered concepts through assiduous study.", synonyms: ["Diligent", "meticulous"], antonyms: ["Lazy", "negligent"] },
+  { word: "Assuage", partOfSpeech: "v.", definition: "Make an unpleasant feeling less intense.", exampleSentence: "Letter helped assuage her guilt.", synonyms: ["Alleviate", "soothe"], antonyms: ["Aggravate", "provoke"] },
+  { word: "Astute", partOfSpeech: "adj.", definition: "Ability to accurately assess situations.", exampleSentence: "The astute investor bought stocks.", synonyms: ["Shrewd", "perceptive"], antonyms: ["Gullible", "naive"] },
+  { word: "Atrocity", partOfSpeech: "n.", definition: "Extremely wicked or cruel act.", exampleSentence: "War was marked by one atrocity after another.", synonyms: ["Outrage", "cruelty"], antonyms: ["Kindness", "virtue"] },
+  { word: "Atrophied", partOfSpeech: "adj.", definition: "Wasted away or rudimentary.", exampleSentence: "Muscles were atrophied from bedrest.", synonyms: ["Shriveled", "withered"], antonyms: ["Robust", "healthy"] },
+  { word: "Audacious", partOfSpeech: "adj.", definition: "Willingness to take bold risks.", exampleSentence: "An audacious plan to escape.", synonyms: ["Bold", "intrepid"], antonyms: ["Timid", "cowardly"] },
+  { word: "Audacity", partOfSpeech: "n.", definition: "Willingness to take bold risks.", exampleSentence: "Audacity to challenge the leader.", synonyms: ["Boldness", "nerve"], antonyms: ["Timidity", "caution"] },
+  { word: "Augury", partOfSpeech: "n.", definition: "A sign of things to come; omen.", exampleSentence: "Bird's arrival seen as an augury.", synonyms: ["Omen", "sign"], antonyms: ["N/A"] },
+  { word: "Augment", partOfSpeech: "v.", definition: "To make larger or increase.", exampleSentence: "Second job to augment his income.", synonyms: ["Amplify", "supplement"], antonyms: ["Decrease", "reduce"] },
+  { word: "Austere", partOfSpeech: "adj.", definition: "Severe or strict in manner.", exampleSentence: "The room was austere and cold.", synonyms: ["Stark", "spartan"], antonyms: ["Ornate", "lavish"] },
+  { word: "Authentic", partOfSpeech: "adj.", definition: "Of undisputed origin; genuine.", exampleSentence: "Authentic Roman sword.", synonyms: ["Real", "valid"], antonyms: ["Fake", "false"] },
+  { word: "Authoritative", partOfSpeech: "adj.", definition: "Trusted as being accurate.", exampleSentence: "Authoritative account of the event.", synonyms: ["Reliable", "valid"], antonyms: ["Doubtful", "weak"] },
+  { word: "Avarice", partOfSpeech: "n.", definition: "Extreme greed for wealth.", exampleSentence: "Avarice led to his downfall.", synonyms: ["Cupidity", "rapacity"], antonyms: ["Generosity", "largesse"] },
+  { word: "Avaricious", partOfSpeech: "adj.", definition: "Having extreme greed for wealth.", exampleSentence: "The avaricious banker stole funds.", synonyms: ["Rapacious", "greedy"], antonyms: ["Generous", "giving"] },
+  { word: "Aversion", partOfSpeech: "n.", definition: "Strong dislike or disinclination.", exampleSentence: "A deep aversion to snakes.", synonyms: ["Loathing", "distaste"], antonyms: ["Liking", "affinity"] },
+  { word: "Avuncular", partOfSpeech: "adj.", definition: "Like an uncle; kind and friendly.", exampleSentence: "He gave us avuncular advice.", synonyms: ["Kind", "benevolent"], antonyms: ["Hostile", "cold"] },
+  { word: "Baffle", partOfSpeech: "v.", definition: "To totally bewilder or perplex.", exampleSentence: "The puzzle continued to baffle them.", synonyms: ["Confound", "elude"], antonyms: ["Clarify", "explain"] },
+  { word: "Baleful", partOfSpeech: "adj.", definition: "Threatening harm; menacing.", exampleSentence: "He shot a baleful glance.", synonyms: ["Sinister", "malign"], antonyms: ["Benign", "friendly"] },
+  { word: "Banal", partOfSpeech: "adj.", definition: "Lacking in originality; boring.", exampleSentence: "The plot was banal and predictable.", synonyms: ["Trite", "hackneyed"], antonyms: ["Original", "unique"] },
+  { word: "Banish", partOfSpeech: "v.", definition: "To send someone away as punishment.", exampleSentence: "The king banished the traitor.", synonyms: ["Expel", "exile"], antonyms: ["Welcome", "admit"] },
+  { word: "Barbarous", partOfSpeech: "adj.", definition: "Savagely cruel; brutal.", exampleSentence: "Treatment was barbarous.", synonyms: ["Vicious", "crude"], antonyms: ["Civilized", "humane"] },
+  { word: "Baroque", partOfSpeech: "adj.", definition: "Highly ornate and extravagant.", exampleSentence: "Church decorated in baroque style.", synonyms: ["Ornate", "florid"], antonyms: ["Plain", "simple"] },
+  { word: "Barren", partOfSpeech: "adj.", definition: "Too poor to produce vegetation.", exampleSentence: "Barren soil could not support crops.", synonyms: ["Desolate", "sterile"], antonyms: ["Fertile", "lush"] },
+  { word: "Belie", partOfSpeech: "v.", definition: "To fail to give a true impression.", exampleSentence: "His smile belies his inner sadness.", synonyms: ["Contradict", "misrepresent"], antonyms: ["Reveal", "betray"] },
+  { word: "Bellicose", partOfSpeech: "adj.", definition: "Willingness to fight.", exampleSentence: "The bellicose tribe attacked.", synonyms: ["Pugnacious", "hostile"], antonyms: ["Pacific", "calm"] },
+  { word: "Belligerent", partOfSpeech: "adj.", definition: "Hostile and aggressive.", exampleSentence: "He became belligerent.", synonyms: ["Pugnacious", "bellicose"], antonyms: ["Peaceful", "friendly"] },
+  { word: "Bellwether", partOfSpeech: "n.", definition: "A leader or indicator of trends.", exampleSentence: "The program is a bellwether for reform.", synonyms: ["Leader", "indicator"], antonyms: ["N/A"] },
+  { word: "Benefactor", partOfSpeech: "n.", definition: "Person who gives money to causes.", exampleSentence: "A benefactor donated the funds.", synonyms: ["Patron", "donor"], antonyms: ["Opponent", "enemy"] },
+  { word: "Benevolent", partOfSpeech: "adj.", definition: "Well-meaning and kindly.", exampleSentence: "A benevolent billionaire donated millions.", synonyms: ["Altruistic", "kind"], antonyms: ["Malevolent", "cruel"] },
+  { word: "Benign", partOfSpeech: "adj.", definition: "Gentle and kindly; not harmful.", exampleSentence: "The tumor was benign.", synonyms: ["Harmless", "mild"], antonyms: ["Malignant", "toxic"] },
+  { word: "Bevy", partOfSpeech: "n.", definition: "A group of something.", exampleSentence: "A bevy of reporters waited.", synonyms: ["Group", "flock"], antonyms: ["N/A"] },
+  { word: "Bias", partOfSpeech: "n.", definition: "Prejudice in favor of one thing.", exampleSentence: "Referee showed a clear bias.", synonyms: ["Partiality", "slant"], antonyms: ["Fairness", "objectivity"] },
+  { word: "Bilious", partOfSpeech: "adj.", definition: "Spiteful; bad-tempered.", exampleSentence: "He was in a bilious mood.", synonyms: ["Irascible", "peevish"], antonyms: ["Genial", "pleasant"] },
+  { word: "Blandish", partOfSpeech: "n.", definition: "Flattering or pleasing statement.", exampleSentence: "Refused despite his blandishments.", synonyms: ["Flattery", "coaxing"], antonyms: ["Criticism", "insult"] },
+  { word: "Blase", partOfSpeech: "adj.", definition: "Unimpressed or indifferent.", exampleSentence: "Blase about luxury hotels.", synonyms: ["Unimpressed"], antonyms: ["Anticipation"] },
+  { word: "Boisterous", partOfSpeech: "adj.", definition: "Noisy, energetic, and rowdy.", exampleSentence: "The boisterous crowd cheered.", synonyms: ["Rowdy", "loud"], antonyms: ["Quiet", "calm"] },
+  { word: "Bolster", partOfSpeech: "v.", definition: "To support or strengthen.", exampleSentence: "Bolster our defenses.", synonyms: ["Reinforce", "fortify"], antonyms: ["Undermine", "weaken"] },
+  { word: "Bona Fide", partOfSpeech: "adj.", definition: "Genuine or true.", exampleSentence: "The signature was bona fide.", synonyms: ["Genuine", "true"], antonyms: ["Fake"] },
+  { word: "Boorish", partOfSpeech: "adj.", definition: "Rough and bad-mannered.", exampleSentence: "Boorish behavior ruined dinner.", synonyms: ["Loutish", "uncouth"], antonyms: ["Refined", "polite"] },
+  { word: "Brevity", partOfSpeech: "n.", definition: "Concise and exact use of words.", exampleSentence: "Brevity of the speech was appreciated.", synonyms: ["Shortness", "conciseness"], antonyms: ["Verbosity", "length"] },
+  { word: "Brusque", partOfSpeech: "adj.", definition: "Abrupt or offhand.", exampleSentence: "The receptionist was brusque.", synonyms: ["Abrupt"], antonyms: ["Polite"] },
+  { word: "Bucolic", partOfSpeech: "adj.", definition: "Relating to the countryside.", exampleSentence: "We enjoyed the bucolic scenery.", synonyms: ["Pastoral", "rustic"], antonyms: ["Urban", "city"] },
+  { word: "Burgeon", partOfSpeech: "v.", definition: "To begin to grow rapidly.", exampleSentence: "The start-up began to burgeon.", synonyms: ["Flourish", "proliferate"], antonyms: ["Wither", "decline"] },
+  { word: "Burgeoning", partOfSpeech: "adj.", definition: "Flourishing; growing quickly.", exampleSentence: "Burgeoning market for EVs.", synonyms: ["Expanding", "thriving"], antonyms: ["Shrinking", "dying"] },
+  { word: "Cacophony", partOfSpeech: "n.", definition: "Harsh, discordant mixture of sounds.", exampleSentence: "The cacophony of horns.", synonyms: ["Dissonance", "din"], antonyms: ["Harmony", "silence"] },
+  { word: "Cajole", partOfSpeech: "v.", definition: "To persuade through flattery.", exampleSentence: "Cajole his teacher for credit.", synonyms: ["Wheedle", "coax"], antonyms: ["Compel", "force"] },
+  { word: "Calamity", partOfSpeech: "n.", definition: "An event causing sudden damage.", exampleSentence: "Earthquake was a major calamity.", synonyms: ["Disaster", "catastrophe"], antonyms: ["Blessing", "fortune"] },
+  { word: "Callous", partOfSpeech: "adj.", definition: "Insensitive and cruel disregard.", exampleSentence: "Dictator's callous treatment.", synonyms: ["Heartless", "cold"], antonyms: ["Compassionate", "kind"] },
+  { word: "Callow", partOfSpeech: "adj.", definition: "Inexperienced and immature.", exampleSentence: "A callow youth started the job.", synonyms: ["Naive", "green"], antonyms: ["Mature", "seasoned"] },
+  { word: "Calumnious", partOfSpeech: "adj.", definition: "False and defamatory.", exampleSentence: "The article was a calumnious attack.", synonyms: ["Slanderous", "libelous"], antonyms: ["Laudatory", "true"] },
+  { word: "Cantankerous", partOfSpeech: "adj.", definition: "Cranky or grumpy.", exampleSentence: "The cantankerous old man.", synonyms: ["Cranky", "grumpy"], antonyms: ["Pleasant"] },
+  { word: "Capitulate", partOfSpeech: "v.", definition: "To cease to resist; surrender.", exampleSentence: "Army had to capitulate.", synonyms: ["Surrender", "yield"], antonyms: ["Resist", "fight"] },
+  { word: "Capricious", partOfSpeech: "adj.", definition: "Sudden changes of mood.", exampleSentence: "Capricious child changed her mind.", synonyms: ["Fickle", "erratic"], antonyms: ["Constant", "steady"] },
+  { word: "Captious", partOfSpeech: "adj.", definition: "Tending to find fault.", exampleSentence: "Captious boss hates everything.", synonyms: ["Carping", "nitpicking"], antonyms: ["Encouraging", "kind"] },
+  { word: "Castigate", partOfSpeech: "v.", definition: "To reprimand or punish severely.", exampleSentence: "Coach castigated the team.", synonyms: ["Scold", "chastise"], antonyms: ["Praise", "commend"] },
+  { word: "Castigatory", partOfSpeech: "adj.", definition: "Punishing or reprimanding.", exampleSentence: "He wrote a castigatory letter.", synonyms: ["Critical", "punitive"], antonyms: ["Commending", "mild"] },
+  { word: "Caustic", partOfSpeech: "adj.", definition: "Sarcastic in a scathing way.", exampleSentence: "Her caustic remarks hurt him.", synonyms: ["Acerbic", "mordant"], antonyms: ["Kind", "suave"] },
+  { word: "Censure", partOfSpeech: "v.", definition: "To express formal disapproval.", exampleSentence: "Board voted to censure the manager.", synonyms: ["Condemn", "reprove"], antonyms: ["Approve", "laud"] },
+  { word: "Chaff", partOfSpeech: "n.", definition: "Waste or worthless matter.", exampleSentence: "Separate the chaff from high-quality writing.", synonyms: ["Waste"], antonyms: ["Valuable"] },
+  { word: "Charlatan", partOfSpeech: "n.", definition: "A person falsely claiming knowledge.", exampleSentence: "The doctor turned out to be a charlatan.", synonyms: ["Fraud", "impostor"], antonyms: ["Expert", "authority"] },
+  { word: "Chicanery", partOfSpeech: "n.", definition: "Use of trickery for political gain.", exampleSentence: "Accused of using chicanery.", synonyms: ["Deception", "guile"], antonyms: ["Honesty", "candor"] },
+  { word: "Churlish", partOfSpeech: "adj.", definition: "Rude in a mean-spirited way.", exampleSentence: "Churlish to refuse the gift.", synonyms: ["Surly", "boorish"], antonyms: ["Courteous", "civil"] },
+  { word: "Circuitous", partOfSpeech: "adj.", definition: "Longer than direct way.", exampleSentence: "Took a circuitous path home.", synonyms: ["Meandering", "tortuous"], antonyms: ["Direct", "straight"] },
+  { word: "Circumscribe", partOfSpeech: "v.", definition: "Restrict or establish limits.", exampleSentence: "Law circumscribes our rights.", synonyms: ["Restrict"], antonyms: ["Expand"] },
+  { word: "Circumspect", partOfSpeech: "adj.", definition: "Wary and unwilling to take risks.", exampleSentence: "Circumspect about sharing opinions.", synonyms: ["Cautious", "prudent"], antonyms: ["Reckless", "rash"] },
+  { word: "Clamorous", partOfSpeech: "adj.", definition: "Loud and confused noise.", exampleSentence: "The clamorous crowd waited.", synonyms: ["Noisy", "vociferous"], antonyms: ["Quiet", "silent"] },
+  { word: "Clandestine", partOfSpeech: "adj.", definition: "Kept secret or done secretively.", exampleSentence: "They had a clandestine meeting.", synonyms: ["Covert", "furtive"], antonyms: ["Public", "open"] },
+  { word: "Coalesce", partOfSpeech: "v.", definition: "To come together to form one mass.", exampleSentence: "Groups decided to coalesce.", synonyms: ["Merge", "fuse"], antonyms: ["Separate", "divide"] },
+  { word: "Cogent", partOfSpeech: "adj.", definition: "Clear, logical, and convincing.", exampleSentence: "A cogent argument for peace.", synonyms: ["Compelling", "potent"], antonyms: ["Vague", "weak"] },
+  { word: "Cognizant", partOfSpeech: "adj.", definition: "Having knowledge or being aware.", exampleSentence: "Must be cognizant of the rules.", synonyms: ["Aware", "mindful"], antonyms: ["Ignorant", "unaware"] },
+  { word: "Coherent", partOfSpeech: "adj.", definition: "Logical and consistent.", exampleSentence: "Failed to provide a coherent explanation.", synonyms: ["Rational", "lucid"], antonyms: ["Muddled", "chaotic"] },
+  { word: "Collusion", partOfSpeech: "n.", definition: "Secret or illegal cooperation.", exampleSentence: "Accused of collusion to fix prices.", synonyms: ["Conspiracy", "plot"], antonyms: ["Honesty", "openness"] },
+  { word: "Commensurate", partOfSpeech: "adj.", definition: "Corresponding in size or degree.", exampleSentence: "Pay is commensurate with skill.", synonyms: ["Proportionate", "equal"], antonyms: ["Disproportionate"] },
+  { word: "Compendium", partOfSpeech: "n.", definition: "Collection of concise information.", exampleSentence: "Compendium of NJ birds.", synonyms: ["Anthology", "digest"], antonyms: ["Fragment", "part"] },
+  { word: "Complaisant", partOfSpeech: "adj.", definition: "Willing to please others.", exampleSentence: "She was a complaisant hostess.", synonyms: ["Obliging", "amiable"], antonyms: ["Defiant", "rude"] },
+  { word: "Complacent", partOfSpeech: "adj.", definition: "Uncritical satisfaction with oneself.", exampleSentence: "Cannot afford to be complacent.", synonyms: ["Smug", "content"], antonyms: ["Humble", "discontent"] },
+  { word: "Concede", partOfSpeech: "v.", definition: "Admit something is true after resisting.", exampleSentence: "Forced to concede the election.", synonyms: ["Admit", "acknowledge"], antonyms: ["Deny", "dispute"] },
+  { word: "Conciliatory", partOfSpeech: "adj.", definition: "Intended to placate or pacify.", exampleSentence: "He made a conciliatory gesture.", synonyms: ["Appeasing", "pacific"], antonyms: ["Hostile", "antagonistic"] },
+  { word: "Condone", partOfSpeech: "v.", definition: "Accept or allow wrong behavior.", exampleSentence: "School does not condone bullying.", synonyms: ["Excuse", "overlook"], antonyms: ["Punish", "forbid"] },
+  { word: "Confluent", partOfSpeech: "adj.", definition: "Flowing together or merging.", exampleSentence: "Confluent streams formed a river.", synonyms: ["Merged", "united"], antonyms: ["Divergent", "separate"] },
+  { word: "Conjecture", partOfSpeech: "n.", definition: "Conclusion based on incomplete info.", exampleSentence: "Remains mere conjecture.", synonyms: ["Inference", "guess"], antonyms: ["Fact"] },
+  { word: "Connoisseur", partOfSpeech: "n.", definition: "Expert judge in matters of taste.", exampleSentence: "Connoisseur of fine art.", synonyms: ["Expert", "savant"], antonyms: ["Ignoramus", "novice"] },
+  { word: "Conspicuous", partOfSpeech: "adj.", definition: "Standing out to be clearly visible.", exampleSentence: "The bird's feathers were conspicuous.", synonyms: ["Noticeable", "obvious"], antonyms: ["Hidden", "subtle"] },
+  { word: "Contempt", partOfSpeech: "n.", definition: "Feeling someone is worthless.", exampleSentence: "Looked with pure contempt.", synonyms: ["Scorn", "disdain"], antonyms: ["Respect", "admiration"] },
+  { word: "Conundrum", partOfSpeech: "n.", definition: "Confusing or difficult problem.", exampleSentence: "Luggage in the trunk was a conundrum.", synonyms: ["Enigma", "puzzle"], antonyms: ["Solution", "clarity"] },
+  { word: "Conviction", partOfSpeech: "n.", definition: "Firmly held belief or opinion.", exampleSentence: "Spoke with deep conviction.", synonyms: ["Belief", "principle"], antonyms: ["Doubt", "uncertainty"] },
+  { word: "Copious", partOfSpeech: "adj.", definition: "Abundant in supply or quantity.", exampleSentence: "She took copious notes.", synonyms: ["Plentiful", "ample"], antonyms: ["Sparse", "few"] },
+  { word: "Corpulent", partOfSpeech: "adj.", definition: "Fat; bulky.", exampleSentence: "The corpulent man sat down.", synonyms: ["Obese", "portly"], antonyms: ["Thin", "gaunt"] },
+  { word: "Corroborate", partOfSpeech: "v.", definition: "Confirm or give support to.", exampleSentence: "Witness corroborated the alibi.", synonyms: ["Verify", "validate"], antonyms: ["Contradict", "refute"] },
+  { word: "Cosmopolitan", partOfSpeech: "adj.", definition: "Familiar with many countries.", exampleSentence: "London is a cosmopolitan city.", synonyms: ["Worldly", "cultured"], antonyms: ["Insular", "narrow"] },
+  { word: "Craven", partOfSpeech: "adj.", definition: "Contemptibly lacking in courage.", exampleSentence: "A craven act of betrayal.", synonyms: ["Cowardly", "timid"], antonyms: ["Brave", "valiant"] },
+  { word: "Credulity", partOfSpeech: "n.", definition: "Tendency to be too ready to believe.", exampleSentence: "Credulity made him a target for scams.", synonyms: ["Gullibility", "naivety"], antonyms: ["Skepticism", "doubt"] },
+  { word: "Credulous", partOfSpeech: "adj.", definition: "Ready to believe things easily.", exampleSentence: "Credulous child believed in fairies.", synonyms: ["Gullible", "naive"], antonyms: ["Skeptical", "wary"] },
+  { word: "Cryptic", partOfSpeech: "adj.", definition: "Having mysterious meaning.", exampleSentence: "He left a cryptic message.", synonyms: ["Enigmatic", "puzzling"], antonyms: ["Clear", "obvious"] },
+  { word: "Culpable", partOfSpeech: "adj.", definition: "Deserving blame.", exampleSentence: "Driver was found culpable.", synonyms: ["Guilty", "blameworthy"], antonyms: ["Innocent", "blameless"] },
+  { word: "Culminate", partOfSpeech: "v.", definition: "Reach point of highest development.", exampleSentence: "Festival will culminate in fireworks.", synonyms: ["Peak", "conclude"], antonyms: ["Start", "begin"] },
+  { word: "Cursory", partOfSpeech: "adj.", definition: "Hasty and not thorough.", exampleSentence: "A cursory glance at the paper.", synonyms: ["Perfunctory", "brief"], antonyms: ["Thorough", "detailed"] },
+  { word: "Curtail", partOfSpeech: "v.", definition: "Reduce in extent or quantity.", exampleSentence: "Had to curtail our vacation.", synonyms: ["Reduce", "shorten"], antonyms: ["Extend", "expand"] },
+  { word: "Cynical", partOfSpeech: "adj.", definition: "Distrustful of human sincerity.", exampleSentence: "He has a cynical view of love.", synonyms: ["Pessimistic", "sardonic"], antonyms: ["Optimistic", "naive"] },
+  { word: "Cynosure", partOfSpeech: "n.", definition: "Someone who is the center of attention.", exampleSentence: "Monument became the cynosure of the park.", synonyms: ["Center", "focus"], antonyms: ["N/A"] },
+  { word: "Dearth", partOfSpeech: "n.", definition: "Scarcity or lack of something.", exampleSentence: "Dearth of evidence to support the claim.", synonyms: ["Shortage", "paucity"], antonyms: ["Abundance", "surfeit"] },
+  { word: "Debase", partOfSpeech: "v.", definition: "Reduce in quality or value.", exampleSentence: "War debases everyone involved.", synonyms: ["Degrade", "devalue"], antonyms: ["Enhance", "exalt"] },
+  { word: "Debilitate", partOfSpeech: "v.", definition: "To make someone weak or infirm.", exampleSentence: "Illness began to debilitate him.", synonyms: ["Enfeeble", "weaken"], antonyms: ["Strengthen", "energize"] },
+  { word: "Decimate", partOfSpeech: "v.", definition: "Kill or remove large percentage.", exampleSentence: "Plague decimated the population.", synonyms: ["Devastate", "annihilate"], antonyms: ["Build", "create"] },
+  { word: "Decorous", partOfSpeech: "adj.", definition: "Keeping in good taste.", exampleSentence: "Her behavior was decorous.", synonyms: ["Seemly", "proper"], antonyms: ["Unseemly", "rude"] },
+  { word: "Decorum", partOfSpeech: "n.", definition: "Behavior keeping in good taste.", exampleSentence: "Expected to maintain decorum.", synonyms: ["Etiquette", "protocol"], antonyms: ["Impropriety", "rudeness"] },
+  { word: "Deference", partOfSpeech: "n.", definition: "Humble submission and respect.", exampleSentence: "Bowed in deference to the king.", synonyms: ["Respect", "homage"], antonyms: ["Disrespect", "contempt"] },
+  { word: "Deleterious", partOfSpeech: "adj.", definition: "Causing harm or damage.", exampleSentence: "Stress is deleterious to health.", synonyms: ["Pernicious", "harmful"], antonyms: ["Beneficial", "helpful"] },
+  { word: "Delineate", partOfSpeech: "v.", definition: "Describe or portray precisely.", exampleSentence: "Architect's plans delineate the dimensions.", synonyms: ["Outline", "depict"], antonyms: ["Confuse", "distort"] },
+  { word: "Demagogue", partOfSpeech: "n.", definition: "Leader appealing to emotions to get power.", exampleSentence: "Demagogue inflamed the crowd.", synonyms: ["Agitator", "firebrand"], antonyms: ["Peacemaker", "uniter"] },
+  { word: "Demur", partOfSpeech: "v.", definition: "Raise doubts or show reluctance.", exampleSentence: "Manager chose to demur.", synonyms: ["Object", "protest"], antonyms: ["Agree", "accept"] },
+  { word: "Demure", partOfSpeech: "adj.", definition: "Reserved, modest, and shy.", exampleSentence: "She gave a demure smile.", synonyms: ["Meek", "retiring"], antonyms: ["Bold", "brazen"] },
+  { word: "Depict", partOfSpeech: "v.", definition: "Show or represent by drawing.", exampleSentence: "Painting sought to depict the valley.", synonyms: ["Portray", "represent"], antonyms: ["Distort", "hide"] },
+  { word: "Deplete", partOfSpeech: "v.", definition: "Use up the supply or resources.", exampleSentence: "Farming began to deplete the soil.", synonyms: ["Exhaust", "drain"], antonyms: ["Replenish", "fill"] },
+  { word: "Deplorable", partOfSpeech: "adj.", definition: "Deserving strong condemnation.", exampleSentence: "Children lived in deplorable conditions.", synonyms: ["Disgraceful", "awful"], antonyms: ["Admirable", "good"] },
+  { word: "Depravity", partOfSpeech: "n.", definition: "Moral corruption; wickedness.", exampleSentence: "Film depicts total depravity.", synonyms: ["Wickedness", "vice"], antonyms: ["Virtue", "purity"] },
+  { word: "Deprecate", partOfSpeech: "v.", definition: "To express disapproval of.", exampleSentence: "Began to deprecate his achievements.", synonyms: ["Belittle", "disparage"], antonyms: ["Praise", "endorse"] },
+  { word: "Deride", partOfSpeech: "v.", definition: "Express contempt for; ridicule.", exampleSentence: "Critics derided his new book.", synonyms: ["Mock", "scoff"], antonyms: ["Praise", "extol"] },
+  { word: "Derisive", partOfSpeech: "adj.", definition: "Expressing contempt or ridicule.", exampleSentence: "He let out a derisive laugh.", synonyms: ["Mocking", "snide"], antonyms: ["Respectful", "kind"] },
+  { word: "Desiccated", partOfSpeech: "adj.", definition: "Dried out; lacking vitality.", exampleSentence: "Desiccated landscape of Mars.", synonyms: ["Dried", "parched"], antonyms: ["Moist", "vibrant"] },
+  { word: "Desolate", partOfSpeech: "adj.", definition: "Deserted of people; bleak.", exampleSentence: "Landscape was desolate after fire.", synonyms: ["Barren", "bleak"], antonyms: ["Populated", "lush"] },
+  { word: "Despondent", partOfSpeech: "adj.", definition: "Low spirits from loss of hope.", exampleSentence: "Grew despondent after failure.", synonyms: ["Dejected", "forlorn"], antonyms: ["Cheerful", "elated"] },
+  { word: "Destitute", partOfSpeech: "adj.", definition: "Without basic necessities.", exampleSentence: "Charity helps the destitute.", synonyms: ["Impoverished", "poor"], antonyms: ["Wealthy", "rich"] },
+  { word: "Desultory", partOfSpeech: "adj.", definition: "Lacking a plan or purpose.", exampleSentence: "A desultory conversation.", synonyms: ["Haphazard", "aimless"], antonyms: ["Focused", "systematic"] },
+  { word: "Detached", partOfSpeech: "adj.", definition: "Aloof or objective.", exampleSentence: "Judge remained detached.", synonyms: ["Unbiased", "disinterested"], antonyms: ["Biased", "involved"] },
+  { word: "Deter", partOfSpeech: "v.", definition: "Discourage someone from doing something.", exampleSentence: "High price will deter buyers.", synonyms: ["Prevent", "inhibit"], antonyms: ["Encourage", "prompt"] },
+  { word: "Deterrent", partOfSpeech: "n.", definition: "Thing that discourages something.", exampleSentence: "Price served as a deterrent.", synonyms: ["Disincentive", "curb"], antonyms: ["Incentive", "catalyst"] },
+  { word: "Detrimental", partOfSpeech: "adj.", definition: "Tending to cause harm.", exampleSentence: "Lack of sleep is detrimental.", synonyms: ["Harmful", "injurious"], antonyms: ["Helpful", "benign"] },
+  { word: "Devious", partOfSpeech: "adj.", definition: "Skillful use of underhand tactics.", exampleSentence: "Devious plan to trick rivals.", synonyms: ["Cunning", "shifty"], antonyms: ["Honest", "direct"] },
+  { word: "Diaphanous", partOfSpeech: "adj.", definition: "Light, delicate, and translucent.", exampleSentence: "Bride wore a diaphanous veil.", synonyms: ["Sheer", "gossamer"], antonyms: ["Opaque", "thick"] },
+  { word: "Dichotomy", partOfSpeech: "n.", definition: "Division between two opposed things.", exampleSentence: "Dichotomy between political philosophies.", synonyms: ["Split", "contrast"], antonyms: ["Similarity", "unity"] },
+  { word: "Didactic", partOfSpeech: "adj.", definition: "Intended to teach; moralizing.", exampleSentence: "Fable was highly didactic.", synonyms: ["Instructive", "edifying"], antonyms: ["Uninformative"] },
+  { word: "Diffident", partOfSpeech: "adj.", definition: "Modest or shy due to lack of confidence.", exampleSentence: "The diffident boy stood in the corner.", synonyms: ["Timid", "bashful"], antonyms: ["Confident", "bold"] },
+  { word: "Digression", partOfSpeech: "n.", definition: "Temporary departure from main subject.", exampleSentence: "Digression about the game lasted minutes.", synonyms: ["Deviation", "detour"], antonyms: ["Directness", "focus"] },
+  { word: "Dilatory", partOfSpeech: "adj.", definition: "Slow to act; intended to cause delay.", exampleSentence: "Senator used dilatory tactics.", synonyms: ["Sluggish", "lax"], antonyms: ["Prompt", "fast"] },
+  { word: "Diligence", partOfSpeech: "n.", definition: "Careful and persistent work.", exampleSentence: "Managed to win through diligence.", synonyms: ["Rigor", "industry"], antonyms: ["Laziness", "sloth"] },
+  { word: "Diminutive", partOfSpeech: "adj.", definition: "Extremely or unusually small.", exampleSentence: "Diminutive puppy fit in his hand.", synonyms: ["Tiny", "petite"], antonyms: ["Huge", "enormous"] },
+  { word: "Discerning", partOfSpeech: "adj.", definition: "Having or showing good judgment.", exampleSentence: "Discerning customer can tell the difference.", synonyms: ["Perceptive", "sharp"], antonyms: ["Ignorant", "obtuse"] },
+  { word: "Disclose", partOfSpeech: "v.", definition: "To make secret information known.", exampleSentence: "Company refused to disclose records.", synonyms: ["Reveal", "divulge"], antonyms: ["Hide", "conceal"] },
+  { word: "Discord", partOfSpeech: "n.", definition: "Disagreement between people.", exampleSentence: "Much discord within the party.", synonyms: ["Conflict", "friction"], antonyms: ["Harmony", "peace"] },
+  { word: "Discredit", partOfSpeech: "v.", definition: "To harm reputation of something.", exampleSentence: "Lawyer tried to discredit the expert.", synonyms: ["Disparage", "vilify"], antonyms: ["Validate", "honor"] },
+  { word: "Discrepancy", partOfSpeech: "n.", definition: "Lack of compatibility between facts.", exampleSentence: "Major discrepancy in the records.", synonyms: ["Difference", "gap"], antonyms: ["Agreement", "match"] },
+  { word: "Disdain", partOfSpeech: "n.", definition: "Feeling someone is unworthy of respect.", exampleSentence: "Looked with pure disdain.", synonyms: ["Scorn", "contempt"], antonyms: ["Respect", "admiration"] },
+  { word: "Disingenuous", partOfSpeech: "adj.", definition: "Not candid or sincere; pretending.", exampleSentence: "His apology seemed disingenuous.", synonyms: ["Insincere", "deceitful"], antonyms: ["Frank", "honest"] },
+  { word: "Disparage", partOfSpeech: "v.", definition: "To regard as being of little worth.", exampleSentence: "Never missed a chance to disparage competitors.", synonyms: ["Belittle", "mock"], antonyms: ["Praise", "applaud"] },
+  { word: "Disparate", partOfSpeech: "adj.", definition: "Essentially different in kind.", exampleSentence: "The two cultures are disparate.", synonyms: ["Diverse", "dissimilar"], antonyms: ["Identical", "similar"] },
+  { word: "Disparity", partOfSpeech: "n.", definition: "A great difference.", exampleSentence: "Economic disparity between regions.", synonyms: ["Inequality", "gap"], antonyms: ["Equality", "likeness"] },
+  { word: "Dispel", partOfSpeech: "v.", definition: "Make a doubt or feeling disappear.", exampleSentence: "Speech helped dispel rumors.", synonyms: ["Dismiss", "banish"], antonyms: ["Foster", "create"] },
+  { word: "Disseminate", partOfSpeech: "v.", definition: "To spread information widely.", exampleSentence: "Internet allows news to disseminate quickly.", synonyms: ["Distribute", "spread"], antonyms: ["Collect", "hide"] },
+  { word: "Distant", partOfSpeech: "adj.", definition: "Far away in space or time.", exampleSentence: "Distant sound of thunder.", synonyms: ["Far", "remote"], antonyms: ["Near", "close"] },
+  { word: "Divergent", partOfSpeech: "adj.", definition: "Tending to be different or go apart.", exampleSentence: "Friends had divergent opinions.", synonyms: ["Differing", "clashing"], antonyms: ["Similar", "matching"] },
+  { word: "Divulge", partOfSpeech: "v.", definition: "To make known private information.", exampleSentence: "Promised not to divulge the secret.", synonyms: ["Reveal", "disclose"], antonyms: ["Conceal", "hide"] },
+  { word: "Docile", partOfSpeech: "adj.", definition: "Ready to accept control; submissive.", exampleSentence: "The docile elephant followed commands.", synonyms: ["Compliant", "gentle"], antonyms: ["Stubborn", "wild"] },
+  { word: "Dogmatic", partOfSpeech: "adj.", definition: "Principles laid down as incontrovertibly true.", exampleSentence: "Very dogmatic about his beliefs.", synonyms: ["Opinionated", "rigid"], antonyms: ["Open-minded", "flexible"] },
+  { word: "Doleful", partOfSpeech: "adj.", definition: "Expressing sorrow; mournful.", exampleSentence: "A doleful expression on his face.", synonyms: ["Lugubrious", "sad"], antonyms: ["Joyful", "bright"] },
+  { word: "Dormant", partOfSpeech: "adj.", definition: "Normal functions suspended; inactive.", exampleSentence: "Volcano has been dormant for a century.", synonyms: ["Inactive", "latent"], antonyms: ["Active", "vibrant"] },
+  { word: "Dubious", partOfSpeech: "adj.", definition: "Hesitating or doubting.", exampleSentence: "Dubious about the truth of the story.", synonyms: ["Skeptical", "unsure"], antonyms: ["Certain", "sure"] },
+  { word: "Dulcet", partOfSpeech: "adj.", definition: "Sweet and soothing sound.", exampleSentence: "The dulcet tones of a harp.", synonyms: ["Mellifluous", "soft"], antonyms: ["Harsh", "loud"] },
+  { word: "Duplicity", partOfSpeech: "n.", definition: "Deceitfulness; double-dealing.", exampleSentence: "Shocked by his friend's duplicity.", synonyms: ["Deception", "fraud"], antonyms: ["Honesty", "candor"] },
+  { word: "Ebullient", partOfSpeech: "adj.", definition: "Cheerful and full of energy.", exampleSentence: "Ebullient fans celebrated.", synonyms: ["Exuberant", "vivacious"], antonyms: ["Depressed", "gloomy"] },
+  { word: "Eccentric", partOfSpeech: "adj.", definition: "Unconventional and slightly strange.", exampleSentence: "Old man lived in an eccentric house.", synonyms: ["Odd", "peculiar"], antonyms: ["Normal", "typical"] },
+  { word: "Eclectic", partOfSpeech: "adj.", definition: "Deriving ideas from diverse sources.", exampleSentence: "Her taste in music is eclectic.", synonyms: ["Diverse", "varied"], antonyms: ["Narrow", "uniform"] },
+  { word: "Eclat", partOfSpeech: "n.", definition: "Brilliant display or effect.", exampleSentence: "Opening night performed with great eclat.", synonyms: ["Brilliance"], antonyms: ["Dullness"] },
+  { word: "Edify", partOfSpeech: "v.", definition: "Instruct or improve someone morally.", exampleSentence: "The book was written to edify.", synonyms: ["Enlighten", "teach"], antonyms: ["Corrupt", "confuse"] },
+  { word: "Edifying", partOfSpeech: "adj.", definition: "Providing moral instruction.", exampleSentence: "It was an edifying experience.", synonyms: ["Enlightening", "didactic"], antonyms: ["Corrupting", "dark"] },
+  { word: "Efface", partOfSpeech: "v.", definition: "To erase a mark from a surface.", exampleSentence: "Time had begun to efface the inscriptions.", synonyms: ["Erase", "obliterate"], antonyms: ["Preserve", "create"] },
+  { word: "Effete", partOfSpeech: "adj.", definition: "Worn out; no longer effective.", exampleSentence: "The effete aristocracy declined.", synonyms: ["Enfeebled", "decadent"], antonyms: ["Vigorous", "strong"] },
+  { word: "Efficacy", partOfSpeech: "n.", definition: "Ability to produce a desired result.", exampleSentence: "Testing the efficacy of the vaccine.", synonyms: ["Effectiveness", "potency"], antonyms: ["Failure", "impotence"] },
+  { word: "Effrontry", partOfSpeech: "n.", definition: "Insolent or impertinent behavior.", exampleSentence: "Effrontery to ask for a raise after being late.", synonyms: ["Audacity", "nerve"], antonyms: ["Politeness", "modesty"] },
+  { word: "Effulgence", partOfSpeech: "n.", definition: "Radiance or shining brightly.", exampleSentence: "Effulgence of the rising sun.", synonyms: ["Radiance"], antonyms: ["Dullness"] },
+  { word: "Effusive", partOfSpeech: "adj.", definition: "Expressing gratitude heartedly.", exampleSentence: "An effusive welcome.", synonyms: ["Gushing", "lavish"], antonyms: ["Restrained", "cold"] },
+  { word: "Egregious", partOfSpeech: "adj.", definition: "Outstandingly bad; shocking.", exampleSentence: "Student made an egregious error.", synonyms: ["Flagrant", "heinous"], antonyms: ["Minor", "slight"] },
+  { word: "Elated", partOfSpeech: "adj.", definition: "Ecstatically happy.", exampleSentence: "She was elated when she got the job.", synonyms: ["Thrilled", "joyful"], antonyms: ["Sad", "miserable"] },
+  { word: "Elegaic", partOfSpeech: "adj.", definition: "Mournful or sad.", exampleSentence: "The poem was elegaic.", synonyms: ["Plaintive", "somber"], antonyms: ["Happy", "upbeat"] },
+  { word: "Elicit", partOfSpeech: "v.", definition: "Evoke or draw out a response.", exampleSentence: "Failed to elicit a reaction.", synonyms: ["Extract", "evoke"], antonyms: ["Suppress", "stifle"] },
+  { word: "Eloquent", partOfSpeech: "adj.", definition: "Fluent or persuasive in speech.", exampleSentence: "Eloquent speech moved audience to tears.", synonyms: ["Articulate", "silver-tongued"], antonyms: ["Inarticulate", "halting"] },
+  { word: "Elusive", partOfSpeech: "adj.", definition: "Difficult to find or catch.", exampleSentence: "Elusive criminal managed to escape.", synonyms: ["Evasive", "slippery"], antonyms: ["Reachable", "obvious"] },
+  { word: "Emaciated", partOfSpeech: "adj.", definition: "Abnormally thin or weak.", exampleSentence: "The emaciated dog was rescued.", synonyms: ["Gaunt", "skeletal"], antonyms: ["Corpulent", "fat"] },
+  { word: "Embellish", partOfSpeech: "v.", definition: "Make attractive with decorative details.", exampleSentence: "Decided to embellish his story.", synonyms: ["Decorate", "adorn"], antonyms: ["Simplify", "strip"] },
+  { word: "Emollient", partOfSpeech: "adj.", definition: "Softening or soothing effect.", exampleSentence: "His emollient words helped.", synonyms: ["Conciliatory", "soothing"], antonyms: ["Abrasive", "harsh"] },
+  { word: "Empathy", partOfSpeech: "n.", definition: "Ability to share feelings of another.", exampleSentence: "She felt empathy for the widow.", synonyms: ["Compassion", "sympathy"], antonyms: ["Apathy", "indifference"] },
+  { word: "Empirical", partOfSpeech: "adj.", definition: "Based on observation rather than theory.", exampleSentence: "Empirical evidence is needed.", synonyms: ["Factual", "observed"], antonyms: ["Theoretical", "vague"] },
+  { word: "Emulate", partOfSpeech: "v.", definition: "Match or surpass by imitation.", exampleSentence: "Young players try to emulate idols.", synonyms: ["Mimic", "copy"], antonyms: ["Ignore", "neglect"] },
+  { word: "Enervated", partOfSpeech: "adj.", definition: "Drained of energy.", exampleSentence: "Felt enervated by the heat.", synonyms: ["Exhausted", "weary"], antonyms: ["Energized", "fresh"] },
+  { word: "Enervate", partOfSpeech: "v.", definition: "Cause someone to feel drained.", exampleSentence: "Heat began to enervate the hikers.", synonyms: ["Exhaust", "fatigue"], antonyms: ["Invigorate", "energize"] },
+  { word: "Engender", partOfSpeech: "v.", definition: "Cause or give rise to.", exampleSentence: "New policy is likely to engender debate.", synonyms: ["Produce", "provoke"], antonyms: ["Quell", "stop"] },
+  { word: "Enigma", partOfSpeech: "n.", definition: "Person or thing that is mysterious.", exampleSentence: "His disappearance remains an enigma.", synonyms: ["Mystery", "puzzle"], antonyms: ["Clarity", "solution"] },
+  { word: "Enigmatic", partOfSpeech: "adj.", definition: "Difficult to interpret; mysterious.", exampleSentence: "An enigmatic smile.", synonyms: ["Puzzling", "cryptic"], antonyms: ["Obvious", "clear"] },
+  { word: "Enraptured", partOfSpeech: "adj.", definition: "Give intense pleasure or joy to.", exampleSentence: "Audience was enraptured by music.", synonyms: ["Captivated", "charmed"], antonyms: ["Bored", "repelled"] },
+  { word: "Ephemeral", partOfSpeech: "adj.", definition: "Lasting for a very short time.", exampleSentence: "Fashions are ephemeral.", synonyms: ["Fleeting", "transitory"], antonyms: ["Eternal", "lasting"] },
+  { word: "Equanimity", partOfSpeech: "n.", definition: "Mental calmness and evenness of temper.", exampleSentence: "Accepted victory and defeat with equanimity.", synonyms: ["Composure", "poise"], antonyms: ["Agitation", "panic"] },
+  { word: "Equivocal", partOfSpeech: "adj.", definition: "Open to more than one interpretation.", exampleSentence: "The politician gave an equivocal answer.", synonyms: ["Ambiguous", "uncertain"], antonyms: ["Clear", "definite"] },
+  { word: "Eradicate", partOfSpeech: "v.", definition: "Destroy completely; put an end to.", exampleSentence: "We must work to eradicate hunger.", synonyms: ["Eliminate", "uproot"], antonyms: ["Foster", "plant"] },
+  { word: "Erroneous", partOfSpeech: "adj.", definition: "Wrong; incorrect.", exampleSentence: "Report contained several erroneous assumptions.", synonyms: ["False", "mistaken"], antonyms: ["Correct", "true"] },
+  { word: "Erudite", partOfSpeech: "adj.", definition: "Having or showing great knowledge.", exampleSentence: "An erudite professor.", synonyms: ["Scholarly", "learned"], antonyms: ["Ignorant", "uneducated"] },
+  { word: "Esoteric", partOfSpeech: "adj.", definition: "Understood by only a small number.", exampleSentence: "Esoteric knowledge of symbols.", synonyms: ["Abstruse", "arcane"], antonyms: ["Common", "known"] },
+  { word: "Ethereal", partOfSpeech: "adj.", definition: "Extremely delicate and light.", exampleSentence: "Her ethereal beauty was haunting.", synonyms: ["Heavenly", "fragile"], antonyms: ["Earthly", "heavy"] },
+  { word: "Eulogy", partOfSpeech: "n.", definition: "Speech that praises someone highly.", exampleSentence: "Delivered a moving eulogy.", synonyms: ["Tribute", "panegyric"], antonyms: ["Criticism", "insult"] },
+  { word: "Euphemism", partOfSpeech: "n.", definition: "Mild word substituted for a harsh one.", exampleSentence: "Passed away is a euphemism for died.", synonyms: ["Substitute"], antonyms: ["Directness"] },
+  { word: "Evanescent", partOfSpeech: "adj.", definition: "Soon passing out of sight or memory.", exampleSentence: "An evanescent mist.", synonyms: ["Vanishing", "fading"], antonyms: ["Permanent", "fixed"] },
+  { word: "Exacerbate", partOfSpeech: "v.", definition: "To make a bad situation worse.", exampleSentence: "Adding fuel to fire will exacerbate the crisis.", synonyms: ["Aggravate", "worsen"], antonyms: ["Alleviate", "soothe"] },
+  { word: "Exalt", partOfSpeech: "v.", definition: "Hold someone in very high regard.", exampleSentence: "Tribe would exalt their leader.", synonyms: ["Glorify", "revere"], antonyms: ["Belittle", "mock"] },
+  { word: "Exasperate", partOfSpeech: "v.", definition: "To irritate intensely; infuriate.", exampleSentence: "The constant noise exasperated her.", synonyms: ["Annoy", "provoke"], antonyms: ["Calm", "please"] },
+  { word: "Exculpatory", partOfSpeech: "adj.", definition: "Tending to clear from guilt.", exampleSentence: "New exculpatory evidence.", synonyms: ["Pardoning", "clearing"], antonyms: ["Incriminating"] },
+  { word: "Exemplary", partOfSpeech: "adj.", definition: "Serving as a desirable model.", exampleSentence: "Her exemplary behavior was a model.", synonyms: ["Admirable", "ideal"], antonyms: ["Poor", "bad"] },
+  { word: "Exhaustive", partOfSpeech: "adj.", definition: "Considering all elements or aspects.", exampleSentence: "Police conducted an exhaustive search.", synonyms: ["Thorough", "complete"], antonyms: ["Superficial", "partial"] },
+  { word: "Exigent", partOfSpeech: "adj.", definition: "Pressing; demanding.", exampleSentence: "Exigent circumstances required action.", synonyms: ["Urgent", "imperative"], antonyms: ["Trivial", "easy"] },
+  { word: "Exiguous", partOfSpeech: "adj.", definition: "Very small in size or amount.", exampleSentence: "An exiguous income.", synonyms: ["Meager", "scanty"], antonyms: ["Ample", "large"] },
+  { word: "Exonerate", partOfSpeech: "v.", definition: "Absolve someone from blame.", exampleSentence: "Evidence will exonerate the suspect.", synonyms: ["Clear", "acquit"], antonyms: ["Convict", "blame"] },
+  { word: "Exorbitant", partOfSpeech: "adj.", definition: "Unreasonably high price.", exampleSentence: "The rent was exorbitant.", synonyms: ["Excessive", "steep"], antonyms: ["Cheap", "low"] },
+  { word: "Exotic", partOfSpeech: "adj.", definition: "Originating in a distant country.", exampleSentence: "Saw many exotic birds.", synonyms: ["Unusual", "foreign"], antonyms: ["Common", "local"] },
+  { word: "Expedient", partOfSpeech: "adj.", definition: "Convenient and practical; possibly improper.", exampleSentence: "It was politically expedient.", synonyms: ["Practical", "useful"], antonyms: ["Unwise", "harmful"] },
+  { word: "Explicit", partOfSpeech: "adj.", definition: "Stated clearly and in detail.", exampleSentence: "Gave explicit instructions.", synonyms: ["Clear", "direct"], antonyms: ["Vague", "implicit"] },
+  { word: "Extol", partOfSpeech: "v.", definition: "To praise enthusiastically.", exampleSentence: "Began to extol the virtues of health.", synonyms: ["Laud", "exalt"], antonyms: ["Criticize", "blame"] },
+  { word: "Extraneous", partOfSpeech: "adj.", definition: "Irrelevant or unrelated.", exampleSentence: "Remove any extraneous info.", synonyms: ["Irrelevant", "extra"], antonyms: ["Essential", "relevant"] },
+  { word: "Extricate", partOfSpeech: "v.", definition: "Free someone from a constraint.", exampleSentence: "Managed to extricate himself.", synonyms: ["Free", "release"], antonyms: ["Entangle", "trap"] },
+  { word: "Exuberant", partOfSpeech: "adj.", definition: "Lively energy and excitement.", exampleSentence: "The exuberant puppy wagged its tail.", synonyms: ["Joyful", "lively"], antonyms: ["Gloomy", "dull"] },
+  { word: "Exult", partOfSpeech: "v.", definition: "Feel elation or jubilation.", exampleSentence: "Team exulted after winning.", synonyms: ["Rejoice", "gloat"], antonyms: ["Mourn", "weep"] },
+  { word: "Fabricate", partOfSpeech: "v.", definition: "Invent or concoct; deceitful intent.", exampleSentence: "Fabricate an excuse.", synonyms: ["Invent", "fake"], antonyms: ["Destroy", "truth"] },
+  { word: "Facetious", partOfSpeech: "adj.", definition: "Treating serious issues with humor.", exampleSentence: "A facetious comment.", synonyms: ["Flippant", "glib"], antonyms: ["Serious", "grave"] },
+  { word: "Facilitate", partOfSpeech: "v.", definition: "Make an action easy or easier.", exampleSentence: "New tech will facilitate communication.", synonyms: ["Help", "ease"], antonyms: ["Hinder", "block"] },
+  { word: "Fallacious", partOfSpeech: "adj.", definition: "Based on a mistaken belief.", exampleSentence: "His argument was fallacious.", synonyms: ["False", "erroneous"], antonyms: ["True", "valid"] },
+  { word: "Fallible", partOfSpeech: "adj.", definition: "Capable of making mistakes.", exampleSentence: "Even experts are fallible.", synonyms: ["Imperfect", "errant"], antonyms: ["Infallible", "perfect"] },
+  { word: "Fastidious", partOfSpeech: "adj.", definition: "Very attentive to accuracy and detail.", exampleSentence: "Fastidious about cleaning.", synonyms: ["Scrupulous", "picky"], antonyms: ["Careless", "sloppy"] },
+  { word: "Feasible", partOfSpeech: "adj.", definition: "Possible to do easily.", exampleSentence: "Not feasible to build in two weeks.", synonyms: ["Achievable", "viable"], antonyms: ["Impossible", "impractical"] },
+  { word: "Fervent", partOfSpeech: "adj.", definition: "Passionate intensity.", exampleSentence: "Fervent believer in education.", synonyms: ["Passionate", "ardent"], antonyms: ["Apathetic", "cold"] },
+  { word: "Fickle", partOfSpeech: "adj.", definition: "Changing frequently.", exampleSentence: "The fickle public forgot him.", synonyms: ["Inconstant", "erratic"], antonyms: ["Loyal", "stable"] },
+  { word: "Flamboyant", partOfSpeech: "adj.", definition: "Tending to attract attention.", exampleSentence: "Wore a flamboyant outfit.", synonyms: ["Showy", "flashy"], antonyms: ["Modest", "plain"] },
+  { word: "Flawless", partOfSpeech: "adj.", definition: "Without any imperfections.", exampleSentence: "Her performance was flawless.", synonyms: ["Perfect", "intact"], antonyms: ["Defective", "flawed"] },
+  { word: "Flippant", partOfSpeech: "adj.", definition: "Not showing a serious attitude.", exampleSentence: "Flippant answer angered him.", synonyms: ["Glib", "facetious"], antonyms: ["Respectful", "serious"] },
+  { word: "Florid", partOfSpeech: "adj.", definition: "Elaborately or excessively intricate.", exampleSentence: "Written in a florid style.", synonyms: ["Ornate", "flowery"], antonyms: ["Plain", "simple"] },
+  { word: "Flourish", partOfSpeech: "v.", definition: "Grow or develop in a healthy way.", exampleSentence: "Plants began to flourish.", synonyms: ["Thrive", "prosper"], antonyms: ["Wither", "die"] },
+  { word: "Foolhardy", partOfSpeech: "adj.", definition: "Recklessly bold or rash.", exampleSentence: "Foolhardy to go sailing in a storm.", synonyms: ["Reckless", "rash"], antonyms: ["Cautious", "prudent"] },
+  { word: "Forbearance", partOfSpeech: "n.", definition: "Patient self-control; restraint.", exampleSentence: "Judge showed forbearance.", synonyms: ["Patience", "restraint"], antonyms: ["Impatience", "anger"] },
+  { word: "Forthright", partOfSpeech: "adj.", definition: "Direct and outspoken.", exampleSentence: "He was forthright about mistakes.", synonyms: ["Candid", "blunt"], antonyms: ["Deceptive", "evasive"] },
+  { word: "Fortitude", partOfSpeech: "n.", definition: "Courage in pain or adversity.", exampleSentence: "Great fortitude during illness.", synonyms: ["Bravery", "grit"], antonyms: ["Cowardice", "fear"] },
+  { word: "Fortuitous", partOfSpeech: "adj.", definition: "Happening by a lucky chance.", exampleSentence: "Their fortuitous meeting.", synonyms: ["Lucky", "accidental"], antonyms: ["Unlucky", "planned"] },
+  { word: "Foster", partOfSpeech: "v.", definition: "Encourage or promote development.", exampleSentence: "Foster a love of reading.", synonyms: ["Nurture", "promote"], antonyms: ["Neglect", "stop"] },
+  { word: "Fractious", partOfSpeech: "adj.", definition: "Irritable and quarrelsome.", exampleSentence: "The fractious toddler.", synonyms: ["Refractory", "unruly"], antonyms: ["Docile", "calm"] },
+  { word: "Fragile", partOfSpeech: "adj.", definition: "Easily broken or damaged.", exampleSentence: "Fragile glass vase.", synonyms: ["Delicate", "frail"], antonyms: ["Strong", "tough"] },
+  { word: "Fraudulent", partOfSpeech: "adj.", definition: "Obtained by involving deception.", exampleSentence: "Arrested for fraudulent activities.", synonyms: ["Deceitful", "fake"], antonyms: ["Honest", "genuine"] },
+  { word: "Frenzy", partOfSpeech: "n.", definition: "State of uncontrolled excitement.", exampleSentence: "Crowd was in a frenzy.", synonyms: ["Hysteria", "mania"], antonyms: ["Calm", "peace"] },
+  { word: "Frivolous", partOfSpeech: "adj.", definition: "Not having any serious purpose.", exampleSentence: "Wasted money on frivolous purchases.", synonyms: ["Trivial", "silly"], antonyms: ["Serious", "vital"] },
+  { word: "Frugal", partOfSpeech: "adj.", definition: "Sparing or economical with money.", exampleSentence: "He led a frugal life.", synonyms: ["Thrifty", "stingy"], antonyms: ["Extravagant", "lavish"] },
+  { word: "Frustrate", partOfSpeech: "v.", definition: "Prevent a plan from progressing.", exampleSentence: "Rain will frustrate our plans.", synonyms: ["Thwart", "hinder"], antonyms: ["Aid", "help"] },
+  { word: "Fulsome", partOfSpeech: "adj.", definition: "Excessively flattering.", exampleSentence: "Fulsome praise can feel fake.", synonyms: ["Sycophantic", "fawning"], antonyms: ["Sincere", "modest"] },
+  { word: "Furtive", partOfSpeech: "adj.", definition: "Attempting to avoid notice.", exampleSentence: "A furtive glance toward the exit.", synonyms: ["Stealthy", "surreptitious"], antonyms: ["Open", "honest"] },
+  { word: "Futile", partOfSpeech: "adj.", definition: "Pointless or useless.", exampleSentence: "Resistance is futile.", synonyms: ["Vain", "hopeless"], antonyms: ["Fruitful", "useful"] },
+  { word: "Gait", partOfSpeech: "n.", definition: "A person's manner of walking.", exampleSentence: "He had a confident rhythmic gait.", synonyms: ["Stride", "pace"], antonyms: ["N/A"] },
+  { word: "Garnish", partOfSpeech: "v.", definition: "To decorate or embellish.", exampleSentence: "Garnish the dish with parsley.", synonyms: ["Adorn", "trim"], antonyms: ["Strip", "mar"] },
+  { word: "Garrulous", partOfSpeech: "adj.", definition: "Excessively talkative.", exampleSentence: "The garrulous neighbor.", synonyms: ["Loquacious", "voluble"], antonyms: ["Taciturn", "silent"] },
+  { word: "Generic", partOfSpeech: "adj.", definition: "Characteristic of a class; not specific.", exampleSentence: "Generic term for medicine.", synonyms: ["Common", "general"], antonyms: ["Specific", "unique"] },
+  { word: "Genial", partOfSpeech: "adj.", definition: "Friendly and cheerful.", exampleSentence: "The host was a genial man.", synonyms: ["Amiable", "affable"], antonyms: ["Grumpy", "cold"] },
+  { word: "Germane", partOfSpeech: "adj.", definition: "Relevant to a subject.", exampleSentence: "That point is not germane.", synonyms: ["Pertinent", "apposite"], antonyms: ["Irrelevant"] },
+  { word: "Giddy", partOfSpeech: "adj.", definition: "Sensation of whirling; excitement.", exampleSentence: "She felt giddy with excitement.", synonyms: ["Dizzy", "lightheaded"], antonyms: ["Serious", "steady"] },
+  { word: "Gleeful", partOfSpeech: "adj.", definition: "Exuberantly happy.", exampleSentence: "Gleeful children opened presents.", synonyms: ["Joyful", "merry"], antonyms: ["Sad", "morose"] },
+  { word: "Glib", partOfSpeech: "adj.", definition: "Fluent but shallow and insincere.", exampleSentence: "Glib answer to the question.", synonyms: ["Slick", "smooth"], antonyms: ["Sincere", "deep"] },
+  { word: "Glutton", partOfSpeech: "n.", definition: "Person who eats/drinks excessively.", exampleSentence: "He is a glutton for punishment.", synonyms: ["Gourmand", "voracious"], antonyms: ["Abstainer"] },
+  { word: "Gourmet", partOfSpeech: "n.", definition: "Connoisseur of good food.", exampleSentence: "As a gourmet, he ate at the best places.", synonyms: ["Epicure", "foodie"], antonyms: ["Amateur", "novice"] },
+  { word: "Grandiloquent", partOfSpeech: "adj.", definition: "Pompous or extravagant in language.", exampleSentence: "A grandiloquent speech.", synonyms: ["Bombastic", "turgid"], antonyms: ["Simple", "plain"] },
+  { word: "Grandiose", partOfSpeech: "adj.", definition: "Impressive and imposing in appearance.", exampleSentence: "Grandiose plans for a skyscraper.", synonyms: ["Magnificent", "showy"], antonyms: ["Modest", "small"] },
+  { word: "Gratuitous", partOfSpeech: "adj.", definition: "Uncalled for; lacking good reason.", exampleSentence: "Gratuitous violence in the movie.", synonyms: ["Unjustified", "extra"], antonyms: ["Necessary", "required"] },
+  { word: "Gregarious", partOfSpeech: "adj.", definition: "Fond of company; sociable.", exampleSentence: "Most politicians are gregarious.", synonyms: ["Sociable", "friendly"], antonyms: ["Reclusive", "introverted"] },
+  { word: "Grievance", partOfSpeech: "n.", definition: "A real or imagined wrong.", exampleSentence: "Workers filed a grievance.", synonyms: ["Complaint", "grudge"], antonyms: ["Praise", "benefit"] },
+  { word: "Grim", partOfSpeech: "adj.", definition: "Forbidding or uninviting.", exampleSentence: "The news was grim.", synonyms: ["Gloomy", "harsh"], antonyms: ["Bright", "pleasant"] },
+  { word: "Guile", partOfSpeech: "n.", definition: "Sly or cunning intelligence.", exampleSentence: "The fox used guile.", synonyms: ["Deceit", "chicanery"], antonyms: ["Honesty", "candor"] },
+  { word: "Guileless", partOfSpeech: "adj.", definition: "Devoid of guile; innocent.", exampleSentence: "Her guileless nature.", synonyms: ["Ingenuous", "naive"], antonyms: ["Crafty", "devious"] },
+  { word: "Gullible", partOfSpeech: "adj.", definition: "Easily persuaded to believe something.", exampleSentence: "Targeting gullible consumers.", synonyms: ["Naive", "trustful"], antonyms: ["Skeptical", "astute"] },
+  { word: "Hackneyed", partOfSpeech: "adj.", definition: "Lacking significance; overused.", exampleSentence: "A hackneyed slogan.", synonyms: ["Banal", "trite"], antonyms: ["Fresh", "new"] },
+  { word: "Haggard", partOfSpeech: "adj.", definition: "Looking exhausted and unwell.", exampleSentence: "He looked haggard after shifts.", synonyms: ["Gaunt", "drained"], antonyms: ["Healthy", "robust"] },
+  { word: "Halcyon", partOfSpeech: "adj.", definition: "Idyllically happy and peaceful.", exampleSentence: "Halcyon summer days.", synonyms: ["Serene", "tranquil"], antonyms: ["Chaotic", "stormy"] },
+  { word: "Hallow", partOfSpeech: "v.", definition: "To honor as holy.", exampleSentence: "We must hallow this ground.", synonyms: ["Consecrate", "sanctify"], antonyms: ["Desecrate", "curse"] },
+  { word: "Hamper", partOfSpeech: "v.", definition: "Hinder or impede movement.", exampleSentence: "Snow hampered the rescue.", synonyms: ["Block", "obstruct"], antonyms: ["Help", "facilitate"] },
+  { word: "Haphazard", partOfSpeech: "adj.", definition: "Lacking obvious organization.", exampleSentence: "Books piled in haphazard fashion.", synonyms: ["Random", "chaotic"], antonyms: ["Orderly", "planned"] },
+  { word: "Hapless", partOfSpeech: "adj.", definition: "Unfortunate.", exampleSentence: "The hapless victims.", synonyms: ["Unlucky", "cursed"], antonyms: ["Fortunate", "lucky"] },
+  { word: "Harangue", partOfSpeech: "n.", definition: "Lengthy and aggressive speech.", exampleSentence: "Manager went on a tirade.", synonyms: ["Tirade", "lecture"], antonyms: ["Praise", "whisper"] },
+  { word: "Harass", partOfSpeech: "v.", definition: "Subject to aggressive pressure.", exampleSentence: "Began to harass the family.", synonyms: ["Pester", "annoy"], antonyms: ["Comfort", "please"] },
+  { word: "Harbinger", partOfSpeech: "n.", definition: "Sign of something approaching.", exampleSentence: "Dark clouds were a harbinger.", synonyms: ["Omen", "sign"], antonyms: ["N/A"] },
+  { word: "Hardship", partOfSpeech: "n.", definition: "Severe suffering or privation.", exampleSentence: "Endured great hardship.", synonyms: ["Adversity", "plight"], antonyms: ["Comfort", "ease"] },
+  { word: "Haughty", partOfSpeech: "adj.", definition: "Arrogantly superior.", exampleSentence: "A haughty aristocrat.", synonyms: ["Conceited", "proud"], antonyms: ["Humble", "modest"] },
+  { word: "Havoc", partOfSpeech: "n.", definition: "Widespread destruction.", exampleSentence: "Storm wreaked havoc.", synonyms: ["Chaos", "ruin"], antonyms: ["Order", "peace"] },
+  { word: "Hedonist", partOfSpeech: "n.", definition: "Person who believes pleasure is most important.", exampleSentence: "As a hedonist, he spent his life traveling.", synonyms: ["Sybarite", "sensualist"], antonyms: ["Ascetic", "puritan"] },
+  { word: "Heed", partOfSpeech: "v.", definition: "Pay attention to.", exampleSentence: "You should heed warnings.", synonyms: ["Mind", "follow"], antonyms: ["Ignore", "disregard"] },
+  { word: "Heinous", partOfSpeech: "adj.", definition: "Utterly wicked or abominable.", exampleSentence: "A heinous crime.", synonyms: ["Atrocious", "odious"], antonyms: ["Noble", "good"] },
+  { word: "Heresy", partOfSpeech: "n.", definition: "Belief contrary to orthodox doctrine.", exampleSentence: "Revolving Earth was once heresy.", synonyms: ["Dissension"], antonyms: ["Orthodoxy"] },
+  { word: "Hermetic", partOfSpeech: "adj.", definition: "Airtight; insulated from influence.", exampleSentence: "A hermetic seal.", synonyms: ["Sealed", "reclusive"], antonyms: ["Open", "exposed"] },
+  { word: "Hermit", partOfSpeech: "n.", definition: "Person living in solitude.", exampleSentence: "Hermit lived in a cabin.", synonyms: ["Recluse", "solitary"], antonyms: ["Socialite", "extrovert"] },
+  { word: "Hierarchy", partOfSpeech: "n.", definition: "System of ranking members.", exampleSentence: "Hierarchy within the military.", synonyms: ["Ranking", "order"], antonyms: ["Chaos", "equality"] },
+  { word: "Hinder", partOfSpeech: "v.", definition: "To create difficulties for someone.", exampleSentence: "Traffic will hinder progress.", synonyms: ["Hamper", "impede"], antonyms: ["Help", "assist"] },
+  { word: "Histrionic", partOfSpeech: "adj.", definition: "Overly theatrical.", exampleSentence: "Histrionic outbursts.", synonyms: ["Melodramatic", "stagy"], antonyms: ["Understated"] },
+  { word: "Hoard", partOfSpeech: "v.", definition: "Amass money and hide it away.", exampleSentence: "Hoard supplies for emergency.", synonyms: ["Accumulate", "save"], antonyms: ["Spend", "waste"] },
+  { word: "Homogeneous", partOfSpeech: "adj.", definition: "Of the same kind; alike.", exampleSentence: "Population was very homogeneous.", synonyms: ["Uniform", "identical"], antonyms: ["Diverse", "varied"] },
+  { word: "Hostile", partOfSpeech: "adj.", definition: "Unfriendly; antagonistic.", exampleSentence: "A hostile environment.", synonyms: ["Aggressive", "cold"], antonyms: ["Friendly", "warm"] },
+  { word: "Humane", partOfSpeech: "adj.", definition: "Showing compassion or benevolence.", exampleSentence: "Humane treatment for animals.", synonyms: ["Kind", "compassionate"], antonyms: ["Cruel", "brutal"] },
+  { word: "Humble", partOfSpeech: "adj.", definition: "Showing modest estimate of oneself.", exampleSentence: "He remained a humble man.", synonyms: ["Modest", "lowly"], antonyms: ["Arrogant", "proud"] },
+  { word: "Humiliate", partOfSpeech: "v.", definition: "To make someone feel ashamed.", exampleSentence: "Did not mean to humiliate him.", synonyms: ["Shame", "embarrass"], antonyms: ["Honor", "exalt"] },
+  { word: "Hypocrisy", partOfSpeech: "n.", definition: "Claiming higher standards than one has.", exampleSentence: "Criticism of others was pure hypocrisy.", synonyms: ["Deceit", "insincere"], antonyms: ["Honesty", "sincerity"] },
+  { word: "Hypothetical", partOfSpeech: "adj.", definition: "Based on or serving as hypothesis.", exampleSentence: "Let's look at a hypothetical case.", synonyms: ["Theoretical", "assumed"], antonyms: ["Real", "actual"] },
+  { word: "Iconoclast", partOfSpeech: "n.", definition: "Person attacking cherished beliefs.", exampleSentence: "Iconoclast who rejected styles.", synonyms: ["Rebel", "dissident"], antonyms: ["Conformist", "believer"] },
+  { word: "Idiosyncrasy", partOfSpeech: "n.", definition: "Mode of behavior peculiar to individual.", exampleSentence: "Wearing mismatched socks was an idiosyncrasy.", synonyms: ["Peculiarity", "quirk"], antonyms: ["Normality", "habit"] },
+  { word: "Ignominious", partOfSpeech: "adj.", definition: "Deserving public disgrace.", exampleSentence: "An ignominious defeat.", synonyms: ["Shameful", "disgraceful"], antonyms: ["Glorious", "honorable"] },
+  { word: "Illicit", partOfSpeech: "adj.", definition: "Forbidden by law or custom.", exampleSentence: "Large supply of illicit drugs.", synonyms: ["Illegal", "forbidden"], antonyms: ["Legal", "lawful"] },
+  { word: "Illusion", partOfSpeech: "n.", definition: "Wrongly perceived by the senses.", exampleSentence: "Oasis was just an illusion.", synonyms: ["Delusion", "mirage"], antonyms: ["Reality", "fact"] },
+  { word: "Immaculate", partOfSpeech: "adj.", definition: "Perfectly clean or tidy.", exampleSentence: "An immaculate kitchen.", synonyms: ["Pristine", "spotless"], antonyms: ["Dirty", "filthy"] },
+  { word: "Imminent", partOfSpeech: "adj.", definition: "About to happen.", exampleSentence: "Storm was imminent.", synonyms: ["Impending", "near"], antonyms: ["Distant", "remote"] },
+  { word: "Immutable", partOfSpeech: "adj.", definition: "Unchanging over time.", exampleSentence: "Laws of physics are immutable.", synonyms: ["Unchangeable", "fixed"], antonyms: ["Flexible", "variable"] },
+  { word: "Impair", partOfSpeech: "v.", definition: "To weaken or damage.", exampleSentence: "Smoking can impair lung function.", synonyms: ["Damage", "harm"], antonyms: ["Improve", "fix"] },
+  { word: "Impartial", partOfSpeech: "adj.", definition: "Treating all rivals equally.", exampleSentence: "Judge must remain impartial.", synonyms: ["Unbiased", "fair"], antonyms: ["Biased", "partial"] },
+  { word: "Impassive", partOfSpeech: "adj.", definition: "Not feeling or showing emotion.", exampleSentence: "Face remained impassive.", synonyms: ["Expressionless", "stoic"], antonyms: ["Emotional", "active"] },
+  { word: "Impeccable", partOfSpeech: "adj.", definition: "Highest standards; faultless.", exampleSentence: "He spoke with impeccable manners.", synonyms: ["Flawless", "perfect"], antonyms: ["Defective", "flawed"] },
+  { word: "Impecunious", partOfSpeech: "adj.", definition: "Having little or no money.", exampleSentence: "An impecunious student.", synonyms: ["Indigent", "poor"], antonyms: ["Wealthy", "rich"] },
+  { word: "Impede", partOfSpeech: "v.", definition: "Delay or prevent someone.", exampleSentence: "Trees will impede flow of traffic.", synonyms: ["Hinder", "block"], antonyms: ["Help", "assist"] },
+  { word: "Impediment", partOfSpeech: "n.", definition: "Hindrance or obstruction.", exampleSentence: "Lack of funding was an impediment.", synonyms: ["Barrier", "obstacle"], antonyms: ["Aid", "catalyst"] },
+  { word: "Imperative", partOfSpeech: "adj.", definition: "Of vital importance; crucial.", exampleSentence: "Imperative that you finish on time.", synonyms: ["Essential", "vital"], antonyms: ["Trivial", "optional"] },
+  { word: "Imperceptible", partOfSpeech: "adj.", definition: "Impossible to perceive.", exampleSentence: "Change was almost imperceptible.", synonyms: ["Subtle", "faint"], antonyms: ["Obvious", "clear"] },
+  { word: "Imperious", partOfSpeech: "adj.", definition: "Assuming power without justification.", exampleSentence: "An imperious gesture.", synonyms: ["Domineering", "bossy"], antonyms: ["Submissive"] },
+  { word: "Imperturable", partOfSpeech: "adj.", definition: "Unable to be upset; calm.", exampleSentence: "An imperturbable calm.", synonyms: ["Placid", "serene"], antonyms: ["Excitable", "wild"] },
+  { word: "Impervious", partOfSpeech: "adj.", definition: "Not allowing fluid to pass; unaffected.", exampleSentence: "Impervious to criticism.", synonyms: ["Unaffected", "resistant"], antonyms: ["Vulnerable"] },
+  { word: "Impetuous", partOfSpeech: "adj.", definition: "Acting quickly without thought.", exampleSentence: "An impetuous decision to buy the car.", synonyms: ["Rash", "impulsive"], antonyms: ["Cautious", "prudent"] },
+  { word: "Impetus", partOfSpeech: "n.", definition: "Force that makes something happen.", exampleSentence: "Provided the impetus for the study.", synonyms: ["Momentum", "stimulus"], antonyms: ["Hindrance", "block"] },
+  { word: "Implacable", partOfSpeech: "adj.", definition: "Unable to be placated or stopped.", exampleSentence: "An implacable enemy.", synonyms: ["Unyielding", "relentless"], antonyms: ["Flexible", "kind"] },
+  { word: "Implausible", partOfSpeech: "adj.", definition: "Not seeming reasonable or probable.", exampleSentence: "An implausible account of events.", synonyms: ["Unlikely", "dubious"], antonyms: ["Believable", "likely"] },
+  { word: "Implicit", partOfSpeech: "adj.", definition: "Implied though not expressed.", exampleSentence: "There was an implicit agreement.", synonyms: ["Unspoken", "inherent"], antonyms: ["Explicit", "direct"] },
+  { word: "Implore", partOfSpeech: "v.", definition: "Beg someone earnestly.", exampleSentence: "I implore you to reconsider.", synonyms: ["Beseech", "beg"], antonyms: ["Demand", "command"] },
+  { word: "Impose", partOfSpeech: "v.", definition: "Force something to be accepted.", exampleSentence: "Impose a new tax on sugar.", synonyms: ["Enforce", "inflict"], antonyms: ["Remove", "lift"] },
+  { word: "Impoverished", partOfSpeech: "adj.", definition: "Made poor.", exampleSentence: "The war left the region impoverished.", synonyms: ["Destitute", "poor"], antonyms: ["Wealthy", "rich"] },
+  { word: "Impromptu", partOfSpeech: "adj.", definition: "Done without being planned.", exampleSentence: "An impromptu speech.", synonyms: ["Spontaneous", "extempore"], antonyms: ["Planned", "rehearsed"] },
+  { word: "Imprudent", partOfSpeech: "adj.", definition: "Not showing care for consequences.", exampleSentence: "Imprudent to leave keys in car.", synonyms: ["Unwise", "reckless"], antonyms: ["Prudent", "wise"] },
+  { word: "Impudence", partOfSpeech: "n.", definition: "Quality of being impudent.", exampleSentence: "Punished for impudence toward teacher.", synonyms: ["Insolence", "nerve"], antonyms: ["Respect", "modesty"] },
+  { word: "Impugn", partOfSpeech: "v.", definition: "Dispute the truth or validity.", exampleSentence: "Impugn the integrity of the witness.", synonyms: ["Challenge", "question"], antonyms: ["Support", "validate"] },
+  { word: "Impute", partOfSpeech: "v.", definition: "Attribute or credit to.", exampleSentence: "Often impute bad motives to rivals.", synonyms: ["Assign", "credit"], antonyms: ["Deny", "withdraw"] },
+  { word: "Inadvertent", partOfSpeech: "adj.", definition: "Not resulting from deliberate planning.", exampleSentence: "The deletion was purely inadvertent.", synonyms: ["Accidental", "unintentional"], antonyms: ["Deliberate", "planned"] },
+  { word: "Inane", partOfSpeech: "adj.", definition: "Silly; stupid.", exampleSentence: "Inane chatter.", synonyms: ["Fatuous", "asinine"], antonyms: ["Intelligent", "wise"] },
+  { word: "Inarticulate", partOfSpeech: "adj.", definition: "Unable to speak distinctly.", exampleSentence: "Inarticulate with rage.", synonyms: ["Tongue-tied", "muffled"], antonyms: ["Eloquent", "clear"] },
+  { word: "Inaugurate", partOfSpeech: "v.", definition: "Begin or introduce a system.", exampleSentence: "Inaugurate the new park.", synonyms: ["Initiate", "start"], antonyms: ["End", "conclude"] },
+  { word: "Incense", partOfSpeech: "v.", definition: "To make very angry.", exampleSentence: "Tax hike will incense the public.", synonyms: ["Enrage", "infuriate"], antonyms: ["Calm", "please"] },
+  { word: "Incessant", partOfSpeech: "adj.", definition: "Continuing without pause.", exampleSentence: "Incessant rain caused flooding.", synonyms: ["Constant", "endless"], antonyms: ["Intermittent", "brief"] },
+  { word: "Inchoate", partOfSpeech: "adj.", definition: "Just begun; not fully formed.", exampleSentence: "An inchoate plan.", synonyms: ["Nascent", "embryonic"], antonyms: ["Mature", "finished"] },
+  { word: "Incipient", partOfSpeech: "adj.", definition: "Beginning to happen or develop.", exampleSentence: "Incipient signs of a cold.", synonyms: ["Nascent", "starting"], antonyms: ["Final", "mature"] },
+  { word: "Incisive", partOfSpeech: "adj.", definition: "Intelligently analytical and clear-thinking.", exampleSentence: "Incisive review cut through hype.", synonyms: ["Sharp", "keen"], antonyms: ["Dull", "vague"] },
+  { word: "Incite", partOfSpeech: "v.", definition: "Encourage or stir up behavior.", exampleSentence: "Incite the crowd to riot.", synonyms: ["Provoke", "instigate"], antonyms: ["Suppress", "calm"] },
+  { word: "Inclined", partOfSpeech: "adj.", definition: "Leaning or turning away.", exampleSentence: "Inclined to believe he is telling truth.", synonyms: ["Disposed", "prone"], antonyms: ["Unwilling", "averse"] },
+  { word: "Incoherent", partOfSpeech: "adj.", definition: "Expressed in confusing way.", exampleSentence: "Patient was incoherent.", synonyms: ["Confused", "muddled"], antonyms: ["Coherent", "clear"] },
+  { word: "Incompatible", partOfSpeech: "adj.", definition: "So opposed as to be unable to coexist.", exampleSentence: "Personalities were incompatible.", synonyms: ["Conflicting", "clashing"], antonyms: ["Harmonious", "matching"] },
+  { word: "Incongruous", partOfSpeech: "adj.", definition: "Not in harmony or keeping with.", exampleSentence: "Modern skyscraper looked incongruous.", synonyms: ["Out of place"], antonyms: ["Harmonious"] },
+  { word: "Inconspicuous", partOfSpeech: "adj.", definition: "Not clearly visible or attracting attention.", exampleSentence: "Remain inconspicuous in back of room.", synonyms: ["Unobtrusive", "hidden"], antonyms: ["Conspicuous", "obvious"] },
+  { word: "Incorrigible", partOfSpeech: "adj.", definition: "Not able to be corrected or reformed.", exampleSentence: "He is an incorrigible liar.", synonyms: ["Habitual", "incurable"], antonyms: ["Reformable", "good"] },
+  { word: "Incredulous", partOfSpeech: "adj.", definition: "Unwilling or unable to believe.", exampleSentence: "She gave an incredulous look.", synonyms: ["Skeptical", "doubtful"], antonyms: ["Trusting", "gullible"] },
+  { word: "Incriminate", partOfSpeech: "v.", definition: "Make someone appear guilty.", exampleSentence: "Refused to say anything that might incriminate.", synonyms: ["Indict", "blame"], antonyms: ["Exonerate", "clear"] },
+  { word: "Indefatigable", partOfSpeech: "adj.", definition: "Persisting tirelessly.", exampleSentence: "An indefatigable worker.", synonyms: ["Unflagging", "tireless"], antonyms: ["Lazy", "weary"] },
+  { word: "Indict", partOfSpeech: "v.", definition: "Formally accuse of serious crime.", exampleSentence: "Grand jury voted to indict.", synonyms: ["Accuse", "charge"], antonyms: ["Acquit", "clear"] },
+  { word: "Indifferent", partOfSpeech: "adj.", definition: "Having no interest or sympathy.", exampleSentence: "Indifferent to outcome of game.", synonyms: ["Apathetic", "neutral"], antonyms: ["Passionate", "concerned"] },
+  { word: "Indigenous", partOfSpeech: "adj.", definition: "Originating naturally in a place.", exampleSentence: "Kangaroo is indigenous to Australia.", synonyms: ["Native", "local"], antonyms: ["Foreign", "alien"] },
+  { word: "Indigent", partOfSpeech: "adj.", definition: "Poor; needy.", exampleSentence: "Help for the indigent families.", synonyms: ["Destitute", "penurious"], antonyms: ["Wealthy", "rich"] },
+  { word: "Indignant", partOfSpeech: "adj.", definition: "Anger at what is perceived as unfair.", exampleSentence: "Indignant at the suggestion he cheated.", synonyms: ["Resentful", "angry"], antonyms: ["Pleased", "calm"] },
+  { word: "Indiscretions", partOfSpeech: "n.", definition: "Behavior that is improper.", exampleSentence: "Indiscretions of youth.", synonyms: ["Impropriety"], antonyms: ["Proper"] },
+  { word: "Indolent", partOfSpeech: "adj.", definition: "Wanting to avoid activity; lazy.", exampleSentence: "The indolent cat spent all afternoon napping.", synonyms: ["Lazy", "slothful"], antonyms: ["Diligent", "active"] },
+  { word: "Indulge", partOfSpeech: "v.", definition: "Allow oneself to enjoy pleasure of.", exampleSentence: "Okay to indulge in chocolate.", synonyms: ["Partake", "satisfy"], antonyms: ["Abstain", "deny"] },
+  { word: "Indurate", partOfSpeech: "v.", definition: "To harden.", exampleSentence: "Lava will indurate as it cools.", synonyms: ["Harden"], antonyms: ["Soften"] },
+  { word: "Ineffable", partOfSpeech: "adj.", definition: "Too great to be expressed.", exampleSentence: "Ineffable joy.", synonyms: ["Indescribable", "vast"], antonyms: ["Utterable", "small"] },
+  { word: "Inept", partOfSpeech: "adj.", definition: "Having or showing no skill.", exampleSentence: "He was an inept cook.", synonyms: ["Incompetent", "clumsy"], antonyms: ["Skillful", "adept"] },
+  { word: "Inevitable", partOfSpeech: "adj.", definition: "Certain to happen; unavoidable.", exampleSentence: "Death is an inevitable part of life.", synonyms: ["Unavoidable", "assured"], antonyms: ["Avoidable", "uncertain"] },
+  { word: "Infallible", partOfSpeech: "adj.", definition: "Incapable of making mistakes.", exampleSentence: "No human being is infallible.", synonyms: ["Perfect", "flawless"], antonyms: ["Fallible", "imperfect"] },
+  { word: "Infamous", partOfSpeech: "adj.", definition: "Well known for some bad quality.", exampleSentence: "He is an infamous criminal.", synonyms: ["Notorious", "villainous"], antonyms: ["Reputable", "famous"] },
+  { word: "Infer", partOfSpeech: "v.", definition: "Deduce info from evidence.", exampleSentence: "Detective was able to infer truth.", synonyms: ["Deduce", "gather"], antonyms: ["State", "declare"] },
+  { word: "Ingenuity", partOfSpeech: "n.", definition: "Quality of being clever/original.", exampleSentence: "Student showed great ingenuity.", synonyms: ["Inventiveness", "wit"], antonyms: ["Dullness", "stupidity"] },
+  { word: "Ingenuous", partOfSpeech: "adj.", definition: "Innocent and unsuspecting.", exampleSentence: "An ingenuous young man.", synonyms: ["Naive", "guileless"], antonyms: ["Devious", "crafty"] },
+  { word: "Inherent", partOfSpeech: "adj.", definition: "Existing as permanent essential attribute.", exampleSentence: "There is an inherent risk.", synonyms: ["Innate", "intrinsic"], antonyms: ["Extraneous", "added"] },
+  { word: "Inhibit", partOfSpeech: "v.", definition: "Hinder, restrain, or prevent.", exampleSentence: "Cold weather will inhibit growth.", synonyms: ["Curb", "restrain"], antonyms: ["Encourage", "help"] },
+  { word: "Inimical", partOfSpeech: "adj.", definition: "Tending to obstruct or harm.", exampleSentence: "Inimical to progress.", synonyms: ["Hostile", "harmful"], antonyms: ["Beneficial"] },
+  { word: "Innate", partOfSpeech: "adj.", definition: "Inborn; natural.", exampleSentence: "She has an innate talent for music.", synonyms: ["Congenital", "inherited"], antonyms: ["Learned", "acquired"] },
+  { word: "Innocuous", partOfSpeech: "adj.", definition: "Not harmful or offensive.", exampleSentence: "Spider looked scary but was innocuous.", synonyms: ["Harmless", "benign"], antonyms: ["Toxic", "injurious"] },
+  { word: "Innovation", partOfSpeech: "n.", definition: "A new method, idea, or product.", exampleSentence: "Bulb was a revolutionary innovation.", synonyms: ["Invention", "novelty"], antonyms: ["Tradition", "stagnation"] },
+  { word: "Inordinate", partOfSpeech: "adj.", definition: "Unusually large; excessive.", exampleSentence: "Spent an inordinate amount of time.", synonyms: ["Excessive", "undue"], antonyms: ["Moderate", "reasonable"] },
+  { word: "Inscrutable", partOfSpeech: "adj.", definition: "Impossible to understand or interpret.", exampleSentence: "Face remained inscrutable.", synonyms: ["Enigmatic", "cryptic"], antonyms: ["Transparent", "clear"] },
+  { word: "Insidious", partOfSpeech: "adj.", definition: "Proceeding in gradual subtle way with harm.", exampleSentence: "The disease is insidious.", synonyms: ["Stealthy", "treacherous"], antonyms: ["Obvious", "open"] },
+  { word: "Insight", partOfSpeech: "n.", definition: "Deep understanding of a person.", exampleSentence: "Provides a great insight into the mind.", synonyms: ["Wisdom", "perception"], antonyms: ["Ignoramce", "folly"] },
+  { word: "Insipid", partOfSpeech: "adj.", definition: "Lacking flavor or vigor.", exampleSentence: "The cafeteria's insipid soup.", synonyms: ["Bland", "dull"], antonyms: ["Savory", "exciting"] },
+  { word: "Insolent", partOfSpeech: "adj.", definition: "Rude and arrogant lack of respect.", exampleSentence: "The insolent student was sent to office.", synonyms: ["Impudent", "brazen"], antonyms: ["Polite", "courteous"] },
+  { word: "Instigate", partOfSpeech: "v.", definition: "Bring about or initiate an action.", exampleSentence: "Tried to instigate a riot.", synonyms: ["Incite", "kindle"], antonyms: ["Halt", "prevent"] },
+  { word: "Insular", partOfSpeech: "adj.", definition: "Ignorant of cultures outside own.", exampleSentence: "Because the town was so insular.", synonyms: ["Narrow-minded", "isolated"], antonyms: ["Broad-minded", "global"] },
+  { word: "Integrity", partOfSpeech: "n.", definition: "Quality of being honest.", exampleSentence: "A person of integrity always tells truth.", synonyms: ["Honesty", "probity"], antonyms: ["Deceit", "corruption"] },
+  { word: "Intelligible", partOfSpeech: "adj.", definition: "Able to be understood.", exampleSentence: "Handwriting was barely intelligible.", synonyms: ["Clear", "understandable"], antonyms: ["Unintelligible", "vague"] },
+  { word: "Intemperat", partOfSpeech: "adj.", definition: "Lack of self-control; immoderate.", exampleSentence: "Intemperate outbursts made enemies.", synonyms: ["Excessive", "wild"], antonyms: ["Moderate", "calm"] },
+  { word: "Intermittent", partOfSpeech: "adj.", definition: "Occurring at irregular intervals.", exampleSentence: "Radio signal was intermittent.", synonyms: ["Periodic", "sporadic"], antonyms: ["Continuous", "constant"] },
+  { word: "Intractable", partOfSpeech: "adj.", definition: "Hard to control or deal with.", exampleSentence: "Problem of hunger is an intractable issue.", synonyms: ["Stubborn", "unmanageable"], antonyms: ["Manageable", "compliant"] },
+  { word: "Intransige", partOfSpeech: "adj.", definition: "Unwilling to change one's view.", exampleSentence: "An intransigent stance.", synonyms: ["Stubborn", "obdurate"], antonyms: ["Pliable", "open"] },
+  { word: "Intrepid", partOfSpeech: "adj.", definition: "Fearless; adventurous.", exampleSentence: "Explorer trekked through the Amazon.", synonyms: ["Bold", "dauntless"], antonyms: ["Cowardly", "timid"] },
+  { word: "Intrinsic", partOfSpeech: "adj.", definition: "Belonging naturally; essential.", exampleSentence: "Quality is an intrinsic part of the brand.", synonyms: ["Inherent", "innate"], antonyms: ["Extrinsic", "external"] },
+  { word: "Inundate", partOfSpeech: "v.", definition: "Overwhelm someone with things.", exampleSentence: "Inundated with thousands of orders.", synonyms: ["Swamp", "flood"], antonyms: ["Drain", "underwhelm"] },
+  { word: "Invaluable", partOfSpeech: "adj.", definition: "Extremely useful; indispensable.", exampleSentence: "Help was invaluable during crisis.", synonyms: ["Priceless", "precious"], antonyms: ["Worthless", "cheap"] },
+  { word: "Inured", partOfSpeech: "adj.", definition: "Accustomed to something unpleasant.", exampleSentence: "Inured to the cold.", synonyms: ["Hardened", "toughened"], antonyms: ["Sensitive"] },
+  { word: "Invective", partOfSpeech: "n.", definition: "Insulting or highly critical language.", exampleSentence: "Speech was full of invective.", synonyms: ["Abuse", "vitriol"], antonyms: ["Praise", "flattery"] },
+  { word: "Inventory", partOfSpeech: "n.", definition: "Complete list of items in stock.", exampleSentence: "Manager took an inventory.", synonyms: ["List", "record"], antonyms: ["Chaos", "mess"] },
+  { word: "Invidious", partOfSpeech: "adj.", definition: "Likely to arouse resentment.", exampleSentence: "An invidious comparison.", synonyms: ["Hateful", "unfair"], antonyms: ["Fair", "pleasant"] },
+  { word: "Invigorate", partOfSpeech: "v.", definition: "Give strength or energy to.", exampleSentence: "Shower will invigorate you.", synonyms: ["Refresh", "energize"], antonyms: ["Tiring", "enervating"] },
+  { word: "Irascible", partOfSpeech: "adj.", definition: "Tending to be easily angered.", exampleSentence: "An irascible old man.", synonyms: ["Cantankerous", "cranky"], antonyms: ["Easygoing", "calm"] },
+  { word: "Irrelevant", partOfSpeech: "adj.", definition: "Not connected with or relevant.", exampleSentence: "His age is irrelevant to the job.", synonyms: ["Unrelated", "extraneous"], antonyms: ["Relevant", "pertinent"] },
+  { word: "Irresolute", partOfSpeech: "adj.", definition: "Showing or feeling hesitancy.", exampleSentence: "He stood irresolute at the crossroads.", synonyms: ["Indecisive", "wavering"], antonyms: ["Decisive", "firm"] },
+  { word: "Irreverent", partOfSpeech: "adj.", definition: "Lack of respect for people.", exampleSentence: "Jokes targeted everyone.", synonyms: ["Disrespectful", "cheeky"], antonyms: ["Respectful", "pious"] },
+  { word: "Itinerant", partOfSpeech: "adj.", definition: "Traveling from place to place.", exampleSentence: "He led an itinerant life.", synonyms: ["Wandering", "nomadic"], antonyms: ["Settled", "fixed"] },
+  { word: "Jaded", partOfSpeech: "adj.", definition: "Tired or bored after too much.", exampleSentence: "Jaded by years of same office.", synonyms: ["Bored", "weary"], antonyms: ["Fresh", "eager"] },
+  { word: "Jargon", partOfSpeech: "n.", definition: "Specific terminology.", exampleSentence: "Medical jargon is hard to learn.", synonyms: ["Terminology"], antonyms: ["Clear"] },
+  { word: "Jejune", partOfSpeech: "adj.", definition: "Naive and simplistic.", exampleSentence: "A jejune argument.", synonyms: ["Puerile", "shallow"], antonyms: ["Profound", "wise"] },
+  { word: "Jocund", partOfSpeech: "adj.", definition: "Cheerful and happy.", exampleSentence: "Jocund atmosphere of festival.", synonyms: ["Cheerful", "happy"], antonyms: ["Gloomy"] },
+  { word: "Jovial", partOfSpeech: "adj.", definition: "Cheerful and friendly.", exampleSentence: "A jovial host.", synonyms: ["Merry", "gleeful"], antonyms: ["Gloomy", "somber"] },
+  { word: "Judicious", partOfSpeech: "adj.", definition: "Done with good judgment.", exampleSentence: "A judicious use of funds.", synonyms: ["Wise", "prudent"], antonyms: ["Rash", "foolish"] },
+  { word: "Kindle", partOfSpeech: "v.", definition: "To light or set on fire.", exampleSentence: "Kindle a passion for science.", synonyms: ["Ignite", "spark"], antonyms: ["Extinguish", "quench"] },
+  { word: "Lachrymos", partOfSpeech: "adj.", definition: "Tearful; given to weeping.", exampleSentence: "A lachrymose drama.", synonyms: ["Mournful", "sad"], antonyms: ["Joyful", "happy"] },
+  { word: "Laconic", partOfSpeech: "adj.", definition: "Using few words.", exampleSentence: "A laconic reply.", synonyms: ["Terse", "succinct"], antonyms: ["Verbose", "wordy"] },
+  { word: "Laggard", partOfSpeech: "adj.", definition: "Lazy or sluggish.", exampleSentence: "Company was laggard in tech.", synonyms: ["Lazy", "sluggish"], antonyms: ["Leader"] },
+  { word: "Lambent", partOfSpeech: "adj.", definition: "Glowing softly.", exampleSentence: "Lambent moonlight.", synonyms: ["Radiant", "soft"], antonyms: ["Harsh", "dark"] },
+  { word: "Lament", partOfSpeech: "v.", definition: "Express passionate grief.", exampleSentence: "Lament the death of leader.", synonyms: ["Mourn", "weep"], antonyms: ["Celebrate", "rejoice"] },
+  { word: "Languid", partOfSpeech: "adj.", definition: "Disinclination for exertion.", exampleSentence: "A languid stroll.", synonyms: ["Sluggish", "relaxed"], antonyms: ["Energetic", "active"] },
+  { word: "Lascivious", partOfSpeech: "adj.", definition: "Revealing offensive desire.", exampleSentence: "A lascivious grin.", synonyms: ["Lewd", "lustful"], antonyms: ["Chaste", "pure"] },
+  { word: "Latent", partOfSpeech: "adj.", definition: "Existing but not yet developed.", exampleSentence: "He had a latent talent.", synonyms: ["Hidden", "dormant"], antonyms: ["Obvious", "active"] },
+  { word: "Laud", partOfSpeech: "v.", definition: "Praise someone highly.", exampleSentence: "Laud the movie for originality.", synonyms: ["Extol", "commend"], antonyms: ["Criticize", "condemn"] },
+  { word: "Laudable", partOfSpeech: "adj.", definition: "Deserving praise.", exampleSentence: "His efforts were laudable.", synonyms: ["Praised", "well respected"], antonyms: ["Blameworthy"] },
+  { word: "Lavish", partOfSpeech: "adj.", definition: "Sumptuously rich or luxurious.", exampleSentence: "Threw a lavish party.", synonyms: ["Opulent", "extravagant"], antonyms: ["Frugal", "meager"] },
+  { word: "Lethargic", partOfSpeech: "adj.", definition: "Sluggish and apathetic.", exampleSentence: "Felt lethargic all day.", synonyms: ["Listless", "slow"], antonyms: ["Vivacious", "fast"] },
+  { word: "Lethargy", partOfSpeech: "n.", definition: "Lack of energy/enthusiasm.", exampleSentence: "Sense of lethargy in students.", synonyms: ["Sluggishness", "apathy"], antonyms: ["Vigor", "energy"] },
+  { word: "Levity", partOfSpeech: "n.", definition: "Humor or frivolity.", exampleSentence: "A moment of levity.", synonyms: ["Flippant", "droll"], antonyms: ["Gravity", "solemn"] },
+  { word: "Limpid", partOfSpeech: "adj.", definition: "Completely clear; transparent.", exampleSentence: "Limpid pools of water.", synonyms: ["Pellucid", "lucid"], antonyms: ["Murky", "opaque"] },
+  { word: "Lithe", partOfSpeech: "adj.", definition: "Thin, supple, and graceful.", exampleSentence: "Lithe dancer moved with ease.", synonyms: ["Limber", "agile"], antonyms: ["Clumsy", "stiff"] },
+  { word: "Loathe", partOfSpeech: "v.", definition: "Feel intense dislike for.", exampleSentence: "I loathe getting up early.", synonyms: ["Detest", "abhor"], antonyms: ["Love", "admire"] },
+  { word: "Loquacious", partOfSpeech: "adj.", definition: "Talkative.", exampleSentence: "A loquacious guest.", synonyms: ["Garrulous", "voluble"], antonyms: ["Taciturn", "silent"] },
+  { word: "Lucid", partOfSpeech: "adj.", definition: "Expressed clearly; easy to understand.", exampleSentence: "A lucid account of events.", synonyms: ["Clear", "intelligible"], antonyms: ["Confusing", "vague"] },
+  { word: "Ludicrous", partOfSpeech: "adj.", definition: "So foolish as to be amusing.", exampleSentence: "Ludicrous suggestion to walk 50 miles.", synonyms: ["Absurd", "ridiculous"], antonyms: ["Sensible", "logical"] },
+  { word: "Lugubrious", partOfSpeech: "adj.", definition: "Looking or sounding sad.", exampleSentence: "Lugubrious music.", synonyms: ["Mournful", "somber"], antonyms: ["Cheerful", "gay"] },
+  { word: "Magnanimous", partOfSpeech: "adj.", definition: "Generous or forgiving.", exampleSentence: "Magnanimous in victory.", synonyms: ["Noble", "altruistic"], antonyms: ["Mean", "vengeful"] },
+  { word: "Maladroit", partOfSpeech: "adj.", definition: "Clumsy; unskillful.", exampleSentence: "Maladroit attempt to fix it.", synonyms: ["Clumsy"], antonyms: ["Skillful"] },
+  { word: "Malevolent", partOfSpeech: "adj.", definition: "Wishing to do evil to others.", exampleSentence: "A malevolent spirit.", synonyms: ["Malicious", "spiteful"], antonyms: ["Benevolent", "kind"] },
+  { word: "Malignant", partOfSpeech: "adj.", definition: "Malevolent; very infectious.", exampleSentence: "A malignant tumor.", synonyms: ["Toxic", "lethal"], antonyms: ["Benign", "safe"] },
+  { word: "Malleable", partOfSpeech: "adj.", definition: "Able to be shaped or influenced.", exampleSentence: "A malleable personality.", synonyms: ["Pliable", "soft"], antonyms: ["Rigid", "hard"] },
+  { word: "Mar", partOfSpeech: "v.", definition: "Impair the appearance of.", exampleSentence: "Scratch can mar the table.", synonyms: ["Spoil", "sullying"], antonyms: ["Beautify", "enhance"] },
+  { word: "Maudlin", partOfSpeech: "adj.", definition: "Self-pitying or sentimental.", exampleSentence: "A maudlin drunk.", synonyms: ["Mushy", "weepy"], antonyms: ["Stoic", "dry"] },
+  { word: "Maverick", partOfSpeech: "n.", definition: "Unorthodox or independent person.", exampleSentence: "A political maverick.", synonyms: ["Rebel", "individualist"], antonyms: ["Conformist", "follower"] },
+  { word: "Meander", partOfSpeech: "v.", definition: "Follow a winding course.", exampleSentence: "River meanders through valley.", synonyms: ["Roam", "amble"], antonyms: ["Rush", "direct"] },
+  { word: "Meager", partOfSpeech: "adj.", definition: "Lacking in quantity or quality.", exampleSentence: "Meager rations of water.", synonyms: ["Scanty", "sparse"], antonyms: ["Ample", "abundant"] },
+  { word: "Melancholy", partOfSpeech: "adj.", definition: "Feeling of pensive sadness.", exampleSentence: "Weather made her feel melancholy.", synonyms: ["Gloomy", "sad"], antonyms: ["Joyful", "happy"] },
+  { word: "Mellifluous", partOfSpeech: "adj.", definition: "Sweet or musical; pleasant.", exampleSentence: "A mellifluous voice.", synonyms: ["Dulcet", "melodic"], antonyms: ["Harsh", "shrill"] },
+  { word: "Mendacious", partOfSpeech: "adj.", definition: "Not telling the truth; lying.", exampleSentence: "A mendacious report.", synonyms: ["Deceitful", "false"], antonyms: ["Veracious", "true"] },
+  { word: "Mercurial", partOfSpeech: "adj.", definition: "Sudden changes of mood.", exampleSentence: "His mercurial nature.", synonyms: ["Capricious", "fickle"], antonyms: ["Stable", "steady"] },
+  { word: "Meticulous", partOfSpeech: "adj.", definition: "Great attention to detail.", exampleSentence: "Meticulous planning.", synonyms: ["Fastidious", "precise"], antonyms: ["Careless", "sloppy"] },
+  { word: "Miser", partOfSpeech: "n.", definition: "Person who hoards wealth.", exampleSentence: "Miser lived in a small room.", synonyms: ["Penny-pincher"], antonyms: ["Spendthrift"] },
+  { word: "Mitigate", partOfSpeech: "v.", definition: "Make less severe.", exampleSentence: "Mitigate effects of drought.", synonyms: ["Alleviate", "lessen"], antonyms: ["Aggravate", "worsen"] },
+  { word: "Modest", partOfSpeech: "adj.", definition: "Unassuming estimate of abilities.", exampleSentence: "Modest about his success.", synonyms: ["Humble", "plain"], antonyms: ["Arrogant", "boastful"] },
+  { word: "Mollify", partOfSpeech: "v.", definition: "Appease the anger of someone.", exampleSentence: "Mollify the angry customer.", synonyms: ["Pacify", "soothe"], antonyms: ["Enrage", "provoke"] },
+  { word: "Monotonous", partOfSpeech: "adj.", definition: "Dull, tedious, and repetitious.", exampleSentence: "Monotonous assembly job.", synonyms: ["Boring", "unvarying"], antonyms: ["Exciting", "varied"] },
+  { word: "Mordant", partOfSpeech: "adj.", definition: "Sharp, critical humor.", exampleSentence: "Mordant wit.", synonyms: ["Acerbic", "caustic"], antonyms: ["Kind", "gentle"] },
+  { word: "Morose", partOfSpeech: "adj.", definition: "Sullen and ill-tempered.", exampleSentence: "A morose teenager.", synonyms: ["Gloomy", "moody"], antonyms: ["Cheerful", "happy"] },
+  { word: "Mundane", partOfSpeech: "adj.", definition: "Lacking interest; dull.", exampleSentence: "Mundane daily chores.", synonyms: ["Humdrum", "prosaic"], antonyms: ["Extraordinary", "exotic"] },
+  { word: "Munificent", partOfSpeech: "adj.", definition: "More generous than usual.", exampleSentence: "A munificent donor.", synonyms: ["Magnanimous", "lavish"], antonyms: ["Stingy", "greedy"] },
+  { word: "Myopic", partOfSpeech: "adj.", definition: "Nearsighted; lacking foresight.", exampleSentence: "A myopic strategy.", synonyms: ["Narrow-minded"], antonyms: ["Far-sighted"] },
+  { word: "Naïve", partOfSpeech: "adj.", definition: "Lack of experience/judgment.", exampleSentence: "Naïve of him to believe.", synonyms: ["Trusting", "innocent"], antonyms: ["Sophisticated", "cynical"] },
+  { word: "Nascent", partOfSpeech: "adj.", definition: "Just coming into existence.", exampleSentence: "A nascent industry.", synonyms: ["Incipient", "budding"], antonyms: ["Dying", "mature"] },
+  { word: "Nebulous", partOfSpeech: "adj.", definition: "Form of a cloud; hazy.", exampleSentence: "His plans were nebulous.", synonyms: ["Vague", "unclear"], antonyms: ["Clear", "distinct"] },
+  { word: "Nefarious", partOfSpeech: "adj.", definition: "Wicked or criminal.", exampleSentence: "Nefarious activities of hackers.", synonyms: ["Villainous", "evil"], antonyms: ["Virtuous", "noble"] },
+  { word: "Negligent", partOfSpeech: "adj.", definition: "Failing to take proper care.", exampleSentence: "Negligent driver caused accident.", synonyms: ["Careless", "slack"], antonyms: ["Careful", "diligent"] },
+  { word: "Nimble", partOfSpeech: "adj.", definition: "Quick and light in movement.", exampleSentence: "Nimble enough to avoid rocks.", synonyms: ["Agile", "lithe"], antonyms: ["Clumsy", "stiff"] },
+  { word: "Nomadic", partOfSpeech: "adj.", definition: "Living the life of a nomad.", exampleSentence: "Nomadic tribe moved.", synonyms: ["Wandering", "itinerant"], antonyms: ["Settled", "fixed"] },
+  { word: "Nominal", partOfSpeech: "adj.", definition: "Existing in name only.", exampleSentence: "A nominal fee.", synonyms: ["Minimal", "token"], antonyms: ["Large", "actual"] },
+  { word: "Nonchalant", partOfSpeech: "adj.", definition: "Casually calm and relaxed.", exampleSentence: "Quarterback remained nonchalant.", synonyms: ["Unconcerned", "aloof"], antonyms: ["Anxious", "concerned"] },
+  { word: "Nostalgia", partOfSpeech: "n.", definition: "Sentimental longing for past.", exampleSentence: "Filled him with nostalgia.", synonyms: ["Reminiscence"], antonyms: ["Anticipation"] },
+  { word: "Notorious", partOfSpeech: "adj.", definition: "Famous for bad quality.", exampleSentence: "Notorious gambler.", synonyms: ["Infamous", "ill-famed"], antonyms: ["Reputable", "unknown"] },
+  { word: "Novel", partOfSpeech: "adj.", definition: "New or unusual in interesting way.", exampleSentence: "A novel solution to energy.", synonyms: ["Innovative", "fresh"], antonyms: ["Trite", "commonplace"] },
+  { word: "Novice", partOfSpeech: "n.", definition: "Person new to a job.", exampleSentence: "As a novice in kitchen.", synonyms: ["Beginner", "amateur"], antonyms: ["Expert", "veteran"] },
+  { word: "Noxious", partOfSpeech: "adj.", definition: "Harmful or poisonous.", exampleSentence: "Noxious fumes from factory.", synonyms: ["Toxic", "harmful"], antonyms: ["Wholesome", "safe"] },
+  { word: "Obdurate", partOfSpeech: "adj.", definition: "Stubbornly refusing to change.", exampleSentence: "Obdurate in his belief.", synonyms: ["Intransigent", "rigid"], antonyms: ["Pliable", "soft"] },
+  { word: "Objective", partOfSpeech: "adj.", definition: "Not influenced by personal feelings.", exampleSentence: "Remain objective during experiments.", synonyms: ["Unbiased", "fair"], antonyms: ["Subjective", "biased"] },
+  { word: "Obliterate", partOfSpeech: "v.", definition: "Destroy utterly; wipe out.", exampleSentence: "Snowfall threatened to obliterate trail.", synonyms: ["Eradicate", "annihilate"], antonyms: ["Create", "build"] },
+  { word: "Obscure", partOfSpeech: "adj.", definition: "Not discovered or known.", exampleSentence: "Origins remain obscure.", synonyms: ["Vague", "unknown"], antonyms: ["Clear", "famous"] },
+  { word: "Obsequious", partOfSpeech: "adj.", definition: "Obedient or attentive degree.", exampleSentence: "The obsequious waiter.", synonyms: ["Servile", "fawning"], antonyms: ["Assertive", "arrogant"] },
+  { word: "Obstinate", partOfSpeech: "adj.", definition: "Stubbornly refusing to change.", exampleSentence: "Obstinate man never admitted wrong.", synonyms: ["Stubborn", "headstrong"], antonyms: ["Compliant", "docile"] },
+  { word: "Obtuse", partOfSpeech: "adj.", definition: "Annoyingly insensitive.", exampleSentence: "He was being obtuse.", synonyms: ["Dull", "stupid"], antonyms: ["Sharp", "bright"] },
+  { word: "Obviate", partOfSpeech: "v.", definition: "To remove (a need or difficulty).", exampleSentence: "May obviate the need for surgery.", synonyms: ["Preclude", "prevent"], antonyms: ["Require", "necessitate"] },
+  { word: "Ominous", partOfSpeech: "adj.", definition: "Something bad will happen.", exampleSentence: "Ominous dark clouds.", synonyms: ["Threatening", "sinister"], antonyms: ["Promising", "hopeful"] },
+  { word: "Omniscient", partOfSpeech: "adj.", definition: "Knowing everything.", exampleSentence: "The narrator is omniscient.", synonyms: ["All-knowing", "wise"], antonyms: ["Ignorant", "limited"] },
+  { word: "Onerous", partOfSpeech: "adj.", definition: "Burdensome duty.", exampleSentence: "An onerous task.", synonyms: ["Arduous", "heavy"], antonyms: ["Easy", "light"] },
+  { word: "Opaque", partOfSpeech: "adj.", definition: "Not able to be seen through.", exampleSentence: "Opaque windows.", synonyms: ["Murky", "blurred"], antonyms: ["Transparent", "clear"] },
+  { word: "Opportunist", partOfSpeech: "n.", definition: "Takes advantage regardless of morals.", exampleSentence: "Opportunist bought all water.", synonyms: ["Exploiter"], antonyms: ["Idealist"] },
+  { word: "Opprobrious", partOfSpeech: "adj.", definition: "Expressing scorn or criticism.", exampleSentence: "Opprobrious language.", synonyms: ["Abusive", "vitriolic"], antonyms: ["Laudatory"] },
+  { word: "Opulence", partOfSpeech: "n.", definition: "Great wealth or luxury.", exampleSentence: "Opulence of the palace.", synonyms: ["Affluence", "luxury"], antonyms: ["Poverty", "penury"] },
+  { word: "Opulent", partOfSpeech: "adj.", definition: "Rich and luxurious.", exampleSentence: "Lived in an opulent palace.", synonyms: ["Lavish", "wealthy"], antonyms: ["Poor", "destitute"] },
+  { word: "Ornate", partOfSpeech: "adj.", definition: "Intricate shape or decorated.", exampleSentence: "Ornate gold frame.", synonyms: ["Elaborate", "florid"], antonyms: ["Plain", "simple"] },
+  { word: "Oscillating", partOfSpeech: "adj.", definition: "Moving back and forth.", exampleSentence: "An oscillating fan.", synonyms: ["Swaying", "wavering"], antonyms: ["Fixed", "still"] },
+  { word: "Ostentatious", partOfSpeech: "adj.", definition: "Designed to impress/attract notice.", exampleSentence: "Ostentatious gold car.", synonyms: ["Showy", "flashy"], antonyms: ["Modest", "plain"] },
+  { word: "Quandary", partOfSpeech: "n.", definition: "State of perplexity/uncertainty.", exampleSentence: "He was in a quandary.", synonyms: ["Dilemma", "predicament"], antonyms: ["Resolution", "certainty"] },
+  { word: "Quell", partOfSpeech: "v.", definition: "Put an end to by force.", exampleSentence: "Stepped in to quell the argument.", synonyms: ["Subdue", "suppress"], antonyms: ["Incite", "inflame"] },
+  { word: "Querulous", partOfSpeech: "adj.", definition: "Complaining in petulant way.", exampleSentence: "The querulous passengers.", synonyms: ["Peevish", "grumbling"], antonyms: ["Content", "cheerful"] },
+  { word: "Quiescent", partOfSpeech: "adj.", definition: "State of inactivity/dormancy.", exampleSentence: "Factory remained quiescent.", synonyms: ["Dormant", "latent"], antonyms: ["Active", "vibrant"] },
+  { word: "Quixotic", partOfSpeech: "adj.", definition: "Exceedingly idealistic; impractical.", exampleSentence: "Quixotic attempt to change world.", synonyms: ["Visionary", "starry-eyed"], antonyms: ["Practical", "real"] },
+  { word: "Rancor", partOfSpeech: "n.", definition: "Bitterness or resentfulness.", exampleSentence: "Speak without any rancor.", synonyms: ["Malice", "enmity"], antonyms: ["Amity", "goodwill"] },
+  { word: "Rancorous", partOfSpeech: "adj.", definition: "Characterized by bitterness.", exampleSentence: "A rancorous debate.", synonyms: ["Bitter", "spiteful"], antonyms: ["Amicable", "kind"] },
+  { word: "Rapacious", partOfSpeech: "adj.", definition: "Aggressively greedy.", exampleSentence: "Rapacious landlords.", synonyms: ["Avaricious", "greedy"], antonyms: ["Generous", "kind"] },
+  { word: "Raucous", partOfSpeech: "adj.", definition: "Harsh and loud noise.", exampleSentence: "Raucous laughter.", synonyms: ["Strident", "piercing"], antonyms: ["Soft", "quiet"] },
+  { word: "Rebuttal", partOfSpeech: "n.", definition: "Refutation or contradiction.", exampleSentence: "Rebuttal weakened testimony.", synonyms: ["Refutation", "denial"], antonyms: ["Confirmation"] },
+  { word: "Recant", partOfSpeech: "v.", definition: "Say one no longer holds belief.", exampleSentence: "Scientist forced to recant.", synonyms: ["Retract", "renounce"], antonyms: ["Affirm", "assert"] },
+  { word: "Recluse", partOfSpeech: "n.", definition: "Person living solitary life.", exampleSentence: "Author became a recluse.", synonyms: ["Hermit", "solitary"], antonyms: ["Socialite", "extrovert"] },
+  { word: "Recondite", partOfSpeech: "adj.", definition: "Little known; abstruse.", exampleSentence: "Recondite facts.", synonyms: ["Obscure", "complex"], antonyms: ["Simple", "known"] },
+  { word: "Rectify", partOfSpeech: "v.", definition: "Put something right; correct.", exampleSentence: "Rectify the error.", synonyms: ["Remedy", "amend"], antonyms: ["Corrupt", "worsen"] },
+  { word: "Redoubtable", partOfSpeech: "adj.", definition: "Formidable; opponent.", exampleSentence: "A redoubtable foe.", synonyms: ["Fearsome", "daunting"], antonyms: ["Weak", "easy"] },
+  { word: "Redundant", partOfSpeech: "adj.", definition: "Not or no longer needed.", exampleSentence: "Word is redundant.", synonyms: ["Superfluous", "repetitive"], antonyms: ["Essential", "concise"] },
+  { word: "Refine", partOfSpeech: "v.", definition: "Remove impurities.", exampleSentence: "Refine the oil.", synonyms: ["Purify", "filter"], antonyms: ["Pollute", "dirty"] },
+  { word: "Refractory", partOfSpeech: "adj.", definition: "Stubborn or unmanageable.", exampleSentence: "A refractory horse.", synonyms: ["Obstinate", "unruly"], antonyms: ["Docile", "mild"] },
+  { word: "Refrain", partOfSpeech: "v.", definition: "Stop oneself from doing.", exampleSentence: "Refrain from smoking.", synonyms: ["Abstain", "desist"], antonyms: ["Indulge", "continue"] },
+  { word: "Refute", partOfSpeech: "v.", definition: "Prove statement wrong.", exampleSentence: "Refute allegations with evidence.", synonyms: ["Disprove", "deny"], antonyms: ["Prove", "confirm"] },
+  { word: "Reiterate", partOfSpeech: "v.", definition: "Say something again.", exampleSentence: "Reiterate instructions.", synonyms: ["Repeat", "restate"], antonyms: ["Ignore", "cancel"] },
+  { word: "Relegate", partOfSpeech: "v.", definition: "Dismiss to inferior rank.", exampleSentence: "Relegated to position of sailor.", synonyms: ["Downgrade", "demote"], antonyms: ["Promote", "upgrade"] },
+  { word: "Relevant", partOfSpeech: "adj.", definition: "Closely connected.", exampleSentence: "Information relevant to case.", synonyms: ["Pertinent", "related"], antonyms: ["Irrelevant", "apart"] },
+  { word: "Reluctant", partOfSpeech: "adj.", definition: "Unwilling and hesitant.", exampleSentence: "Reluctant to leave chair.", synonyms: ["Unwilling", "averse"], antonyms: ["Eager", "willing"] },
+  { word: "Remiss", partOfSpeech: "adj.", definition: "Lacking care or attention.", exampleSentence: "Remiss in his job.", synonyms: ["Negligent", "lax"], antonyms: ["Diligent", "careful"] },
+  { word: "Remorse", partOfSpeech: "n.", definition: "Deep regret for wrong.", exampleSentence: "Showed no remorse.", synonyms: ["Guilt", "contrition"], antonyms: ["Pride", "indifference"] },
+  { word: "Renounce", partOfSpeech: "v.", definition: "Declare abandonment of claim.", exampleSentence: "Renounce his citizenship.", synonyms: ["Abjure", "forsake"], antonyms: ["Claim", "uphold"] },
+  { word: "Replenish", partOfSpeech: "v.", definition: "Fill something up again.", exampleSentence: "Replenish our food supplies.", synonyms: ["Refill", "restore"], antonyms: ["Empty", "deplete"] },
+  { word: "Reprehensible", partOfSpeech: "adj.", definition: "Deserving censure.", exampleSentence: "Truly reprehensible conduct.", synonyms: ["Deplorable", "bad"], antonyms: ["Admirable", "good"] },
+  { word: "Reprimand", partOfSpeech: "v.", definition: "Rebuke someone officially.", exampleSentence: "Reprimanded for conduct.", synonyms: ["Scold", "censure"], antonyms: ["Praise", "commend"] },
+  { word: "Reproach", partOfSpeech: "v.", definition: "Address in way expressing disapproval.", exampleSentence: "Didn't mean to reproach him.", synonyms: ["Chide", "scold"], antonyms: ["Applaud", "flatter"] },
+  { word: "Reprove", partOfSpeech: "v.", definition: "Reprimand or censure.", exampleSentence: "Reproved students for lack of prep.", synonyms: ["Scold", "reproach"], antonyms: ["Applaud", "laud"] },
+  { word: "Repudiate", partOfSpeech: "v.", definition: "Refuse to accept.", exampleSentence: "Repudiate claims of rival.", synonyms: ["Reject", "disown"], antonyms: ["Accept", "ratify"] },
+  { word: "Resilient", partOfSpeech: "adj.", definition: "Withstand or recover quickly.", exampleSentence: "City was resilient after fire.", synonyms: ["Tough", "bouncy"], antonyms: ["Fragile", "weak"] },
+  { word: "Resolute", partOfSpeech: "adj.", definition: "Purposeful and unwavering.", exampleSentence: "Resolute in decision to finish.", synonyms: ["Determined", "firm"], antonyms: ["Wavering", "weak"] },
+  { word: "Respite", partOfSpeech: "n.", definition: "Short period of rest.", exampleSentence: "Respite from intense heat.", synonyms: ["Rest", "break"], antonyms: ["N/A"] },
+  { word: "Restrain", partOfSpeech: "v.", definition: "Prevent someone from doing.", exampleSentence: "Restrain the angry crowd.", synonyms: ["Curb", "inhibit"], antonyms: ["Release", "free"] },
+  { word: "Restrict", partOfSpeech: "v.", definition: "Put limit on; keep under control.", exampleSentence: "Restrict sale of alcohol.", synonyms: ["Limit", "confine"], antonyms: ["Allow", "permit"] },
+  { word: "Reticent", partOfSpeech: "adj.", definition: "Not revealing thoughts readily.", exampleSentence: "Reticent about her past.", synonyms: ["Reserved", "quiet"], antonyms: ["Outspoken", "bold"] },
+  { word: "Revere", partOfSpeech: "v.", definition: "Feel deep respect for.", exampleSentence: "Revere old leader for wisdom.", synonyms: ["Admire", "venerate"], antonyms: ["Despise", "scorn"] },
+  { word: "Rhetoric", partOfSpeech: "n.", definition: "Art of effective speaking.", exampleSentence: "Rhetoric failed to convince.", synonyms: ["Eloquence", "oratory"], antonyms: ["Silence", "truth"] },
+  { word: "Robust", partOfSpeech: "adj.", definition: "Strong and healthy; vigorous.", exampleSentence: "Still robust at age 90.", synonyms: ["Strong", "sturdy"], antonyms: ["Weak", "frail"] },
+  { word: "Rudimentary", partOfSpeech: "adj.", definition: "Limited to basic principles.", exampleSentence: "Rudimentary knowledge of subject.", synonyms: ["Basic", "simple"], antonyms: ["Advanced", "complex"] },
+  { word: "Sagacity", partOfSpeech: "n.", definition: "Quality of being sagacious.", exampleSentence: "Judge respected for sagacity.", synonyms: ["Wisdom", "insight"], antonyms: ["Folly", "stupidity"] },
+  { word: "Salient", partOfSpeech: "adj.", definition: "Most noticeable or important.", exampleSentence: "Summarized salient points.", synonyms: ["Prominent", "main"], antonyms: ["Trivial", "minor"] },
+  { word: "Sanction", partOfSpeech: "n.", definition: "Penalty for disobeying law.", exampleSentence: "Faced international sanction.", synonyms: ["Penalty", "ban"], antonyms: ["Approval", "reward"] },
+  { word: "Sanguine", partOfSpeech: "adj.", definition: "Optimistic or positive.", exampleSentence: "Sanguine about future.", synonyms: ["Bullish", "hopeful"], antonyms: ["Pessimistic"] },
+  { word: "Sardonic", partOfSpeech: "adj.", definition: "Grimly mocking or cynical.", exampleSentence: "A sardonic smile.", synonyms: ["Scornful", "snide"], antonyms: ["Kind", "sincere"] },
+  { word: "Satiate", partOfSpeech: "v.", definition: "Satisfy desire/appetite.", exampleSentence: "Ate until he was satiated.", synonyms: ["Satisfy", "fill"], antonyms: ["Starve", "lack"] },
+  { word: "Scanty", partOfSpeech: "adj.", definition: "Insufficient in quantity.", exampleSentence: "Evidence was scanty.", synonyms: ["Meager", "sparse"], antonyms: ["Abundant", "ample"] },
+  { word: "Scarcity", partOfSpeech: "n.", definition: "State of being scarce.", exampleSentence: "Scarcity of clean water.", synonyms: ["Dearth", "lack"], antonyms: ["Abundance", "surplus"] },
+  { word: "Scrupulous", partOfSpeech: "adj.", definition: "Diligent, thorough and attentive.", exampleSentence: "Scrupulous honesty.", synonyms: ["Meticulous", "honest"], antonyms: ["Dishonest", "lax"] },
+  { word: "Scrutiny", partOfSpeech: "n.", definition: "Critical observation.", exampleSentence: "Records under close scrutiny.", synonyms: ["Inspection", "audit"], antonyms: ["Neglect", "disregard"] },
+  { word: "Sedentary", partOfSpeech: "adj.", definition: "Much time seated; inactive.", exampleSentence: "Lived a sedentary life.", synonyms: ["Inactive", "idle"], antonyms: ["Active", "energetic"] },
+  { word: "Sedulous", partOfSpeech: "adj.", definition: "Showing dedication/diligence.", exampleSentence: "A sedulous student.", synonyms: ["Assiduous", "careful"], antonyms: ["Idle", "lazy"] },
+  { word: "Serendipity", partOfSpeech: "n.", definition: "Events by chance in happy way.", exampleSentence: "Moment of pure serendipity.", synonyms: ["Chance"], antonyms: ["N/A"] },
+  { word: "Serene", partOfSpeech: "adj.", definition: "Calm, peaceful, untroubled.", exampleSentence: "View of lake was serene.", synonyms: ["Placid", "quiet"], antonyms: ["Turbulent", "wild"] },
+  { word: "Servile", partOfSpeech: "adj.", definition: "Excessive willingness to serve.", exampleSentence: "Gave a servile bow.", synonyms: ["Submissive", "fawning"], antonyms: ["Arrogant", "haughty"] },
+  { word: "Shrewd", partOfSpeech: "adj.", definition: "Sharp powers of judgment.", exampleSentence: "Shrewd businessman.", synonyms: ["Astute", "sharp"], antonyms: ["Naive", "foolish"] },
+  { word: "Skepticism", partOfSpeech: "n.", definition: "Skeptical attitude; doubt.", exampleSentence: "Viewed claims with skepticism.", synonyms: ["Doubt", "disbelief"], antonyms: ["Trust", "belief"] },
+  { word: "Slander", partOfSpeech: "n.", definition: "Crime of making false statement.", exampleSentence: "Sued for slander.", synonyms: ["Defamation", "libel"], antonyms: ["Praise", "honor"] },
+  { word: "Slovenly", partOfSpeech: "adj.", definition: "Untidy and dirty.", exampleSentence: "Slovenly appearance.", synonyms: ["Messy", "scruffy"], antonyms: ["Immaculate", "neat"] },
+  { word: "Sluggish", partOfSpeech: "adj.", definition: "Slow-moving or inactive.", exampleSentence: "Felt sluggish after meal.", synonyms: ["Lethargic", "slow"], antonyms: ["Fast", "active"] },
+  { word: "Smite", partOfSpeech: "v.", definition: "To strike with firm blow.", exampleSentence: "Hero would smite the dragon.", synonyms: ["Strike"], antonyms: ["N/A"] },
+  { word: "Smug", partOfSpeech: "adj.", definition: "Excessive pride in oneself.", exampleSentence: "Smug look after winning.", synonyms: ["Complacent", "proud"], antonyms: ["Humble", "modest"] },
+  { word: "Solace", partOfSpeech: "n.", definition: "Comfort in time of distress.", exampleSentence: "Found solace in reading.", synonyms: ["Comfort", "relief"], antonyms: ["Distress", "pain"] },
+  { word: "Solitary", partOfSpeech: "adj.", definition: "Done or existing alone.", exampleSentence: "Solitary life in cabin.", synonyms: ["Reclusive", "alone"], antonyms: ["Social", "public"] },
+  { word: "Soporific", partOfSpeech: "adj.", definition: "Tending to induce sleep.", exampleSentence: "A soporific speech.", synonyms: ["Sedative", "boring"], antonyms: ["Stimulating"] },
+  { word: "Sovereign", partOfSpeech: "n.", definition: "Supreme ruler; monarch.", exampleSentence: "Sovereign issued a decree.", synonyms: ["Ruler", "king"], antonyms: ["Servant", "subject"] },
+  { word: "Sparse", partOfSpeech: "adj.", definition: "Thinly dispersed/scattered.", exampleSentence: "Vegetation was sparse.", synonyms: ["Scanty", "meager"], antonyms: ["Dense", "lush"] },
+  { word: "Specious", partOfSpeech: "adj.", definition: "Plausible but actually wrong.", exampleSentence: "A specious argument.", synonyms: ["Spurious", "misleading"], antonyms: ["Valid", "true"] },
+  { word: "Spiteful", partOfSpeech: "adj.", definition: "Showing or caused by malice.", exampleSentence: "Made a spiteful comment.", synonyms: ["Malicious", "cruel"], antonyms: ["Kind", "friendly"] },
+  { word: "Splenetic", partOfSpeech: "adj.", definition: "Bad-tempered; spiteful.", exampleSentence: "A splenetic outburst.", synonyms: ["Irascible", "bilious"], antonyms: ["Affable", "kind"] },
+  { word: "Spontaneous", partOfSpeech: "adj.", definition: "Sudden inner impulse.", exampleSentence: "Spontaneous applause.", synonyms: ["Impromptu", "rash"], antonyms: ["Planned", "forced"] },
+  { word: "Sporadic", partOfSpeech: "adj.", definition: "Irregular intervals.", exampleSentence: "Sporadic reports of gunfire.", synonyms: ["Intermittent", "occasional"], antonyms: ["Continuous", "regular"] },
+  { word: "Spurious", partOfSpeech: "adj.", definition: "Not being what it purports to be.", exampleSentence: "Made spurious claim.", synonyms: ["Fake", "false"], antonyms: ["Authentic", "real"] },
+  { word: "Stagnant", partOfSpeech: "adj.", definition: "No current or flow; unpleasant smell.", exampleSentence: "Water was stagnant.", synonyms: ["Still", "dormant"], antonyms: ["Moving", "fresh"] },
+  { word: "Stealthy", partOfSpeech: "adj.", definition: "Cautious and surreptitious.", exampleSentence: "Stealthy approach toward bird.", synonyms: ["Furtive", "sneaky"], antonyms: ["Open", "blatant"] },
+  { word: "Stereotype", partOfSpeech: "n.", definition: "Widely held fixed oversimplified image.", exampleSentence: "Break down the stereotype.", synonyms: ["Cliche", "pattern"], antonyms: ["Reality", "individual"] },
+  { word: "Stoic", partOfSpeech: "adj.", definition: "Enduring pain without showing feelings.", exampleSentence: "Remained stoic during surgery.", synonyms: ["Impassive", "calm"], antonyms: ["Emotional", "active"] },
+  { word: "Stolid", partOfSpeech: "adj.", definition: "Calm and showing little emotion.", exampleSentence: "A stolid personality.", synonyms: ["Phlegmatic", "dull"], antonyms: ["Emotional", "wild"] },
+  { word: "Strenuous", partOfSpeech: "adj.", definition: "Requiring great exertion.", exampleSentence: "Advised to avoid strenuous exercise.", synonyms: ["Arduous", "tough"], antonyms: ["Easy", "light"] },
+  { word: "Strident", partOfSpeech: "adj.", definition: "Loud and harsh; grating.", exampleSentence: "A strident voice.", synonyms: ["Shrill", "raucous"], antonyms: ["Soft", "dulcet"] },
+  { word: "Stupefied", partOfSpeech: "adj.", definition: "Unable to think properly.", exampleSentence: "Stupefied by the news.", synonyms: ["Dazed", "stunned"], antonyms: ["Aware", "alert"] },
+  { word: "Submissive", partOfSpeech: "adj.", definition: "Ready to conform to authority.", exampleSentence: "Expected to be submissive.", synonyms: ["Compliant", "docile"], antonyms: ["Defiant", "unruly"] },
+  { word: "Subservient", partOfSpeech: "adj.", definition: "Prepared to obey unquestioningly.", exampleSentence: "Subservient to boss's whim.", synonyms: ["Servile", "docile"], antonyms: ["Independent", "bold"] },
+  { word: "Subtle", partOfSpeech: "adj.", definition: "So delicate as to be difficult to analyze.", exampleSentence: "Subtle difference in color.", synonyms: ["Slight", "faint"], antonyms: ["Obvious", "blatant"] },
+  { word: "Succinct", partOfSpeech: "adj.", definition: "Briefly and clearly expressed.", exampleSentence: "Keep answer succinct.", synonyms: ["Concise", "brief"], antonyms: ["Wordy", "verbose"] },
+  { word: "Succumb", partOfSpeech: "v.", definition: "Fail to resist pressure.", exampleSentence: "Succumb to the pressure.", synonyms: ["Yield", "surrender"], antonyms: ["Resist", "conquer"] },
+  { word: "Sullen", partOfSpeech: "adj.", definition: "Bad-tempered and sulky; gloomy.", exampleSentence: "Sullen boy refused to talk.", synonyms: ["Morose", "sulky"], antonyms: ["Cheerful", "bright"] },
+  { word: "Superfluous", partOfSpeech: "adj.", definition: "Unnecessary; more than enough.", exampleSentence: "Five pages is superfluous.", synonyms: ["Redundant", "extra"], antonyms: ["Essential", "vital"] },
+  { word: "Supervise", partOfSpeech: "v.", definition: "Observe and direct execution.", exampleSentence: "Supervise the project.", synonyms: ["Manage", "oversee"], antonyms: ["Neglect", "follow"] },
+  { word: "Surmount", partOfSpeech: "v.", definition: "Overcome a difficulty.", exampleSentence: "Surmount many obstacles.", synonyms: ["Overcome", "conquer"], antonyms: ["Fail", "lose"] },
+  { word: "Surreptitious", partOfSpeech: "adj.", definition: "Kept secret; not approved of.", exampleSentence: "Exchanged surreptitious notes.", synonyms: ["Furtive", "secret"], antonyms: ["Open", "public"] },
+  { word: "Susceptible", partOfSpeech: "adj.", definition: "Liable to be influenced/harmed.", exampleSentence: "Susceptible to catching colds.", synonyms: ["Vulnerable", "prone"], antonyms: ["Immune", "resistant"] },
+  { word: "Sustainable", partOfSpeech: "adj.", definition: "Maintained at certain rate.", exampleSentence: "Sustainable source of energy.", synonyms: ["Viable", "lasting"], antonyms: ["Wasteful", "brief"] },
+  { word: "Svelte", partOfSpeech: "adj.", definition: "Slender and elegant.", exampleSentence: "She had a svelte figure.", synonyms: ["Slender", "lithe"], antonyms: ["Heavy", "stout"] },
+  { word: "Sycophant", partOfSpeech: "n.", definition: "Person acting obsequious toward someone.", exampleSentence: "Surrounded by sycophants.", synonyms: ["Flatterer", "fawner"], antonyms: ["Critic", "rebel"] },
+  { word: "Sycophantic", partOfSpeech: "adj.", definition: "Behaving in obsequious way.", exampleSentence: "Sycophantic flatterers.", synonyms: ["Fawning", "servile"], antonyms: ["Bold", "honest"] },
+  { word: "Sympathy", partOfSpeech: "n.", definition: "Feelings of pity for misfortune.", exampleSentence: "Great sympathy for victims.", synonyms: ["Compassion", "pity"], antonyms: ["Apathy", "cruelty"] },
+  { word: "Tacit", partOfSpeech: "adj.", definition: "Understood without being stated.", exampleSentence: "There was a tacit agreement.", synonyms: ["Implicit", "inferred"], antonyms: ["Explicit", "stated"] },
+  { word: "Taciturn", partOfSpeech: "adj.", definition: "Saying little.", exampleSentence: "Taciturn man rarely spoke.", synonyms: ["Silent", "reserved"], antonyms: ["Loquacious", "talkative"] },
+  { word: "Tactful", partOfSpeech: "adj.", definition: "Skill and sensitivity in dealing with others.", exampleSentence: "Gave a tactful critique.", synonyms: ["Diplomatic", "polite"], antonyms: ["Rude", "boorish"] },
+  { word: "Tangible", partOfSpeech: "adj.", definition: "Perceptible by touch.", exampleSentence: "Tension was almost tangible.", synonyms: ["Concrete", "real"], antonyms: ["Intangible", "abstract"] },
+  { word: "Tantamount", partOfSpeech: "adj.", definition: "Equivalent in seriousness.", exampleSentence: "Refusal was tantamount to betrayal.", synonyms: ["Identical", "equal"], antonyms: ["Different", "opposite"] },
+  { word: "Tedious", partOfSpeech: "adj.", definition: "Too long, slow, or dull.", exampleSentence: "Grading papers is tedious.", synonyms: ["Boring", "monotonous"], antonyms: ["Exciting", "fun"] },
+  { word: "Temperate", partOfSpeech: "adj.", definition: "Showing moderation.", exampleSentence: "Region has temperate climate.", synonyms: ["Moderate", "mild"], antonyms: ["Extreme", "wild"] },
+  { word: "Tenacious", partOfSpeech: "adj.", definition: "Keeping a firm hold; adhering closely.", exampleSentence: "Tenacious in pursuit of truth.", synonyms: ["Persistent", "stubborn"], antonyms: ["Weak", "yielding"] },
+  { word: "Tenable", partOfSpeech: "adj.", definition: "Able to be maintained/defended.", exampleSentence: "Position was no longer tenable.", synonyms: ["Defensible", "valid"], antonyms: ["Unjustifiable", "weak"] },
+  { word: "Tentative", partOfSpeech: "adj.", definition: "Not certain or fixed.", exampleSentence: "Tentative plan to meet.", synonyms: ["Uncertain", "hesitant"], antonyms: ["Definite", "sure"] },
+  { word: "Tenuous", partOfSpeech: "adj.", definition: "Very weak or slight.", exampleSentence: "Tenuous grasp of subject.", synonyms: ["Flimsy", "weak"], antonyms: ["Strong", "solid"] },
+  { word: "Terminate", partOfSpeech: "v.", definition: "To bring to an end.", exampleSentence: "Terminate his contract.", synonyms: ["End", "finish"], antonyms: ["Begin", "start"] },
+  { word: "Terse", partOfSpeech: "adj.", definition: "Sparing in use of words; abrupt.", exampleSentence: "Gave a terse answer.", synonyms: ["Brief", "abrupt"], antonyms: ["Wordy", "verbose"] },
+  { word: "Theoretical", partOfSpeech: "adj.", definition: "Concerned with theory.", exampleSentence: "Based on theoretical calculations.", synonyms: ["Hypothetical", "assumed"], antonyms: ["Practical", "real"] },
+  { word: "Thrifty", partOfSpeech: "adj.", definition: "Using resources carefully.", exampleSentence: "Very thrifty using coupons.", synonyms: ["Frugal", "stingy"], antonyms: ["Extravagant", "lavish"] },
+  { word: "Thrive", partOfSpeech: "v.", definition: "Grow/develop vigorously.", exampleSentence: "Children thrive in safe environments.", synonyms: ["Flourish", "prosper"], antonyms: ["Wither", "fail"] },
+  { word: "Thwart", partOfSpeech: "v.", definition: "Prevent someone from accomplishing.", exampleSentence: "Thwart the robbery attempt.", synonyms: ["Frustrate", "block"], antonyms: ["Help", "allow"] },
+  { word: "Timid", partOfSpeech: "adj.", definition: "Lack of courage/confidence.", exampleSentence: "Timid child hid behind mother.", synonyms: ["Shy", "fearful"], antonyms: ["Bold", "brave"] },
+  { word: "Timorous", partOfSpeech: "adj.", definition: "Showing nervousness/fear.", exampleSentence: "A timorous mouse.", synonyms: ["Fearful", "shy"], antonyms: ["Bold", "brave"] },
+  { word: "Tirade", partOfSpeech: "n.", definition: "Long angry speech of criticism.", exampleSentence: "Went on a tirade about office.", synonyms: ["Harangue", "lecture"], antonyms: ["Praise", "whisper"] },
+  { word: "Tolerance", partOfSpeech: "n.", definition: "Ability/willingness to tolerate.", exampleSentence: "Tolerance for different beliefs.", synonyms: ["Acceptance", "patience"], antonyms: ["Intolerance", "bias"] },
+  { word: "Torpid", partOfSpeech: "adj.", definition: "Mentally or physically inactive.", exampleSentence: "A torpid winter.", synonyms: ["Lethargic", "stagnant"], antonyms: ["Active", "lively"] },
+  { word: "Torrential", partOfSpeech: "adj.", definition: "Falling in large quantities.", exampleSentence: "Torrential rain made road unseen.", synonyms: ["Heavy", "pouring"], antonyms: ["Light", "misty"] },
+  { word: "Tortuous", partOfSpeech: "adj.", definition: "Full of twists and turns.", exampleSentence: "Tortuous mountain road.", synonyms: ["Circuitous", "winding"], antonyms: ["Straight", "direct"] },
+  { word: "Toxic", partOfSpeech: "adj.", definition: "Poisonous.", exampleSentence: "Chemical spill was highly toxic.", synonyms: ["Noxious", "harmful"], antonyms: ["Safe", "healthy"] },
+  { word: "Tractable", partOfSpeech: "adj.", definition: "Easy to control or influence.", exampleSentence: "Tractable student followed instructions.", synonyms: ["Compliant", "docile"], antonyms: ["Stubborn", "wild"] },
+  { word: "Tranquil", partOfSpeech: "adj.", definition: "Free from disturbance; calm.", exampleSentence: "Tranquil place to sit.", synonyms: ["Serene", "peaceful"], antonyms: ["Turbulent", "noisy"] },
+  { word: "Transient", partOfSpeech: "adj.", definition: "Lasting only for a short time.", exampleSentence: "Fame is often transient.", synonyms: ["Fleeting", "brief"], antonyms: ["Permanent", "lasting"] },
+  { word: "Transition", partOfSpeech: "n.", definition: "Process of changing states.", exampleSentence: "Transition to a new school.", synonyms: ["Change", "shift"], antonyms: ["Stagnation", "fix"] },
+  { word: "Transparent", partOfSpeech: "adj.", definition: "Allowing light to pass through.", exampleSentence: "Water was transparent.", synonyms: ["Clear", "obvious"], antonyms: ["Opaque", "murky"] },
+  { word: "Treacherous", partOfSpeech: "adj.", definition: "Guilty of betrayal/deception.", exampleSentence: "Mountain pass was treacherous.", synonyms: ["Dangerous", "perfidious"], antonyms: ["Safe", "loyal"] },
+  { word: "Trenchant", partOfSpeech: "adj.", definition: "Vigorous or incisive in expression.", exampleSentence: "Trenchant criticism.", synonyms: ["Sharp", "biting"], antonyms: ["Weak", "vague"] },
+  { word: "Trepidation", partOfSpeech: "n.", definition: "Feeling of fear or agitation.", exampleSentence: "Trepidation as she walked on stage.", synonyms: ["Dread", "anxiety"], antonyms: ["Confidence", "calm"] },
+  { word: "Tribute", partOfSpeech: "n.", definition: "Act/gift intended to show gratitude.", exampleSentence: "Statue built as a tribute.", synonyms: ["Homage", "praise"], antonyms: ["Insult", "blame"] },
+  { word: "Trite", partOfSpeech: "adj.", definition: "Overused and lacking originality.", exampleSentence: "The ending was a bit trite.", synonyms: ["Banal", "cliche"], antonyms: ["Original", "fresh"] },
+  { word: "Trivial", partOfSpeech: "adj.", definition: "Of little value or importance.", exampleSentence: "Don't waste time on trivial matters.", synonyms: ["Minor", "slight"], antonyms: ["Important", "vital"] },
+  { word: "Truculent", partOfSpeech: "adj.", definition: "Eager or quick to argue/fight.", exampleSentence: "A truculent attitude.", synonyms: ["Defiant", "bellicose"], antonyms: ["Amiable", "gentle"] },
+  { word: "Trudge", partOfSpeech: "v.", definition: "Walk slowly with heavy steps.", exampleSentence: "Trudge through thick mud.", synonyms: ["Plod", "tramp"], antonyms: ["Run", "skip"] },
+  { word: "Truism", partOfSpeech: "n.", definition: "Statement that is obviously true.", exampleSentence: "Truism that money cannot buy happiness.", synonyms: ["Axiom", "cliche"], antonyms: ["Lie", "paradox"] },
+  { word: "Turbulent", partOfSpeech: "adj.", definition: "Conflict, disorder, confusion.", exampleSentence: "Flight was turbulent.", synonyms: ["Chaotic", "wild"], antonyms: ["Calm", "peace"] },
+  { word: "Turgid", partOfSpeech: "adj.", definition: "Swollen; bombastic.", exampleSentence: "Turgid prose.", synonyms: ["Grandiloquent", "puffy"], antonyms: ["Simple", "plain"] },
+  { word: "Ubiquitous", partOfSpeech: "adj.", definition: "Present/found everywhere.", exampleSentence: "Smartphones are ubiquitous.", synonyms: ["Pervasive", "common"], antonyms: ["Rare", "scarce"] },
+  { word: "Ultimate", partOfSpeech: "adj.", definition: "Happening at the end of process.", exampleSentence: "Title was the ultimate goal.", synonyms: ["Final", "last"], antonyms: ["Initial", "first"] },
+  { word: "Unabated", partOfSpeech: "adj.", definition: "Without reduction in intensity.", exampleSentence: "Storm continued unabated.", synonyms: ["Persistent", "intense"], antonyms: ["Weakened", "abated"] },
+  { word: "Unanimous", partOfSpeech: "adj.", definition: "Fully in agreement.", exampleSentence: "Jury reached unanimous verdict.", synonyms: ["United", "agreed"], antonyms: ["Divided", "split"] },
+  { word: "Uncanny", partOfSpeech: "adj.", definition: "Strange or mysterious.", exampleSentence: "Uncanny ability to guess.", synonyms: ["Eerie", "weird"], antonyms: ["Normal", "typical"] },
+  { word: "Unconscionable", partOfSpeech: "adj.", definition: "Not right or reasonable.", exampleSentence: "Unconscionable behavior.", synonyms: ["Unethical", "wrong"], antonyms: ["Moral", "fair"] },
+  { word: "Unctuous", partOfSpeech: "adj.", definition: "Excessively flattering; oily.", exampleSentence: "An unctuous greeting.", synonyms: ["Fawning", "greasy"], antonyms: ["Blunt", "sincere"] },
+  { word: "Underlying", partOfSpeech: "adj.", definition: "Significant cause; not obvious.", exampleSentence: "Underlying cause of problem.", synonyms: ["Fundamental", "basic"], antonyms: ["Surface", "slight"] },
+  { word: "Undermine", partOfSpeech: "v.", definition: "Lessen effectiveness/power.", exampleSentence: "Criticism undermined her confidence.", synonyms: ["Weaken", "sap"], antonyms: ["Support", "bolster"] },
+  { word: "Unequivocal", partOfSpeech: "adj.", definition: "Leaving no doubt; unambiguous.", exampleSentence: "Unequivocal 'no' to proposal.", synonyms: ["Clear", "direct"], antonyms: ["Ambiguous", "vague"] },
+  { word: "Universal", partOfSpeech: "adj.", definition: "Affecting all people in the world.", exampleSentence: "Music is the universal language.", synonyms: ["General", "global"], antonyms: ["Specific", "local"] },
+  { word: "Unprecedented", partOfSpeech: "adj.", definition: "Never done or known before.", exampleSentence: "Event was unprecedented.", synonyms: ["Unique", "new"], antonyms: ["Common", "usual"] },
+  { word: "Untenable", partOfSpeech: "adj.", definition: "Not able to be maintained.", exampleSentence: "An untenable position.", synonyms: ["Defenseless", "weak"], antonyms: ["Sound", "strong"] },
+  { word: "Unwarranted", partOfSpeech: "adj.", definition: "Not justified or authorized.", exampleSentence: "Anger was unwarranted.", synonyms: ["Unjustified", "groundless"], antonyms: ["Justified", "fair"] },
+  { word: "Urban", partOfSpeech: "adj.", definition: "Relating to town or city.", exampleSentence: "Moving to urban areas.", synonyms: ["City", "civic"], antonyms: ["Rural", "agrarian"] },
+  { word: "Uproot", partOfSpeech: "v.", definition: "Pull plant out of ground.", exampleSentence: "Storm uprooted large trees.", synonyms: ["Eradicate", "displace"], antonyms: ["Plant", "fix"] },
+  { word: "Utilitarian", partOfSpeech: "adj.", definition: "Useful rather than attractive.", exampleSentence: "Plain utilitarian design.", synonyms: ["Practical", "functional"], antonyms: ["Decorative", "fancy"] },
+  { word: "Vacillate", partOfSpeech: "v.", definition: "Waver between opinions.", exampleSentence: "Vacillate between two choices.", synonyms: ["Waver", "dither"], antonyms: ["Decide", "resolve"] },
+  { word: "Vacuous", partOfSpeech: "adj.", definition: "Lack of thought; mindless.", exampleSentence: "Gave a vacuous smile.", synonyms: ["Inane", "empty"], antonyms: ["Intelligent", "sharp"] },
+  { word: "Valid", partOfSpeech: "adj.", definition: "Sound basis in logic or fact.", exampleSentence: "Valid reason for absence.", synonyms: ["Logical", "sound"], antonyms: ["Invalid", "false"] },
+  { word: "Vanguard", partOfSpeech: "n.", definition: "Leading way in developments.", exampleSentence: "Company at vanguard of tech.", synonyms: ["Leaders", "front"], antonyms: ["Rear", "followers"] },
+  { word: "Vapid", partOfSpeech: "adj.", definition: "Offering nothing challenging.", exampleSentence: "A vapid conversation.", synonyms: ["Insipid", "bland"], antonyms: ["Lively", "zesty"] },
+  { word: "Variable", partOfSpeech: "adj.", definition: "Not consistent; liable to change.", exampleSentence: "Weather is very variable.", synonyms: ["Fickle", "shifting"], antonyms: ["Constant", "fixed"] },
+  { word: "Variegated", partOfSpeech: "adj.", definition: "Different colors/patches.", exampleSentence: "Variegated leaves.", synonyms: ["Multicolored", "mottled"], antonyms: ["Uniform", "solid"] },
+  { word: "Vehement", partOfSpeech: "adj.", definition: "Strong feeling; forceful.", exampleSentence: "A vehement denial.", synonyms: ["Passionate", "fierce"], antonyms: ["Mild", "indifferent"] },
+  { word: "Venal", partOfSpeech: "adj.", definition: "Susceptibility to bribery.", exampleSentence: "A venal politician.", synonyms: ["Corrupt", "dishonest"], antonyms: ["Ethical", "honest"] },
+  { word: "Venerable", partOfSpeech: "adj.", definition: "Accorded great deal of respect.", exampleSentence: "Venerable professor.", synonyms: ["Respected", "honored"], antonyms: ["Lowly", "common"] },
+  { word: "Venerate", partOfSpeech: "v.", definition: "Regard with great respect.", exampleSentence: "Venerate the local saint.", synonyms: ["Revere", "admire"], antonyms: ["Despise", "scorn"] },
+  { word: "Veracious", partOfSpeech: "adj.", definition: "Representing the truth.", exampleSentence: "A veracious witness.", synonyms: ["Honest", "truthful"], antonyms: ["Mendacious"] },
+  { word: "Veracity", partOfSpeech: "n.", definition: "Conformity to facts; accuracy.", exampleSentence: "Questioned the veracity of witness.", synonyms: ["Truth", "accuracy"], antonyms: ["Deceit", "falsehood"] },
+  { word: "Verbose", partOfSpeech: "adj.", definition: "Expressed in more words than needed.", exampleSentence: "His writing is often verbose.", synonyms: ["Wordy", "loquacious"], antonyms: ["Succinct", "brief"] },
+  { word: "Verify", partOfSpeech: "v.", definition: "Demonstrate that something is true.", exampleSentence: "Verify all information is correct.", synonyms: ["Confirm", "validate"], antonyms: ["Deny", "refute"] },
+  { word: "Versatile", partOfSpeech: "adj.", definition: "Adapted to many functions.", exampleSentence: "Versatile actor can play many roles.", synonyms: ["Adaptable", "flexible"], antonyms: ["Rigid", "limited"] },
+  { word: "Vestige", partOfSpeech: "n.", definition: "Trace of something disappearing.", exampleSentence: "Last vestige of the ancient city.", synonyms: ["Trace", "remnant"], antonyms: ["Whole", "excess"] },
+  { word: "Veteran", partOfSpeech: "n.", definition: "Person with long experience.", exampleSentence: "Veteran teacher knew how to handle class.", synonyms: ["Expert", "master"], antonyms: ["Novice", "amateur"] },
+  { word: "Vex", partOfSpeech: "v.", definition: "Make someone feel annoyed.", exampleSentence: "Math problem began to vex him.", synonyms: ["Annoy", "pester"], antonyms: ["Please", "calm"] },
+  { word: "Vexatious", partOfSpeech: "adj.", definition: "Causing annoyance or worry.", exampleSentence: "A vexatious problem.", synonyms: ["Annoying", "irksome"], antonyms: ["Pleasing", "easy"] },
+  { word: "Viable", partOfSpeech: "adj.", definition: "Capable of working successfully.", exampleSentence: "Looking for viable solution.", synonyms: ["Feasible", "possible"], antonyms: ["Impossible", "futile"] },
+  { word: "Vicarious", partOfSpeech: "adj.", definition: "Experienced through another.", exampleSentence: "Vicarious thrill.", synonyms: ["Indirect", "surrogate"], antonyms: ["Direct", "personal"] },
+  { word: "Vigilant", partOfSpeech: "adj.", definition: "Careful watch for danger.", exampleSentence: "Guards remained vigilant.", synonyms: ["Watchful", "alert"], antonyms: ["Careless", "slack"] },
+  { word: "Vilified", partOfSpeech: "adj.", definition: "Spoken about abusively.", exampleSentence: "Vilified in the press.", synonyms: ["Slandered", "reviled"], antonyms: ["Praised", "lauded"] },
+  { word: "Vindicate", partOfSpeech: "v.", definition: "Clear someone of blame.", exampleSentence: "Evidence will vindicate her.", synonyms: ["Exonerate", "absolve"], antonyms: ["Blame", "convict"] },
+  { word: "Vindictive", partOfSpeech: "adj.", definition: "Desire for revenge.", exampleSentence: "Vindictive man who never forgot.", synonyms: ["Spiteful", "vengeful"], antonyms: ["Forgiving", "kind"] },
+  { word: "Virtuous", partOfSpeech: "adj.", definition: "Showing high moral standards.", exampleSentence: "Virtuous woman always helped.", synonyms: ["Moral", "noble"], antonyms: ["Wicked", "base"] },
+  { word: "Vitriol", partOfSpeech: "n.", definition: "Cruel and bitter criticism.", exampleSentence: "Review was full of vitriol.", synonyms: ["Invective", "abuse"], antonyms: ["Praise", "flattery"] },
+  { word: "Vitriolic", partOfSpeech: "adj.", definition: "Filled with bitter criticism.", exampleSentence: "A vitriolic attack.", synonyms: ["Acrimonious", "caustic"], antonyms: ["Kind", "gentle"] },
+  { word: "Vivacious", partOfSpeech: "adj.", definition: "Attractively lively and animated.", exampleSentence: "A vivacious girl.", synonyms: ["Spirited", "ebullient"], antonyms: ["Dull", "listless"] },
+  { word: "Vociferous", partOfSpeech: "adj.", definition: "Vehement or clamorous.", exampleSentence: "Vociferous critic of the law.", synonyms: ["Clamorous", "loud"], antonyms: ["Quiet", "silent"] },
+  { word: "Volatile", partOfSpeech: "adj.", definition: "Liable to change rapidly.", exampleSentence: "Political situation is volatile.", synonyms: ["Unstable", "explosive"], antonyms: ["Stable", "calm"] },
+  { word: "Voluble", partOfSpeech: "adj.", definition: "Speaking incessantly/fluently.", exampleSentence: "Voluble speaker could talk for hours.", synonyms: ["Talkative", "loquacious"], antonyms: ["Taciturn", "silent"] },
+  { word: "Voracious", partOfSpeech: "adj.", definition: "Wanting great quantities.", exampleSentence: "She is a voracious reader.", synonyms: ["Insatiable", "greedy"], antonyms: ["Satisfied", "full"] },
+  { word: "Vulnerable", partOfSpeech: "adj.", definition: "Susceptible to attack.", exampleSentence: "Defenses were vulnerable.", synonyms: ["Weak", "exposed"], antonyms: ["Secure", "strong"] },
+  { word: "Wane", partOfSpeech: "v.", definition: "To decrease in vigor.", exampleSentence: "Interest began to wane.", synonyms: ["Dwindle", "fade"], antonyms: ["Wax", "grow"] },
+  { word: "Wary", partOfSpeech: "adj.", definition: "Caution about possible dangers.", exampleSentence: "Be wary of emails.", synonyms: ["Cautious", "alert"], antonyms: ["Trustful", "careless"] },
+  { word: "Waver", partOfSpeech: "v.", definition: "Become unsteady; quiver.", exampleSentence: "Waver in support for project.", synonyms: ["Vacillate", "dither"], antonyms: ["Decide", "firm"] },
+  { word: "Wheedle", partOfSpeech: "v.", definition: "Use flattery to persuade.", exampleSentence: "Wheedle her way into party.", synonyms: ["Cajole", "coax"], antonyms: ["Demand", "force"] },
+  { word: "Whet", partOfSpeech: "v.", definition: "Sharpen blade; excite appetite.", exampleSentence: "Smell helped whet my appetite.", synonyms: ["Sharpen", "stimulate"], antonyms: ["Blunt", "dull"] },
+  { word: "Whimsical", partOfSpeech: "adj.", definition: "Playfully quaint/fanciful.", exampleSentence: "Whimsical illustrations.", synonyms: ["Fanciful", "playful"], antonyms: ["Serious", "dull"] },
+  { word: "Wily", partOfSpeech: "adj.", definition: "Skilled at gaining advantage.", exampleSentence: "Wily fox managed escape.", synonyms: ["Cunning", "crafty"], antonyms: ["Honest", "naive"] },
+  { word: "Wince", partOfSpeech: "v.", definition: "Involuntary grimace from pain.", exampleSentence: "Couldn't help but wince.", synonyms: ["Flinch", "recoil"], antonyms: ["Face", "stand"] },
+  { word: "Winsome", partOfSpeech: "adj.", definition: "Attractive or appealing appearance.", exampleSentence: "She had a winsome smile.", synonyms: ["Charming", "lovely"], antonyms: ["Unappealing", "dull"] },
+  { word: "Wither", partOfSpeech: "v.", definition: "Become dry and shriveled.", exampleSentence: "Plants began to wither.", synonyms: ["Shrivel", "fade"], antonyms: ["Flourish", "grow"] },
+  { word: "Wizened", partOfSpeech: "adj.", definition: "Shriveled or wrinkled with age.", exampleSentence: "A wizened face.", synonyms: ["Shrunken", "withered"], antonyms: ["Smooth", "young"] },
+  { word: "Wrath", partOfSpeech: "n.", definition: "Extreme anger.", exampleSentence: "Feared the wrath of parents.", synonyms: ["Anger", "fury"], antonyms: ["Love", "calm"] },
+  { word: "Wry", partOfSpeech: "adj.", definition: "Expressing dry mocking humor.", exampleSentence: "Gave a wry smile.", synonyms: ["Droll", "mocking"], antonyms: ["Sincere", "direct"] },
+  { word: "Zealot", partOfSpeech: "n.", definition: "Fanatical uncompromising person.", exampleSentence: "Environmental zealot protesting.", synonyms: ["Fanatic", "extremist"], antonyms: ["Moderate", "skeptic"] },
+  { word: "Zealous", partOfSpeech: "adj.", definition: "Showing great energy/zeal.", exampleSentence: "A zealous supporter.", synonyms: ["Ardent", "fervent"], antonyms: ["Apathetic", "lazy"] },
+  { word: "Zenith", partOfSpeech: "adj.", definition: "Time at which something is peak.", exampleSentence: "The zenith of her fame.", synonyms: ["Peak", "summit"], antonyms: ["Nadir", "bottom"] },
+  { word: "Zephyr", partOfSpeech: "n.", definition: "A gentle, mild breeze.", exampleSentence: "A soft zephyr cooled the hot summer afternoon.", synonyms: ["Breeze", "draft"], antonyms: ["Gale", "storm"] },
+  { word: "Wanderlust", partOfSpeech: "n.", definition: "A strong desire to travel.", exampleSentence: "Her wanderlust led her to explore every continent.", synonyms: ["Restlessness"], antonyms: ["Settledness"] },
+  { word: "Vignette", partOfSpeech: "n.", definition: "A brief evocative description or episode.", exampleSentence: "The book is a collection of charming vignettes about village life.", synonyms: ["Sketch", "scene"], antonyms: ["Epic"] },
+  { word: "Umbrage", partOfSpeech: "n.", definition: "Offense or annoyance.", exampleSentence: "He took umbrage at the suggestion that he was lying.", synonyms: ["Offense", "resentment"], antonyms: ["Pleasure", "satisfaction"] },
+  { word: "Sycophancy", partOfSpeech: "n.", definition: "Obsequious flattery; fawning behavior.", exampleSentence: "The king was surrounded by the sycophancy of his courtiers.", synonyms: ["Flattery", "fawning"], antonyms: ["Sincerity", "criticism"] },
+  { word: "Raconteur", partOfSpeech: "n.", definition: "A person who tells anecdotes in a skillful way.", exampleSentence: "A witty raconteur, he kept the dinner guests entertained for hours.", synonyms: ["Storyteller", "narrator"], antonyms: ["Mumble"] },
+  { word: "Quagmire", partOfSpeech: "n.", definition: "An awkward, complex, or hazardous situation.", exampleSentence: "The legal dispute had become a quagmire for the company.", synonyms: ["Predicament", "muddle"], antonyms: ["Solution", "resolution"] },
+  { word: "Penchant", partOfSpeech: "n.", definition: "A strong or habitual liking for something.", exampleSentence: "He has a penchant for adopting stray dogs.", synonyms: ["Fondness", "inclination"], antonyms: ["Dislike", "aversion"] }
+];
+
+const LOCAL_SPELLING_POOL: Question[] = [
+  { id: 'fs-1', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Accommodate", "Acomodate", "Accomodate", "Acommodate"], correctAnswer: 0, explanation: "Accommodate has two 'c's and two 'm's." },
+  { id: 'fs-2', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Separate", "Seperate", "Saparate", "Seprate"], correctAnswer: 0, explanation: "Think: There is 'a rat' in sep-a-rat-e." },
+  { id: 'fs-3', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Occurrence", "Ocurence", "Occurence", "Occurrance"], correctAnswer: 0, explanation: "Occurrence has two 'c's, two 'r's, and ends in 'ence'." },
+  { id: 'fs-4', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Definitely", "Definitly", "Definately", "Deffinitely"], correctAnswer: 0, explanation: "Definitely is spelled with an 'i' after the 'n'." },
+  { id: 'fs-5', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Embarrass", "Embaras", "Emberrass", "Embarass"], correctAnswer: 0, explanation: "Embarrass has two 'r's and two 's's." },
+  { id: 'fs-6', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Liaison", "Liason", "Liaiason", "Laiason"], correctAnswer: 0, explanation: "Remember the pattern: l-i-a-i-s-o-n." },
+  { id: 'fs-7', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Privilege", "Privelege", "Priviledge", "Priveldge"], correctAnswer: 0, explanation: "No 'd' in privilege. Ends in -ege." },
+  { id: 'fs-8', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Bureaucracy", "Beurocracy", "Burreaucracy", "Bureaucrasy"], correctAnswer: 0, explanation: "Bureau-cracy. French root 'bureau'." },
+  { id: 'fs-9', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Surveillance", "Surveilance", "Survaillance", "Survalance"], correctAnswer: 0, explanation: "Sur- (over) + veiller (watch). Double 'l'." },
+  { id: 'fs-10', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Entrepreneur", "Entreprenuer", "Entrepenuer", "Entrepeneur"], correctAnswer: 0, explanation: "Ends in -eur." },
+  { id: 'fs-11', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Questionnaire", "Questionaire", "Questionnare", "Questinnaire"], correctAnswer: 0, explanation: "Double 'n' in questionnaire." },
+  { id: 'fs-12', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Connoisseur", "Conoisseur", "Connoiser", "Connaisseur"], correctAnswer: 0, explanation: "Double 'n', double 's'." },
+  { id: 'fs-13', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Medieval", "Medeval", "Mideval", "Midieval"], correctAnswer: 0, explanation: "Medi- (middle) + eval (age)." },
+  { id: 'fs-14', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Rhythm", "Rythm", "Rhythym", "Rithm"], correctAnswer: 0, explanation: "R-h-y-t-h-m. Two h's." },
+  { id: 'fs-15', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Vacuum", "Vaccum", "Vacume", "Vacuume"], correctAnswer: 0, explanation: "One 'c', two 'u's." }
+  { id: 'fs-16', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Millennium", "Millenium", "Milennium", "Millinium"], correctAnswer: 0, explanation: "Double 'l', double 'n'." },
+  { id: 'fs-17', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Pharaoh", "Pharoah", "Pharao", "Pheroah"], correctAnswer: 0, explanation: "Ends in -aoh." },
+  { id: 'fs-18', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Ecstasy", "Ecstacy", "Extasy", "Estacy"], correctAnswer: 0, explanation: "Ends in -sy." },
+  { id: 'fs-19', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Pronunciation", "Pronounciation", "Pronunsiation", "Protonciation"], correctAnswer: 0, explanation: "No 'o' in the second syllable (unlike 'pronounce')." },
+  { id: 'fs-20', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Supersede", "Supercede", "Superseed", "Superceed"], correctAnswer: 0, explanation: "The only word ending in -sede." }
+
+];
+
+const LOCAL_GRAMMAR_POOL: Question[] = [
+  { id: 'lg-1', category: Category.GRAMMAR, questionText: "Select the sentence with the correct modifier placement:", options: ["Running to the bus, the rain soaked my clothes.", "Running to the bus, I was soaked by the rain.", "The rain soaked my clothes running to the bus.", "I was soaked by the rain running to the bus."], correctAnswer: 1, explanation: "The modifier 'Running to the bus' must describe the subject 'I', not 'the rain'." },
+  { id: 'lg-2', category: Category.GRAMMAR, questionText: "Identify the error in this sentence: 'Each of the students are responsible for their own locker.'", options: ["No error", "Subject-verb agreement (are)", "Pronoun agreement (their)", "Spelling error"], correctAnswer: 1, explanation: "'Each' is singular, so the verb should be 'is' (and technically pronoun 'his/her', though 'their' is becoming accepted, the verb is the primary academic error)." },
+  { id: 'lg-3', category: Category.GRAMMAR, questionText: "Which sentence uses the semicolon correctly?", options: ["I have a big test tomorrow, I can't go out.", "I have a big test tomorrow; I can't go out.", "I have a big test tomorrow; and I can't go out.", "I have a big test tomorrow because; I can't go out."], correctAnswer: 1, explanation: "Semicolons join two independent clauses without a conjunction." },
+  { id: 'lg-4', category: Category.GRAMMAR, questionText: "Choose the correct pronoun: 'The award was given to ___ and me.'", options: ["he", "him", "himself", "his"], correctAnswer: 1, explanation: "Object of the preposition 'to' requires the objective case 'him'." },
+  { id: 'lg-5', category: Category.GRAMMAR, questionText: "Identify the sentence with parallel structure:", options: ["She likes reading, writing, and to swim.", "She likes reading, writing, and swimming.", "She likes to read, writing, and swimming.", "She likes reading, to write, and to swim."], correctAnswer: 1, explanation: "All items in the list use the gerund (-ing) form." },
+  { id: 'lg-6', category: Category.GRAMMAR, questionText: "Which sentence is in the passive voice?", options: ["The chef prepared the meal.", "The meal was prepared by the chef.", "The chef is preparing the meal.", "The chef had prepared the meal."], correctAnswer: 1, explanation: "The subject (meal) receives the action." },
+  { id: 'lg-7', category: Category.GRAMMAR, questionText: "Choose the correct word: 'The weather had a negative ___ on the event.'", options: ["affect", "effect", "affected", "effected"], correctAnswer: 1, explanation: "'Effect' is the noun (result); 'Affect' is usually the verb." },
+  { id: 'lg-8', category: Category.GRAMMAR, questionText: "Identify the sentence with a dangling modifier:", options: ["While sleeping, the cat snored.", "While sleeping, the phone rang.", "The cat snored while sleeping.", "The phone rang while the cat slept."], correctAnswer: 1, explanation: "'While sleeping' implies the phone was sleeping, which is impossible." },
+  { id: 'lg-9', category: Category.GRAMMAR, questionText: "Select the correct comparative form: 'Of the two brothers, John is the ___.'", options: ["smartest", "smarter", "most smart", "more smarter"], correctAnswer: 1, explanation: "When comparing exactly two items, use the comparative (-er), not superlative (-est)." },
+  { id: 'lg-10', category: Category.GRAMMAR, questionText: "Which sentence uses 'whom' correctly?", options: ["Who did you invite?", "Whom did you invite?", "Whom is coming to dinner?", "To who should I address this?"], correctAnswer: 1, explanation: "'Whom' is the object of the verb 'invite' (You did invite whom?)." },
+  { id: 'lg-11', category: Category.GRAMMAR, questionText: "Correct the run-on: 'The sun is hot put on sunscreen.'", options: ["The sun is hot, put on sunscreen.", "The sun is hot; put on sunscreen.", "The sun is hot put on sunscreen.", "The sun is hot but put on sunscreen."], correctAnswer: 1, explanation: "Use a semicolon to separate two independent clauses." },
+  { id: 'lg-12', category: Category.GRAMMAR, questionText: "Identify the subject: 'In the middle of the forest stands a large oak tree.'", options: ["forest", "stands", "middle", "tree"], correctAnswer: 3, explanation: "Inverted sentence structure. The tree stands." }
+  { id: 'lg-13', category: Category.GRAMMAR, questionText: "Choose the correct word: 'I have ___ items than you.'", options: ["fewer", "less", "lesser", "fewest"], correctAnswer: 0, explanation: "Use 'fewer' for countable items, 'less' for uncountable concepts." },
+  { id: 'lg-14', category: Category.GRAMMAR, questionText: "Select the correct verb form: 'If I ___ you, I would study harder.'", options: ["was", "were", "am", "be"], correctAnswer: 1, explanation: "Subjunctive mood expresses a hypothetical condition; use 'were'." },
+  { id: 'lg-15', category: Category.GRAMMAR, questionText: "Identify the error: 'Driving down the street, the house looked beautiful.'", options: ["Dangling modifier", "Comma splice", "Run-on sentence", "Passive voice"], correctAnswer: 0, explanation: "The house was not driving down the street." },
+  { id: 'lg-16', category: Category.GRAMMAR, questionText: "Choose the correct possessive: 'The ___ toys were everywhere.'", options: ["children's", "childrens'", "childrens", "childrens's"], correctAnswer: 0, explanation: "'Children' is already plural; add 's to make it possessive." },
+  { id: 'lg-17', category: Category.GRAMMAR, questionText: "Select the correct sentence:", options: ["My sister, who lives in NY, is a doctor.", "My sister who lives in NY is a doctor.", "My sister, that lives in NY, is a doctor.", "My sister whom lives in NY, is a doctor."], correctAnswer: 0, explanation: "If you have only one sister, the clause is non-essential and needs commas." },
+  { id: 'lg-18', category: Category.GRAMMAR, questionText: "Choose the correct word: 'Please ___ the book on the table.'", options: ["lay", "lie", "laid", "lain"], correctAnswer: 0, explanation: "'Lay' means to place something (needs an object); 'Lie' means to recline." },
+  { id: 'lg-19', category: Category.GRAMMAR, questionText: "Correct the sentence: 'Me and him went to the park.'", options: ["He and I went to the park.", "Him and I went to the park.", "Me and he went to the park.", "I and he went to the park."], correctAnswer: 0, explanation: "Subjective case pronouns (He, I) are needed for the subject." },
+  { id: 'lg-20', category: Category.GRAMMAR, questionText: "Identify the sentence fragment:", options: ["Because it was raining.", "It was raining.", "Since it was raining, we stayed inside.", "The rain fell."], correctAnswer: 0, explanation: "A dependent clause standing alone is a fragment." }
+  { id: 'lg-21', category: Category.GRAMMAR, questionText: "Which sentence demonstrates the correct use of the subjunctive mood?", options: ["If I was you, I would accept the offer immediately.", "If I were you, I would accept the offer immediately.", "If I am you, I will accept the offer immediately.", "If I be you, I would accept the offer immediately."], correctAnswer: 1, explanation: "The subjunctive mood, used for contrary-to-fact statements, requires 'were' instead of 'was' with 'I'." },
+  { id: 'lg-22', category: Category.GRAMMAR, questionText: "Identify the sentence with the correct use of correlative conjunctions:", options: ["Not only did she finish the project early, but she also reviewed it for errors.", "Not only did she finish the project early, and she also reviewed it for errors.", "She not only finished the project early, but she reviewed it for errors.", "Not only did she finish the project early, but reviewed it for errors."], correctAnswer: 0, explanation: "'Not only... but also' requires parallel structure. The auxiliary 'did' applies to the first part, so the second part needs a subject ('she') to be independent or parallel verb structure." },
+  { id: 'lg-23', category: Category.GRAMMAR, questionText: "Choose the sentence containing a misplaced modifier:", options: ["Covered in chocolate, the toddler happily ate the cake.", "The toddler happily ate the cake covered in chocolate.", "Walking down the street, the trees looked beautiful.", "The trees looked beautiful as I walked down the street."], correctAnswer: 2, explanation: "'Walking down the street' modifies 'the trees', suggesting the trees were walking. This is a dangling/misplaced modifier." },
+  { id: 'lg-24', category: Category.GRAMMAR, questionText: "Select the sentence with correct subject-verb agreement:", options: ["The number of students in the class are increasing.", "A number of students is absent today.", "The number of students in the class is increasing.", "A numbers of student are absent."], correctAnswer: 2, explanation: "'The number' is singular (refers to the specific count), taking 'is'. 'A number' is plural (meaning 'some'), taking 'are'." },
+  { id: 'lg-25', category: Category.GRAMMAR, questionText: "Identify the error in this sentence: 'Whom did you say is coming to the party?'", options: ["Whom should be Who", "is should be are", "coming should be came", "did should be do"], correctAnswer: 0, explanation: "The pronoun is the subject of the verb 'is coming' (Who is coming?), not the object of 'say'. Therefore, 'Who' is correct." },
+  { id: 'lg-26', category: Category.GRAMMAR, questionText: "Which sentence correctly uses a semicolon?", options: ["The weather was cold, however; we went hiking.", "The weather was cold; however, we went hiking.", "The weather was cold however, we went hiking.", "The weather was cold; however we went hiking."], correctAnswer: 1, explanation: "Conjunctive adverbs (however, therefore) connecting two independent clauses require a semicolon before and a comma after." },
+  { id: 'lg-27', category: Category.GRAMMAR, questionText: "Choose the correct possessive form: 'The ___ hypothesis was confirmed by the data.'", options: ["researcher's-in-charge", "researcher-in-charge's", "researchers-in-charge", "researcher-in-charges"], correctAnswer: 1, explanation: "For compound nouns, the possessive 's is added to the end of the word." },
+  { id: 'lg-28', category: Category.GRAMMAR, questionText: "Select the sentence with clear pronoun reference:", options: ["When the teacher spoke to the student, he looked concerned.", "The teacher looked concerned when he spoke to the student.", "Mary told Jane that she had won the lottery.", "The bowl was on the table, and it was empty."], correctAnswer: 3, explanation: "In A, B, and C, the pronouns 'he' or 'she' could refer to either noun. D is unambiguous." },
+  { id: 'lg-29', category: Category.GRAMMAR, questionText: "Which sentence uses the correct comparative degree?", options: ["Of the two solutions, this one is the most efficient.", "Of the two solutions, this one is the more efficient.", "This solution is more efficient then the other.", "This is the efficientest of the two."], correctAnswer: 1, explanation: "When comparing exactly two items, use the comparative (-er/more), not the superlative (-est/most)." },
+  { id: 'lg-30', category: Category.GRAMMAR, questionText: "Identify the sentence with the correct use of 'lie' or 'lay':", options: ["I am going to lay down for a nap.", "The book has lain on the table for weeks.", "She laid on the beach all day.", "Please lie the paper on the desk."], correctAnswer: 1, explanation: "'Lie' (recline) past participle is 'lain'. 'Lay' (put) requires an object. A is wrong (should be lie). C is wrong (should be lay - past of lie). D is wrong (should be lay)." },
+  { id: 'lg-31', category: Category.GRAMMAR, questionText: "Correct the ambiguity: 'Visiting relatives can be boring.'", options: ["To visit relatives can be boring.", "Relatives who are visiting can be boring.", "It is boring to visit relatives.", "All of the above clarify the meaning."], correctAnswer: 3, explanation: "The original sentence is ambiguous: are the relatives boring, or is the act of visiting them boring? All options clarify this." },
+  { id: 'lg-32', category: Category.GRAMMAR, questionText: "Select the sentence avoiding a split infinitive:", options: ["She decided to quickly run to the store.", "She decided to run quickly to the store.", "She decided to, quickly, run to the store.", "To quickly run was her decision."], correctAnswer: 1, explanation: "While split infinitives ('to quickly run') are acceptable in modern English, formal academic style often prefers keeping 'to' and the verb together ('to run quickly')." },
+  { id: 'lg-33', category: Category.GRAMMAR, questionText: "Which sentence correctly punctuates a restrictive clause?", options: ["The car, which hit the fence, was red.", "The car that hit the fence was red.", "The car, that hit the fence, was red.", "The car which hit the fence was red."], correctAnswer: 1, explanation: "Restrictive clauses (essential to meaning) use 'that' without commas. 'Which' usually indicates a non-restrictive clause with commas." },
+  { id: 'lg-34', category: Category.GRAMMAR, questionText: "Identify the error: 'Each of the players must bring their own equipment.'", options: ["must", "their", "own", "Each"], correctAnswer: 1, explanation: "Strictly speaking, 'Each' is singular, so the pronoun should be 'his or her'. 'Their' is widely accepted but academically tested as an error." },
+  { id: 'lg-35', category: Category.GRAMMAR, questionText: "Choose the correct sentence:", options: ["Between you and I, the decision is final.", "Between you and me, the decision is final.", "Between we, the decision is final.", "Between I and you, the decision is final."], correctAnswer: 1, explanation: "'Between' is a preposition, so pronouns must be in the objective case ('me', not 'I')." },
+  { id: 'lg-36', category: Category.GRAMMAR, questionText: "Select the correct verb: 'The team ___ winning the game.'", options: ["are", "is", "were", "have been"], correctAnswer: 1, explanation: "In American English, collective nouns like 'team' are treated as singular unless the members are acting individually." },
+  { id: 'lg-37', category: Category.GRAMMAR, questionText: "Which sentence uses 'fewer' correctly?", options: ["I have less dollars than you.", "There is fewer water in the glass.", "I have fewer dollars than you.", "There are less students in the class."], correctAnswer: 2, explanation: "'Fewer' is for countable nouns (dollars, students); 'Less' is for uncountable nouns (water, money)." },
+  { id: 'lg-38', category: Category.GRAMMAR, questionText: "Identify the run-on sentence:", options: ["The sun set, the moon rose.", "The sun set; the moon rose.", "The sun set, and the moon rose.", "Because the sun set, the moon rose."], correctAnswer: 0, explanation: "Option A is a comma splice (joining two independent clauses with only a comma). It requires a conjunction or semicolon." },
+  { id: 'lg-39', category: Category.GRAMMAR, questionText: "Choose the sentence with correct parallel structure:", options: ["She enjoys hiking, swimming, and to run.", "She enjoys to hike, swimming, and running.", "She enjoys hiking, swimming, and running.", "She enjoys to hike, to swim, and running."], correctAnswer: 2, explanation: "All items in the list must be in the same form (gerunds: -ing)." },
+  { id: 'lg-40', category: Category.GRAMMAR, questionText: "Correct the sentence: 'Being a doctor, the patient's health was his priority.'", options: ["As a doctor, the patient's health was his priority.", "Being a doctor, he prioritized the patient's health.", "The patient's health was his priority, being a doctor.", "The patient's health, being a doctor, was his priority."], correctAnswer: 1, explanation: "The modifier 'Being a doctor' must describe the subject. In the original, it modifies 'health'. Option B correctly modifies 'he'." }
+];
+
+const LOCAL_MATH_POOL: Question[] = [
+  { id: 'lm-1', category: Category.MATH, questionText: "Solve for x: 3(x - 4) = 2x + 5", options: ["9", "12", "17", "-7"], correctAnswer: 2, explanation: "3x - 12 = 2x + 5 -> x = 17." },
+  { id: 'lm-2', category: Category.MATH, questionText: "What is the slope of the line passing through (2, 5) and (4, 11)?", options: ["2", "3", "4", "6"], correctAnswer: 1, explanation: "Slope = (y2 - y1) / (x2 - x1) = (11 - 5) / (4 - 2) = 6 / 2 = 3." },
+  { id: 'lm-3', category: Category.MATH, questionText: "If a circle has a radius of 4, what is its area?", options: ["4π", "8π", "16π", "32π"], correctAnswer: 2, explanation: "Area = πr² = π(4)² = 16π." },
+  { id: 'lm-4', category: Category.MATH, questionText: "Simplify: (2x³)(4x²)", options: ["6x⁵", "8x⁵", "8x⁶", "6x⁶"], correctAnswer: 1, explanation: "Multiply coefficients (2*4=8) and add exponents (3+2=5)." },
+  { id: 'lm-5', category: Category.MATH, questionText: "A shirt is originally $40 and is on sale for 20% off. What is the sale price?", options: ["$30", "$32", "$35", "$28"], correctAnswer: 1, explanation: "20% of 40 is 8. 40 - 8 = 32." },
+  { id: 'lm-6', category: Category.MATH, questionText: "Solve the system: y = 2x and y = x + 4", options: ["(2, 4)", "(4, 8)", "(3, 6)", "(4, 4)"], correctAnswer: 1, explanation: "Set 2x = x + 4, so x = 4. Then y = 2(4) = 8." },
+  { id: 'lm-7', category: Category.MATH, questionText: "What is the probability of rolling a sum of 7 with two six-sided dice?", options: ["1/6", "1/12", "1/36", "5/36"], correctAnswer: 0, explanation: "Pairs: (1,6), (2,5), (3,4), (4,3), (5,2), (6,1). 6 pairs out of 36 total outcomes = 6/36 = 1/6." },
+  { id: 'lm-8', category: Category.MATH, questionText: "What is the value of 5! (5 factorial)?", options: ["15", "50", "100", "120"], correctAnswer: 3, explanation: "5 * 4 * 3 * 2 * 1 = 120." },
+  { id: 'lm-9', category: Category.MATH, questionText: "If f(x) = 2x² - 3x + 1, find f(-2).", options: ["3", "15", "-1", "-13"], correctAnswer: 1, explanation: "2(-2)² - 3(-2) + 1 = 2(4) + 6 + 1 = 8 + 6 + 1 = 15." },
+  { id: 'lm-10', category: Category.MATH, questionText: "The sum of three consecutive integers is 45. What is the largest integer?", options: ["14", "15", "16", "17"], correctAnswer: 2, explanation: "x + (x+1) + (x+2) = 45 -> 3x + 3 = 45 -> 3x = 42 -> x = 14. Integers are 14, 15, 16." },
+  { id: 'lm-11', category: Category.MATH, questionText: "What is the hypotenuse of a right triangle with legs 5 and 12?", options: ["13", "15", "17", "14"], correctAnswer: 0, explanation: "a² + b² = c². 25 + 144 = 169. √169 = 13." },
+  { id: 'lm-12', category: Category.MATH, questionText: "Simplify: √75", options: ["3√5", "5√3", "25√3", "15"], correctAnswer: 1, explanation: "√75 = √(25 * 3) = 5√3." }
+  { id: 'lm-13', category: Category.MATH, questionText: "Factor the expression: x² - 9", options: ["(x-3)(x+3)", "(x-3)(x-3)", "(x+3)(x+3)", "(x-9)(x+1)"], correctAnswer: 0, explanation: "Difference of squares: a² - b² = (a-b)(a+b)." },
+  { id: 'lm-14', category: Category.MATH, questionText: "Find the median of the set: 2, 5, 9, 3, 5, 4", options: ["4", "4.5", "5", "3"], correctAnswer: 1, explanation: "Order: 2, 3, 4, 5, 5, 9. Middle two are 4 and 5. Average is 4.5." },
+  { id: 'lm-15', category: Category.MATH, questionText: "A car travels 150 miles in 3 hours. What is its average speed?", options: ["50 mph", "45 mph", "60 mph", "55 mph"], correctAnswer: 0, explanation: "Speed = Distance / Time = 150 / 3 = 50." },
+  { id: 'lm-16', category: Category.MATH, questionText: "What is the value of 2⁻³?", options: ["1/8", "-6", "-8", "1/6"], correctAnswer: 0, explanation: "Negative exponent means reciprocal: 1/(2³) = 1/8." },
+  { id: 'lm-17', category: Category.MATH, questionText: "Solve for y: 4y + 2 > 10", options: ["y > 2", "y > 3", "y < 2", "y = 2"], correctAnswer: 0, explanation: "4y > 8 -> y > 2." },
+  { id: 'lm-18', category: Category.MATH, questionText: "What is the perimeter of a rectangle with length 8 and width 5?", options: ["26", "40", "13", "20"], correctAnswer: 0, explanation: "P = 2(l + w) = 2(8 + 5) = 2(13) = 26." },
+  { id: 'lm-19', category: Category.MATH, questionText: "Simplify: (x + 2)(x + 5)", options: ["x² + 7x + 10", "x² + 10x + 7", "x² + 7x + 7", "x² + 3x + 10"], correctAnswer: 0, explanation: "FOIL: x² + 5x + 2x + 10 = x² + 7x + 10." },
+  { id: 'lm-20', category: Category.MATH, questionText: "If 3x = 2x + 7, what is x?", options: ["7", "5", "-7", "0"], correctAnswer: 0, explanation: "Subtract 2x from both sides: x = 7." }
+  { id: 'lm-21', category: Category.MATH, questionText: "A train leaves City A traveling at 60 mph. Two hours later, a second train leaves City A on a parallel track traveling at 80 mph. How long will it take the second train to catch the first?", options: ["4 hours", "6 hours", "8 hours", "5 hours"], correctAnswer: 1, explanation: "Train 1 is 120 miles ahead (60mph * 2h). Relative speed is 20mph (80-60). Time = Distance/Relative Speed = 120/20 = 6 hours." },
+  { id: 'lm-22', category: Category.MATH, questionText: "The sum of three consecutive odd integers is 159. What is the product of the first and the third integer?", options: ["2703", "2805", "2915", "2695"], correctAnswer: 1, explanation: "Integers are x, x+2, x+4. 3x+6=159 -> 3x=153 -> x=51. Integers are 51, 53, 55. Product 51*55 = 2805." },
+  { id: 'lm-23', category: Category.MATH, questionText: "A store increases the price of a jacket by 20%. After a week, they decrease the new price by 20%. How does the final price compare to the original price?", options: ["It is the same.", "It is 4% lower.", "It is 4% higher.", "It is 2% lower."], correctAnswer: 1, explanation: "Let original = 100. Increase 20% -> 120. Decrease 20% of 120 (24) -> 96. 96 is 4% lower than 100." },
+  { id: 'lm-24', category: Category.MATH, questionText: "If 3x + 2y = 12 and x - y = 4, what is the value of x + y?", options: ["4", "0", "8", "6"], correctAnswer: 0, explanation: "From x-y=4, x=y+4. Sub into eq1: 3(y+4)+2y=12 -> 3y+12+2y=12 -> 5y=0 -> y=0. If y=0, x=4. x+y = 4+0 = 4." },
+  { id: 'lm-25', category: Category.MATH, questionText: "A rectangular garden has a perimeter of 40 feet. If the length is 4 feet more than the width, what is the area?", options: ["96 sq ft", "80 sq ft", "100 sq ft", "64 sq ft"], correctAnswer: 0, explanation: "2L + 2W = 40 -> L+W=20. L=W+4. (W+4)+W=20 -> 2W=16 -> W=8. L=12. Area = 12*8 = 96." },
+  { id: 'lm-26', category: Category.MATH, questionText: "Two dice are rolled. What is the probability that the sum of the numbers is at least 10?", options: ["1/6", "1/12", "1/9", "5/36"], correctAnswer: 0, explanation: "Outcomes >= 10: (4,6), (5,5), (5,6), (6,4), (6,5), (6,6). That's 6 outcomes. Total is 36. 6/36 = 1/6." },
+  { id: 'lm-27', category: Category.MATH, questionText: "Find the value of k if the line passing through (1, k) and (3, 5) has a slope of 2.", options: ["1", "2", "3", "-1"], correctAnswer: 0, explanation: "Slope = (y2-y1)/(x2-x1) -> 2 = (5-k)/(3-1) -> 2 = (5-k)/2 -> 4 = 5-k -> k=1." },
+  { id: 'lm-28', category: Category.MATH, questionText: "A tank is 40% full. If 12 gallons are added, it becomes 70% full. What is the total capacity of the tank?", options: ["30 gallons", "40 gallons", "50 gallons", "60 gallons"], correctAnswer: 1, explanation: "Difference is 30% (70-40). 30% of Capacity = 12. 0.3C = 12 -> C = 12/0.3 = 40." },
+  { id: 'lm-29', category: Category.MATH, questionText: "Simplify the expression: (2x²y)³ / (4xy²)", options: ["2x⁵y", "2x⁵y", "2x⁵y⁻¹", "2x²y"], correctAnswer: 0, explanation: "Numerator: 8x⁶y³. Denominator: 4xy². 8/4=2. x⁶/x=x⁵. y³/y²=y. Result: 2x⁵y." },
+  { id: 'lm-30', category: Category.MATH, questionText: "The average of 5 numbers is 20. If one number is removed, the average of the remaining 4 numbers is 22. What number was removed?", options: ["10", "12", "15", "8"], correctAnswer: 1, explanation: "Sum of 5 = 5*20 = 100. Sum of 4 = 4*22 = 88. Removed = 100 - 88 = 12." },
+  { id: 'lm-31', category: Category.MATH, questionText: "Solve for x: 2^(x+1) = 64", options: ["4", "5", "6", "3"], correctAnswer: 1, explanation: "64 = 2⁶. So x+1 = 6 -> x = 5." },
+  { id: 'lm-32', category: Category.MATH, questionText: "A worker can complete a job in 6 hours. Another worker can do it in 3 hours. How long does it take if they work together?", options: ["2 hours", "4.5 hours", "1.5 hours", "2.5 hours"], correctAnswer: 0, explanation: "Rate 1 = 1/6. Rate 2 = 1/3. Combined = 1/6 + 2/6 = 3/6 = 1/2. So 2 hours." },
+  { id: 'lm-33', category: Category.MATH, questionText: "What is the 10th term of the arithmetic sequence: 5, 8, 11, ...?", options: ["32", "35", "30", "33"], correctAnswer: 0, explanation: "a1=5, d=3. an = a1 + (n-1)d. a10 = 5 + (9)*3 = 5 + 27 = 32." },
+  { id: 'lm-34', category: Category.MATH, questionText: "The ratio of boys to girls in a club is 3:4. If there are 28 girls, how many boys are there?", options: ["21", "24", "18", "32"], correctAnswer: 0, explanation: "3/4 = B/28. 4B = 3*28 = 84. B = 21." },
+  { id: 'lm-35', category: Category.MATH, questionText: "If f(x) = x² - 1, find f(f(2)).", options: ["3", "8", "15", "0"], correctAnswer: 1, explanation: "f(2) = 2² - 1 = 3. f(3) = 3² - 1 = 8." },
+  { id: 'lm-36', category: Category.MATH, questionText: "A cylinder has a radius of 3 and a height of 5. What is its volume?", options: ["45π", "15π", "75π", "30π"], correctAnswer: 0, explanation: "V = πr²h = π(3²)(5) = π(9)(5) = 45π." },
+  { id: 'lm-37', category: Category.MATH, questionText: "What is the sum of the interior angles of a pentagon?", options: ["540°", "360°", "720°", "180°"], correctAnswer: 0, explanation: "Sum = (n-2)*180. (5-2)*180 = 3*180 = 540." },
+  { id: 'lm-38', category: Category.MATH, questionText: "Multiply: (x - 3)(x² + 3x + 9)", options: ["x³ - 27", "x³ + 27", "x³ - 9", "x³ - 6x - 27"], correctAnswer: 0, explanation: "Difference of cubes formula: (a-b)(a²+ab+b²) = a³-b³. Here, x³ - 3³ = x³ - 27." },
+  { id: 'lm-39', category: Category.MATH, questionText: "If the radius of a circle is decreased by 50%, by what percentage does the area decrease?", options: ["50%", "25%", "75%", "100%"], correctAnswer: 2, explanation: "A = πr². If r becomes 0.5r, A_new = π(0.5r)² = 0.25πr². The new area is 25% of original, so it decreased by 75%." },
+  { id: 'lm-40', category: Category.MATH, questionText: "Solve for x: |2x - 5| = 7", options: ["6 and -1", "1 and -6", "6 and 1", "2 and -5"], correctAnswer: 0, explanation: "2x-5=7 -> 2x=12 -> x=6. OR 2x-5=-7 -> 2x=-2 -> x=-1." }
+];
+
+// Retry wrapper for AI calls
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+async function runWithRetry<T>(fn: () => Promise<T>, retries = 2, backoff = 1000): Promise<T> {
+  try {
+    return await fn();
+  } catch (error: any) {
+    // 429: Resource Exhausted (Quota exceeded), 503: Service Unavailable
+    if (retries > 0 && (error?.status === 429 || error?.code === 429 || error?.message?.includes('429') || error?.status === 503)) {
+      console.warn(`API Rate Limit hit. Retrying in ${backoff}ms...`);
+      await delay(backoff);
+      return runWithRetry(fn, retries - 1, backoff * 2);
+    }
+    throw error;
+  }
+}
+
+// Local Fallback Generators
+const generateLocalVocabQuestions = (count: number): Question[] => {
+  const shuffled = [...FULL_PREP_VOCAB].sort(() => Math.random() - 0.5);
+  const questions: Question[] = [];
+  
+  for (let i = 0; i < Math.min(count, shuffled.length); i++) {
+    const wordObj = shuffled[i];
+    const distractors = shuffled
+      .filter(w => w.word !== wordObj.word)
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 3)
+      .map(w => w.definition);
+    
+    const options = [wordObj.definition, ...distractors].sort(() => Math.random() - 0.5);
+    
+    questions.push({
+      id: `local-vocab-${i}-${Date.now()}`,
+      category: Category.VOCABULARY,
+      questionText: `What is the definition of "${wordObj.word}"?`,
+      options: options,
+      correctAnswer: options.indexOf(wordObj.definition),
+      explanation: `${wordObj.word}: ${wordObj.definition}`
+    });
+  }
+  return questions;
+};
+
+const shuffleOptions = (question: Question): Question => {
+  const currentOptions = [...question.options];
+  const correctText = currentOptions[question.correctAnswer];
+  
+  // Fisher-Yates shuffle
+  for (let i = currentOptions.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [currentOptions[i], currentOptions[j]] = [currentOptions[j], currentOptions[i]];
+  }
+  
+  const newCorrectIndex = currentOptions.indexOf(correctText);
+  
+  return {
+    ...question,
+    options: currentOptions,
+    correctAnswer: newCorrectIndex
+  };
+};
+
+const getLocalQuestions = (category: Category, count: number): Question[] => {
+  let pool: Question[] = [];
+  if (category === Category.SPELLING) pool = LOCAL_SPELLING_POOL;
+  else if (category === Category.GRAMMAR) pool = LOCAL_GRAMMAR_POOL;
+  else if (category === Category.MATH) pool = LOCAL_MATH_POOL;
+
+  
+  if (pool.length === 0) return [];
+  
+  const shuffled = [...pool].sort(() => Math.random() - 0.5);
+  // Ensure we return enough questions if possible, repeating if pool is smaller than count (unlikely with updates but safe)
+  let result = shuffled.slice(0, count).map(q => {
+    const qWithId = {...q, id: `${q.id}-${Date.now()}`};
+    return shuffleOptions(qWithId);
+  });
+  
+  if (result.length < count && pool.length > 0) {
+      // If we requested more than we have unique, fill with duplicates (or just return what we have)
+      // For a better UX, we'll just return what we have to avoid duplicate IDs unless we regenerate IDs.
+      // Given the pools are now >10, this block is mostly a fallback for safety.
+      return result; 
+  }
+  return result;
+};
+
+export const generateQuestions = async (category: Category, count: number = 10): Promise<Question[]> => {
+  // Enhanced prompt to force difficulty
+  const systemInstruction = `You are a world-class tutor for the NJ MCVSD high school admissions test. 
+  Create ${count} VERY DIFFICULT, challenging questions for 8th grade honors students. 
+ 
+  For MATH: Focus on multi-step WORD PROBLEMS involving algebra (systems of equations, rates), geometry (area/volume changes), and probability. Do NOT generate simple one-step arithmetic.
+  For GRAMMAR: Focus on subtle errors in complex sentences (dangling modifiers, subjunctive mood, pronoun-antecedent agreement with indefinite pronouns).
+  For SPELLING: Use difficult, commonly misspelled academic words (e.g., surveillance, maneuver, conscience).
+  
+  Return strictly as a JSON array.`;
+  try {
+    const response = await runWithRetry(async () => {
+      const resp = await ai.models.generateContent({
+        model: 'gemini-3-pro-preview',
+        contents: `Generate ${count} ${category} questions. Return as JSON array.`,
+        config: {
+          systemInstruction,
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: Type.ARRAY,
+            items: {
+              type: Type.OBJECT,
+              properties: {
+                id: { type: Type.STRING },
+                category: { type: Type.STRING },
+                passage: { type: Type.STRING },
+                questionText: { type: Type.STRING },
+                options: { type: Type.ARRAY, items: { type: Type.STRING } },
+                correctAnswer: { type: Type.INTEGER },
+                explanation: { type: Type.STRING }
+              },
+              required: ["id", "category", "questionText", "options", "correctAnswer", "explanation"]
+            }
+          }
+        }
+      });
+      return resp;
+    });
+    
+    const parsed = JSON.parse(response.text || "[]");
+    if (parsed.length === 0) throw new Error("Empty AI response");
+    return parsed;
+  } catch (e) {
+    console.error("AI Generation failed, using fallback:", e);
+    if (category === Category.VOCABULARY) return generateLocalVocabQuestions(count);
+    return getLocalQuestions(category, count);
+  }
+};
+  
+
+
+export const generateMockTest = async (): Promise<Question[]> => {
+  // A mock test usually aggregates categories. 
+  // We try to get AI to generate them, but fail gracefully to local pools.
+  try {
+    // Attempt parallel generation for speed, but catch individual failures
+    const results = await Promise.allSettled([
+      generateQuestions(Category.VOCABULARY, 5),
+      generateQuestions(Category.GRAMMAR, 5),
+      generateQuestions(Category.MATH, 5),
+      generateQuestions(Category.SPELLING, 5),
+     
+    ]);
+
+    let finalQuestions: Question[] = [];
+
+    // Helper to process results
+    const processResult = (result: PromiseSettledResult<Question[]>, category: Category, count: number) => {
+        if (result.status === 'fulfilled' && result.value.length > 0) {
+            return result.value;
+        } else {
+            // If AI failed, use local
+            if (category === Category.VOCABULARY) return generateLocalVocabQuestions(count);
+            return getLocalQuestions(category, count);
+        }
+    };
+
+    finalQuestions = [
+        ...processResult(results[0], Category.VOCABULARY, 5),
+        ...processResult(results[1], Category.GRAMMAR, 5),
+        ...processResult(results[2], Category.MATH, 5),
+        ...processResult(results[3], Category.SPELLING, 5),
+   
+    ];
+
+    return finalQuestions.sort(() => Math.random() - 0.5);
+
+  } catch (e) {
+    // Ultimate fallback if Promise.allSettled crashes (unlikely)
+    const v = generateLocalVocabQuestions(5);
+    const g = getLocalQuestions(Category.GRAMMAR, 5);
+    const s = getLocalQuestions(Category.SPELLING, 5);
+    const m = getLocalQuestions(Category.MATH, 5);
+    return [...v, ...g, ...s, ...m].sort(() => Math.random() - 0.5);
+  }
+};
+
+export const generateReadingTest = async (): Promise<Question[]> => {
+  if (PDF_READING_DATA.length === 0) return [];
+
+  // Shuffle the passages to get random selections
+  const shuffledPassages = [...PDF_READING_DATA].sort(() => 0.5 - Math.random());
+  
+  let selectedQuestions: Question[] = [];
+  let questionCount = 0;
+  // Target between 10-15 questions. Usually 2-3 passages depending on question count.
+  const MIN_TARGET = 10;
+  
+  for (const passageData of shuffledPassages) {
+    // If we have already met the minimum target, stop adding passages
+    if (questionCount >= MIN_TARGET) break;
+
+    const contextQuestions = passageData.questions.map(q => ({
+      ...q,
+      passage: passageData.passage // Attach passage to each question for context in UI
+    }));
+
+    selectedQuestions = [...selectedQuestions, ...contextQuestions];
+    questionCount += contextQuestions.length;
+  }
+  
+  return selectedQuestions;
+};
+
+export const generateVocabTest = async (count: number = 10): Promise<Question[]> => generateQuestions(Category.VOCABULARY, count);
+export const generateGrammarTest = async (count: number = 10): Promise<Question[]> => generateQuestions(Category.GRAMMAR, count);
+export const generateSpellingTest = async (count: number = 10): Promise<Question[]> => generateQuestions(Category.SPELLING, count);
+
+export const generateGrammarLesson = async (topic: string): Promise<GrammarLesson> => {
+  try {
+    const response = await runWithRetry(async () => {
+      const resp = await ai.models.generateContent({
+        model: 'gemini-3-pro-preview',
+        contents: `Teach ${topic} for MCVSD test. Include rules and one quick check question.`,
+        config: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: Type.OBJECT,
+            properties: {
+              topic: { type: Type.STRING },
+              explanation: { type: Type.STRING },
+              examples: { type: Type.ARRAY, items: { type: Type.STRING } },
+              quickCheck: {
+                type: Type.OBJECT,
+                properties: {
+                  question: { type: Type.STRING },
+                  options: { type: Type.ARRAY, items: { type: Type.STRING } },
+                  correctAnswer: { type: Type.INTEGER },
+                  explanation: { type: Type.STRING }
+                },
+                required: ["question", "options", "correctAnswer", "explanation"]
+              }
+            },
+            required: ["topic", "explanation", "examples", "quickCheck"]
+          }
+        }
+      });
+      return resp;
+    });
+    return JSON.parse(response.text || "{}");
+  } catch (e) {
+    console.warn("Failed to generate grammar lesson, falling back.", e);
+    return FALLBACK_GRAMMAR_DATA[topic] || FALLBACK_GRAMMAR_DATA["Comma Mastery: Essential vs Non-Essential"]; 
+  }
+  
+};
+
+export const generateVocabulary = async (): Promise<VocabularyWord[]> => {
+  return FULL_PREP_VOCAB;
+};
+
+export const generateShortDefinitions = async (words: VocabularyWord[]): Promise<{ word: string, shortDef: string }[]> => {
+  try {
+    const response = await runWithRetry(async () => {
+      return await ai.models.generateContent({
+        model: 'gemini-3-flash-preview',
+        contents: `For these words, provide very short (4-6 words) definitions: ${JSON.stringify(words.map(w => w.word))}`,
+        config: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: Type.ARRAY,
+            items: {
+              type: Type.OBJECT,
+              properties: {
+                word: { type: Type.STRING },
+                shortDef: { type: Type.STRING }
+              },
+              required: ["word", "shortDef"]
+            }
+          }
+        }
+      });
+    });
+    return JSON.parse(response.text || "[]");
+  } catch {
+    return words.map(w => ({ word: w.word, shortDef: w.definition.split(' ').slice(0, 5).join(' ') + '...' }));
+  }
+};
