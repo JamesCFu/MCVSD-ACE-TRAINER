@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { UserStats, VocabularyWord, Category, Question } from '../types';
 import { generateShortDefinitions } from '../geminiService';
 
@@ -23,7 +23,7 @@ const hashString = (str: string) => {
 };
 
 const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoading, onAwardXP, onRecordAnswer, onLogMistake }) => {
-  const [mode, setMode] = useState<'list' | 'flashcards' | 'matching'>('list');
+  const [mode, setMode] = useState<'list' | 'flashcards' | 'matching' | 'racecar'>('list');
   const [showAdvanceConfirm, setShowAdvanceConfirm] = useState(false);
   const [selectedWord, setSelectedWord] = useState<VocabularyWord | null>(null);
 
@@ -37,6 +37,26 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
   const [matchingError, setMatchingError] = useState<string | null>(null);
   const [matchingGameWords, setMatchingGameWords] = useState<{ word: string, shortDef: string }[]>([]);
   const [isMatchingLoading, setIsMatchingLoading] = useState(false);
+
+  // Race Game State
+  const [raceStarted, setRaceStarted] = useState(false);
+  const [raceIndex, setRaceIndex] = useState(0);
+  const [raceProgress, setRaceProgress] = useState(0);
+  const [raceFinished, setRaceFinished] = useState(false);
+  const [raceFeedback, setRaceFeedback] = useState<string | null>(null);
+  const [raceOptions, setRaceOptions] = useState<string[]>([]);
+  const [raceQuestion, setRaceQuestion] = useState<string>('');
+  const [raceTimeLeft, setRaceTimeLeft] = useState(5);
+  const [raceBoost, setRaceBoost] = useState<'none' | 'speed' | 'turbo'>('none');
+  const [elapsedRaceTime, setElapsedRaceTime] = useState(0);
+  const [raceWords, setRaceWords] = useState<VocabularyWord[]>([]);
+  
+  const raceTimerRef = useRef<number | null>(null);
+  const raceStartTimeRef = useRef<number>(0);
+  const stopwatchRef = useRef<number | null>(null);
+
+
+
 
   const currentDay = stats.dailyVocabDay || 1;
   const currentSeed = stats.dailyVocabSeed || 0;
@@ -91,6 +111,8 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     setMatches(new Set());
     setSelectedMatch(null);
     setMatchingError(null);
+    setRaceStarted(false);
+    setRaceFinished(false);
 
     const fetchShortDefs = async () => {
       if (dailyWords.length > 0 && mode === 'matching') {
@@ -112,6 +134,21 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
 
     fetchShortDefs();
   }, [mode, dailyWords]);
+
+  // Clean up race timer on unmount
+  useEffect(() => {
+    return () => {
+      if (raceTimerRef.current) clearInterval(raceTimerRef.current);
+      if (stopwatchRef.current) clearInterval(stopwatchRef.current);
+    };
+  }, []);
+
+  const formatTime = (ms: number) => {
+    const minutes = Math.floor(ms / 60000);
+    const seconds = Math.floor((ms % 60000) / 1000);
+    const milliseconds = Math.floor((ms % 1000) / 10);
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(2, '0')}`;
+  };
 
   const handleFlashcardNav = (direction: 'next' | 'prev') => {
     if (dailyWords.length === 0) return;
@@ -157,6 +194,135 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
       setSelectedMatch({ id, type });
     }
   };
+
+  // Race Logic
+  const generateRaceStep = (idx: number, set: VocabularyWord[]) => {
+    if (set.length === 0) return;
+    const safeIndex = idx % set.length;
+    const current = set[safeIndex];
+    setRaceQuestion(current.definition);
+    const correct = current.word;
+    const others = set.filter(w => w.word !== correct).sort(() => Math.random() - 0.5).slice(0, 3).map(w => w.word);
+    setRaceOptions([correct, ...others].sort(() => Math.random() - 0.5));
+    setRaceTimeLeft(5);
+  };
+
+  const startRace = () => {
+    const shuffled = [...dailyWords].sort(() => Math.random() - 0.5);
+    setRaceWords(shuffled);
+    setRaceStarted(true);
+    setRaceFinished(false);
+    setRaceProgress(0);
+    setRaceIndex(0);
+    setRaceFeedback(null);
+    setRaceBoost('none');
+    
+    raceStartTimeRef.current = Date.now();
+    setElapsedRaceTime(0);
+    stopwatchRef.current = window.setInterval(() => {
+      setElapsedRaceTime(Date.now() - raceStartTimeRef.current);
+    }, 50);
+
+    generateRaceStep(0, shuffled);
+  };
+
+  const handleRaceAnswer = (answer: string) => {
+    if (raceFeedback || raceFinished) return;
+    
+    const safeIndex = raceIndex % raceWords.length;
+    const correctWord = raceWords[safeIndex];
+    const isCorrect = answer === correctWord.word;
+    const timeTakenSeconds = 5 - raceTimeLeft;
+
+    if (raceTimerRef.current) clearInterval(raceTimerRef.current);
+    onRecordAnswer(isCorrect, Category.VOCABULARY);
+
+    if (isCorrect) {
+        let distanceGain = 5; // Base gain (5% means ~20 words to finish)
+        let boostType: 'none' | 'speed' | 'turbo' = 'none';
+
+        if (timeTakenSeconds < 1.5) {
+            distanceGain += 3; // Turbo: +3% (Total 8%)
+            boostType = 'turbo';
+        } else if (timeTakenSeconds < 3) {
+            distanceGain += 1.5; // Speed: +1.5% (Total 6.5%)
+            boostType = 'speed';
+        }
+
+        setRaceFeedback('correct');
+        setRaceBoost(boostType);
+
+        const nextProgress = Math.min(100, raceProgress + distanceGain);
+        setRaceProgress(nextProgress);
+        onAwardXP(20);
+        
+        // Manual Mastery Update since we don't have the prop passed down directly in this view context usually
+        setStats(prev => {
+            const currentMastery = Number(prev.wordMastery?.[answer]) || 0;
+            return {
+                ...prev,
+                wordMastery: {
+                    ...(prev.wordMastery || {}),
+                    [answer]: Math.min(100, Math.max(0, currentMastery + 5))
+                }
+            };
+        });
+
+        if (nextProgress >= 100) {
+            const finalTime = Date.now() - raceStartTimeRef.current;
+            if (stopwatchRef.current) clearInterval(stopwatchRef.current);
+            
+            // Update Personal Best if beat
+            if (!stats.fastestRaceTime || finalTime < stats.fastestRaceTime) {
+                setStats(prev => ({ ...prev, fastestRaceTime: finalTime }));
+            }
+
+            setTimeout(() => setRaceFinished(true), 1000);
+        } else {
+            setTimeout(() => {
+                setRaceFeedback(null);
+                setRaceBoost('none');
+                setRaceIndex(i => i + 1);
+                generateRaceStep(raceIndex + 1, raceWords);
+            }, 1000);
+        }
+    } else {
+        setRaceFeedback(answer === "" ? 'timeout' : answer);
+        setRaceBoost('none');
+        
+        onLogMistake({
+            id: `daily-race-err-${Date.now()}`,
+            category: Category.VOCABULARY,
+            questionText: `Which word matches: "${correctWord.definition}"?`,
+            options: raceOptions,
+            correctAnswer: raceOptions.indexOf(correctWord.word),
+            explanation: `Missed in Daily Raceway. Word: ${correctWord.word}. Definition: ${correctWord.definition}`
+        });
+
+        setTimeout(() => {
+            setRaceFeedback(null);
+            setRaceIndex(i => i + 1);
+            generateRaceStep(raceIndex + 1, raceWords);
+        }, 1000);
+    }
+  };
+
+  useEffect(() => {
+    if (raceStarted && !raceFinished && !raceFeedback) {
+        raceTimerRef.current = window.setInterval(() => {
+            setRaceTimeLeft(prev => {
+                if (prev <= 0.1) {
+                    handleRaceAnswer("");
+                    return 0;
+                }
+                return prev - 0.1;
+            });
+        }, 100);
+    }
+    return () => { if (raceTimerRef.current) clearInterval(raceTimerRef.current); };
+  }, [raceStarted, raceFinished, raceFeedback, raceIndex, raceWords]);
+
+
 
   const handleMarkAsDone = () => {
     if (stats.dailyVocabCompleted) return;
@@ -231,6 +397,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
         <button onClick={() => setMode('list')} className={`px-8 py-3.5 rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest transition-all ${mode === 'list' ? 'bg-white text-indigo-700 shadow-md' : 'text-slate-600 hover:text-slate-800'}`}>Word List</button>
         <button onClick={() => setMode('flashcards')} className={`px-8 py-3.5 rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest transition-all ${mode === 'flashcards' ? 'bg-white text-indigo-700 shadow-md' : 'text-slate-600 hover:text-slate-800'}`}>Flashcards</button>
         <button onClick={() => setMode('matching')} className={`px-8 py-3.5 rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest transition-all ${mode === 'matching' ? 'bg-white text-indigo-700 shadow-md' : 'text-slate-600 hover:text-slate-800'}`}>Match Grid</button>
+        <button onClick={() => setMode('racecar')} className={`px-8 py-3.5 rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest transition-all ${mode === 'racecar' ? 'bg-white text-indigo-700 shadow-md' : 'text-slate-600 hover:text-slate-800'}`}>Speed Circuit</button>
       </div>
 
       {mode === 'list' && (
@@ -291,6 +458,97 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
                  {matchingPairs.defs.map((item) => (
                    <button key={`def-${item.id}`} disabled={matches.has(item.id)} onClick={() => handleMatch(item.id, 'def')} className={`w-full p-5 h-24 rounded-2xl border-2 font-medium text-xs text-center transition-all duration-200 flex items-center justify-center ${matches.has(item.id) ? 'bg-emerald-50 border-emerald-200 text-emerald-600 opacity-20 cursor-not-allowed' : (selectedMatch?.id === item.id && selectedMatch.type === 'def' ? 'border-indigo-600 bg-indigo-50 shadow-xl' : 'bg-white border-slate-100 hover:border-indigo-300')} ${matchingError?.includes(item.id) ? 'border-rose-500 bg-rose-50 animate-shake' : ''}`}>{item.text}</button>
                  ))}
+                 </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {mode === 'racecar' && (
+        <div className="py-4">
+           {!raceStarted ? (
+             <div className="max-w-2xl mx-auto bg-slate-900 p-16 rounded-[4rem] text-center border-b-[12px] border-indigo-600 shadow-2xl relative overflow-hidden group">
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+                <div className="relative z-10">
+                  <div className="text-9xl mb-10 text-emerald-400 group-hover:scale-110 transition-transform duration-500">🏎️</div>
+                  <h3 className="text-4xl font-black text-white mb-4 italic tracking-tighter uppercase">Daily Circuit</h3>
+                  <p className="text-slate-400 mb-8 text-lg font-medium">Test your daily word mastery against the clock.</p>
+                  
+                  {stats.fastestRaceTime && (
+                    <div className="inline-flex items-center gap-2 bg-emerald-500/20 px-6 py-2 rounded-full border border-emerald-500/30 mb-10">
+                      <svg className="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" /></svg>
+                      <span className="text-emerald-300 font-black uppercase text-xs tracking-widest">Personal Best: {formatTime(stats.fastestRaceTime)}</span>
+                    </div>
+                  )}
+
+                  <button onClick={startRace} className="w-full py-8 bg-white text-indigo-900 rounded-[2.5rem] font-black uppercase tracking-[0.5em] shadow-[0_0_40px_rgba(255,255,255,0.3)] hover:scale-105 transition-all hover:bg-emerald-400 hover:text-emerald-950">Start Engine</button>
+                </div>
+             </div>
+           ) : !raceFinished ? (
+             <div className="max-w-3xl mx-auto bg-slate-900 p-12 rounded-[4rem] shadow-2xl border border-white/10 overflow-hidden relative">
+                {/* Speed Lines Animation */}
+                <div className="absolute inset-0 opacity-10 pointer-events-none overflow-hidden">
+                   <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.2)_50%,transparent_100%)] bg-[length:200%_100%] animate-speed-lines"></div>
+                </div>
+
+                <div className="relative z-10">
+                  <div className="flex justify-between items-start mb-10">
+                     <div className="text-center bg-white/5 p-4 rounded-3xl border border-white/10 backdrop-blur-sm">
+                        <div className="text-4xl font-black text-white font-mono tabular-nums tracking-widest">{formatTime(elapsedRaceTime)}</div>
+                        <div className="text-[9px] font-black text-slate-500 uppercase tracking-[0.3em] mt-1">Total Time</div>
+                     </div>
+                     
+                     {/* Progress Track */}
+                     <div className="flex-1 px-8 pt-4">
+                        <div className="relative h-6 bg-slate-800 rounded-full border border-slate-700">
+                           <div 
+                              className="absolute top-0 left-0 h-full bg-gradient-to-r from-indigo-600 to-emerald-400 rounded-full transition-all duration-300 ease-out shadow-[0_0_20px_rgba(52,211,153,0.5)]" 
+                              style={{ width: `${raceProgress}%` }}
+                           >
+                              {/* Car Icon */}
+                              <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 text-2xl filter drop-shadow-lg transform scale-x-[-1]">🏎️</div>
+                           </div>
+                           <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-white/30 rounded-full"></div>
+                        </div>
+                        <div className="flex justify-between mt-2 text-[9px] font-black text-slate-500 uppercase tracking-widest px-1">
+                           <span>Start</span>
+                           <span>Finish Line</span>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div className="text-center mb-8 relative h-12">
+                     {raceBoost === 'turbo' && (
+                        <div className="absolute inset-x-0 top-0 text-emerald-400 font-black uppercase tracking-[0.5em] text-xl animate-bounce drop-shadow-[0_0_10px_rgba(52,211,153,0.8)]">Turbo Boost! +8%</div>
+                     )}
+                     {raceBoost === 'speed' && (
+                        <div className="absolute inset-x-0 top-0 text-indigo-400 font-black uppercase tracking-[0.3em] text-lg animate-pulse">Speed Bonus! +6.5%</div>
+                     )}
+                  </div>
+
+                  <h4 className="text-2xl font-black text-white mb-10 leading-tight text-center italic bg-white/5 p-6 rounded-3xl border border-white/5">"{raceQuestion}"</h4>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                     {raceOptions.map((opt, i) => (
+                       <button key={i} disabled={!!raceFeedback} onClick={() => handleRaceAnswer(opt)} className={`py-6 rounded-3xl font-black uppercase text-sm border-2 transition-all transform active:scale-95 ${raceFeedback === 'correct' && opt === raceWords[raceIndex % raceWords.length].word ? 'bg-emerald-500 border-emerald-400 text-white shadow-[0_0_30px_rgba(16,185,129,0.6)] scale-105' : opt === raceFeedback ? 'bg-rose-600 border-rose-500 text-white' : 'bg-slate-800 border-slate-700 text-slate-300 hover:border-indigo-500 hover:bg-slate-700 hover:text-white'}`}>{opt}</button>
+                     ))}
+                  </div>
+                </div>
+             </div>
+           ) : (
+             <div className="max-w-2xl mx-auto text-center py-24 bg-slate-900 rounded-[5rem] shadow-2xl text-white border-b-[12px] border-emerald-600 relative overflow-hidden">
+                <div className="absolute inset-0 bg-emerald-900/20"></div>
+                <div className="relative z-10">
+                  <div className="text-9xl mb-8 animate-bounce">🏁</div>
+                  <h4 className="text-5xl font-black mb-4 tracking-tighter uppercase text-white">Race Complete</h4>
+                  <div className="text-8xl font-mono font-black text-emerald-400 mb-12 tracking-tighter drop-shadow-2xl">{formatTime(elapsedRaceTime)}</div>
+                  
+                  {stats.fastestRaceTime === elapsedRaceTime && (
+                    <div className="inline-block px-8 py-3 bg-yellow-500/20 border border-yellow-500 rounded-full text-yellow-300 font-black uppercase tracking-widest mb-10 animate-pulse">New Personal Record!</div>
+                  )}
+
+                  <button onClick={() => setRaceStarted(false)} className="px-20 py-8 bg-white text-emerald-900 rounded-[3rem] font-black uppercase text-sm tracking-widest shadow-xl hover:scale-105 transition-all">Return to Hub</button>
+                
               </div>
             </div>
           )}
@@ -391,6 +649,11 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
         .rotate-y-180 { transform: rotateY(180deg); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        @keyframes speed-lines {
+          0% { background-position: 0 0; }
+          100% { background-position: -200% 0; }
+        }
+        .animate-speed-lines { animation: speed-lines 0.5s linear infinite; }
       `}</style>
     </div>
   );
