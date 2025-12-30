@@ -1,13 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Category, Question } from '../types';
-import { 
-  generateQuestions, 
-  generateVocabTest, 
-  generateGrammarTest, 
-  generateSpellingTest, 
-  generateMockTest, 
-  generateReadingTest 
-} from '../geminiService';
+import { generateQuestions, generateVocabTest, generateGrammarTest, generateSpellingTest, generateMockTest, generateReadingTest } from '../geminiService';
 
 interface PracticeProps {
   category: Category;
@@ -19,46 +12,35 @@ interface PracticeProps {
 
 const Practice: React.FC<PracticeProps> = ({ category, onFinish, onRecordOnly, onLogMistake, onExit }) => {
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [passage, setPassage] = useState<string | null>(null);
   const [userAnswers, setUserAnswers] = useState<Record<string, number>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadQuestions = async () => {
       setLoading(true);
-      setError(null);
       try {
         let data: Question[] = [];
         
-        // Routing logic based on category
-        if (category === Category.VOCABULARY) {
-          data = await generateVocabTest(10);
-        } else if (category === Category.GRAMMAR) {
-          data = await generateGrammarTest(10);
-        } else if (category === Category.SPELLING) {
-          data = await generateSpellingTest(10);
+        if (category === Category.READING) {
+           const readingData = await generateReadingTest();
+           // In readingData.ts, data is an array of objects: { passage: "...", questions: [] }
+           if (readingData && readingData.length > 0) {
+             setPassage(readingData[0].passage);
+             data = readingData[0].questions;
+           }
+        } else if (category === Category.VOCABULARY) {
+           data = await generateVocabTest(10);
         } else if (category === Category.MOCK) {
-          data = await generateMockTest();
-        } else if (category === Category.READING) {
-          const readingData = await generateReadingTest();
-          if (Array.isArray(readingData) && readingData.length > 0) {
-          data = readingData[0].questions;
-        } else if (readingData && readingData.questions) {
-          data = readingData.questions;
-        }
-          
+           data = await generateMockTest();
         } else {
-          data = await generateQuestions(category, 10);
+           data = await generateQuestions(category, 10);
         }
-
-        if (!data || data.length === 0) {
-          throw new Error("No questions returned for this category.");
-        }
-        setQuestions(data);
+        
+        setQuestions(data || []);
       } catch (err) {
-        console.error("Practice Load Error:", err);
-        setError("Failed to synchronize with the lab database.");
+        console.error("Failed to load lab data:", err);
       } finally {
         setLoading(false);
       }
@@ -67,119 +49,85 @@ const Practice: React.FC<PracticeProps> = ({ category, onFinish, onRecordOnly, o
   }, [category]);
 
   const handleSubmit = () => {
-    let correctCount = 0;
-    const mistakesFound: Question[] = [];
-    
+    let score = 0;
+    const mistakes: Question[] = [];
     questions.forEach(q => {
-      if (userAnswers[q.id] === q.correctAnswer) {
-        correctCount++;
-      } else {
-        mistakesFound.push(q);
+      if (userAnswers[q.id] === q.correctAnswer) score++;
+      else {
+        mistakes.push(q);
         onLogMistake(q);
       }
     });
-
     setIsSubmitted(true);
-    onFinish(category, correctCount, questions.length, mistakesFound, questions);
+    onFinish(category, score, questions.length, mistakes, questions);
   };
 
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh]">
-        <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p className="font-black text-indigo-900 uppercase tracking-widest text-sm">Initializing Lab...</p>
-      </div>
-    );
-  }
-
-  if (error || questions.length === 0) {
-    return (
-      <div className="text-center py-20 px-6">
-        <div className="text-6xl mb-6">⚠️</div>
-        <h3 className="text-2xl font-black text-slate-900 mb-2">Sync Failure</h3>
-        <p className="text-slate-500 font-medium mb-8">{error || "The requested module is currently empty."}</p>
-        <button onClick={onExit} className="px-8 py-3 bg-indigo-600 text-white rounded-xl font-bold">Return to Terminal</button>
-      </div>
-    );
-  }
+  if (loading) return <div className="p-20 text-center font-black animate-pulse">SYNCHRONIZING WITH DATABASE...</div>;
 
   return (
-    <div className="max-w-4xl mx-auto py-10 px-4">
-      <header className="mb-12 flex justify-between items-end">
-        <div>
-          <h2 className="text-3xl font-black text-slate-900 tracking-tight">{category}</h2>
-          <p className="text-slate-500 font-bold uppercase text-[10px] tracking-[0.2em]">Diagnostic Session Active</p>
+    <div className="max-w-4xl mx-auto py-10 px-6">
+      <div className="flex justify-between items-center mb-10">
+        <h2 className="text-3xl font-black tracking-tighter text-slate-900">{category}</h2>
+        <button onClick={onExit} className="text-xs font-bold uppercase tracking-widest text-rose-500">Abort Session</button>
+      </div>
+
+      {/* READING PASSAGE SECTION */}
+      {passage && (
+        <div className="mb-12 bg-white p-8 md:p-12 rounded-[2.5rem] border-2 border-indigo-100 shadow-xl shadow-indigo-500/5">
+          <div className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-500 mb-6">Source Material</div>
+          <div className="prose prose-slate max-w-none">
+            <p className="text-lg leading-relaxed text-slate-800 font-medium whitespace-pre-wrap">
+              {passage}
+            </p>
+          </div>
         </div>
-        <button onClick={onExit} className="text-slate-400 hover:text-rose-500 font-bold text-xs uppercase tracking-widest transition-colors">Abort Mission</button>
-      </header>
+      )}
 
       <div className="space-y-8">
         {questions.map((q, idx) => (
-          <div key={q.id} className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden transition-all hover:shadow-md">
-            <div className="p-8 md:p-12">
-              <div className="flex items-center gap-4 mb-6">
-                <span className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-black text-sm">{idx + 1}</span>
-                <div className="h-px flex-1 bg-slate-100"></div>
-              </div>
-              
-              <p className="text-xl md:text-2xl font-bold text-slate-900 leading-snug mb-8">{q.questionText}</p>
-              
-              <div className="grid grid-cols-1 gap-3">
-                {q.options.map((option, oIdx) => {
-                  const isSelected = userAnswers[q.id] === oIdx;
-                  const isCorrect = isSubmitted && oIdx === q.correctAnswer;
-                  const isWrong = isSubmitted && isSelected && oIdx !== q.correctAnswer;
-
-                  return (
-                    <button
-                      key={oIdx}
-                      disabled={isSubmitted}
-                      onClick={() => setUserAnswers(prev => ({ ...prev, [q.id]: oIdx }))}
-                      className={`group relative text-left p-6 rounded-2xl border-2 transition-all flex items-center gap-4
-                        ${isSelected ? 'border-indigo-600 bg-indigo-50/50' : 'border-slate-50 hover:border-slate-200 bg-slate-50/30'}
-                        ${isCorrect ? 'border-emerald-500 bg-emerald-50 !opacity-100' : ''}
-                        ${isWrong ? 'border-rose-500 bg-rose-50 !opacity-100' : ''}
-                        ${isSubmitted && !isSelected && !isCorrect ? 'opacity-40' : ''}
-                      `}
-                    >
-                      <span className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-black uppercase transition-all
-                        ${isSelected ? 'bg-indigo-600 text-white' : 'bg-white text-slate-400 shadow-sm'}
-                        ${isCorrect ? 'bg-emerald-500 text-white' : ''}
-                        ${isWrong ? 'bg-rose-500 text-white' : ''}
-                      `}>
-                        {String.fromCharCode(65 + oIdx)}
-                      </span>
-                      <span className={`font-bold ${isSelected ? 'text-indigo-900' : 'text-slate-600'}`}>{option}</span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {isSubmitted && (
-                <div className="mt-8 p-6 bg-slate-900 rounded-2xl">
-                  <p className="text-indigo-400 text-[10px] font-black uppercase tracking-widest mb-2">Technical Analysis</p>
-                  <p className="text-slate-300 text-sm font-medium leading-relaxed italic">{q.explanation}</p>
-                </div>
-              )}
+          <div key={q.id} className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm">
+            <p className="text-xl font-bold mb-8 text-slate-900">
+              <span className="text-indigo-600 mr-3">{idx + 1}.</span> {q.questionText}
+            </p>
+            <div className="grid gap-3">
+              {q.options.map((opt, i) => {
+                const isSelected = userAnswers[q.id] === i;
+                const isCorrect = isSubmitted && i === q.correctAnswer;
+                const isWrong = isSubmitted && isSelected && i !== q.correctAnswer;
+                
+                return (
+                  <button
+                    key={i}
+                    disabled={isSubmitted}
+                    onClick={() => setUserAnswers({ ...userAnswers, [q.id]: i })}
+                    className={`w-full text-left p-5 rounded-2xl border-2 transition-all font-bold 
+                      ${isSelected ? 'border-indigo-600 bg-indigo-50' : 'border-slate-50 bg-slate-50 hover:border-slate-200'}
+                      ${isCorrect ? 'border-emerald-500 bg-emerald-50 text-emerald-700' : ''}
+                      ${isWrong ? 'border-rose-500 bg-rose-50 text-rose-700' : ''}
+                    `}
+                  >
+                    {opt}
+                  </button>
+                );
+              })}
             </div>
+            {isSubmitted && (
+              <div className="mt-6 p-5 bg-slate-900 rounded-2xl text-slate-200 text-sm italic font-medium">
+                {q.explanation}
+              </div>
+            )}
           </div>
         ))}
       </div>
 
       {!isSubmitted && (
-        <div className="mt-16 flex justify-center sticky bottom-8">
-          <button
-            onClick={handleSubmit}
-            disabled={Object.keys(userAnswers).length < questions.length}
-            className={`px-12 py-5 rounded-2xl font-black text-sm uppercase tracking-widest shadow-2xl transition-all transform hover:scale-105 active:scale-95
-              ${Object.keys(userAnswers).length === questions.length 
-                ? 'bg-indigo-600 text-white cursor-pointer' 
-                : 'bg-slate-300 text-slate-500 cursor-not-allowed'}
-            `}
-          >
-            Submit for Evaluation
-          </button>
-        </div>
+        <button 
+          onClick={handleSubmit}
+          disabled={Object.keys(userAnswers).length < questions.length}
+          className="mt-12 w-full py-6 bg-indigo-600 text-white rounded-[2rem] font-black text-lg tracking-widest disabled:opacity-50 transition-all hover:scale-[1.01]"
+        >
+          FINALIZE EVALUATION
+        </button>
       )}
     </div>
   );
