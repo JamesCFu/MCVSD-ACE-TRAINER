@@ -947,7 +947,6 @@ const LOCAL_MATH_POOL: Question[] = [
   { id: 'lm-40', category: Category.MATH, questionText: "Solve for x: |2x - 5| = 7", options: ["6 and -1", "1 and -6", "6 and 1", "2 and -5"], correctAnswer: 0, explanation: "2x-5=7 -> 2x=12 -> x=6. OR 2x-5=-7 -> 2x=-2 -> x=-1." }
 ];
 
-// 3. Mocked functions that no longer use an API key
 const shuffleArray = <T>(array: T[]): T[] => {
   const newArr = [...array];
   for (let i = newArr.length - 1; i > 0; i--) {
@@ -960,7 +959,6 @@ const shuffleArray = <T>(array: T[]): T[] => {
 // --- Service Functions (Mocked for Local Use) ---
 
 export const generateGrammarLesson = async (topic: string): Promise<GrammarLesson> => {
-  // Simulate network delay
   await new Promise(resolve => setTimeout(resolve, 300));
   return FALLBACK_GRAMMAR_DATA[topic] || FALLBACK_GRAMMAR_DATA["Comma Mastery: Essential vs Non-Essential"];
 };
@@ -970,7 +968,6 @@ export const generateVocabulary = async (): Promise<VocabularyWord[]> => {
 };
 
 export const generateReadingTest = async (): Promise<any[]> => {
-  // Return random reading passage + questions
   const shuffled = shuffleArray(fullReadingData);
   return [shuffled[0]]; 
 };
@@ -1025,9 +1022,8 @@ export const generateMockTest = async (): Promise<Question[]> => {
   const vocab = await generateVocabTest(15);
   const grammar = await generateGrammarTest(15);
   const math = await generateMathTest(15);
-  const reading = await generateReadingTest(); // Returns a passage object, need to extract questions
+  const reading = await generateReadingTest();
   
-  // Flatten reading questions
   const readingQuestions = reading.flatMap((r: any) => r.questions).slice(0, 15);
 
   return shuffleArray([...vocab, ...grammar, ...math, ...readingQuestions]);
@@ -1053,6 +1049,3 @@ export const generateShortDefinitions = async (words: VocabularyWord[]): Promise
     shortDef: w.definition.split(' ').slice(0, 6).join(' ') + (w.definition.split(' ').length > 6 ? '...' : '')
   }));
 };
-      }
-    };
-});
