@@ -56,11 +56,18 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
   const raceStartTimeRef = useRef<number>(0);
   const stopwatchRef = useRef<number | null>(null);
 
-
-
-
   const currentDay = stats.dailyVocabDay || 1;
   const currentSeed = stats.dailyVocabSeed || 0;
+
+  // Ensure seed exists on first load for better randomness
+  useEffect(() => {
+    if (stats.dailyVocabSeed === undefined) {
+      setStats(prev => ({
+        ...prev,
+        dailyVocabSeed: Math.floor(Math.random() * 1000000)
+      }));
+    }
+  }, [stats.dailyVocabSeed, setStats]);
 
   const dailyWords = useMemo(() => {
     if (!words || words.length === 0) return [];
@@ -68,7 +75,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     const WORDS_PER_DAY = 25;
     const REVIEW_WORDS_COUNT = 5;
     
-    // 1. Sequential 20 words for the day
+    // 1. Sequential 25 words for the day
     const startIndex = ((currentDay - 1) * WORDS_PER_DAY) % words.length;
     const mainBatch: VocabularyWord[] = [];
     
@@ -77,15 +84,15 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
         if (words[idx]) mainBatch.push(words[idx]);
     }
 
-    // 2. 5 Random words from the rest of the pool (not just the next 5)
+    // 2. 5 Random words from the rest of the pool
     const restOfPool = words.filter(w => !mainBatch.some(mb => mb.word === w.word));
     
-    // Sort the rest of the pool by the persistent daily seed to get 5 "random" words
-    // that stay the same for this specific day/seed combination
+    // Sort the rest of the pool using a hash that combines word + seed + currentDay
+    // This ensures a unique random order for every specific stage
     const reviewBatch = [...restOfPool]
       .sort((a, b) => {
-        const hashA = hashString(a.word + currentSeed);
-        const hashB = hashString(b.word + currentSeed);
+        const hashA = hashString(`${a.word}-${currentSeed}-${currentDay}`);
+        const hashB = hashString(`${b.word}-${currentSeed}-${currentDay}`);
         return hashA - hashB;
       })
       .slice(0, REVIEW_WORDS_COUNT);
@@ -163,12 +170,11 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
   };
 
   const handleShuffleDeck = () => {
-  // Create a shuffled copy of the current deck
-  const shuffled = [...flashcardDeck].sort(() => Math.random() - 0.5);
-  setFlashcardDeck(shuffled);
-  setCardIndex(0);
-  setIsFlipped(false);
-};
+    const shuffled = [...flashcardDeck].sort(() => Math.random() - 0.5);
+    setFlashcardDeck(shuffled);
+    setCardIndex(0);
+    setIsFlipped(false);
+  };
 
   const handleMatch = (id: string, type: 'word' | 'def') => {
     if (matches.has(id) || matchingError) return;
@@ -251,14 +257,14 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     onRecordAnswer(isCorrect, Category.VOCABULARY);
 
     if (isCorrect) {
-        let distanceGain = 5; // Base gain (5% means ~20 words to finish)
+        let distanceGain = 5; // Base gain
         let boostType: 'none' | 'speed' | 'turbo' = 'none';
 
         if (timeTakenSeconds < 1.5) {
-            distanceGain += 3; // Turbo: +3% (Total 8%)
+            distanceGain += 3;
             boostType = 'turbo';
         } else if (timeTakenSeconds < 3) {
-            distanceGain += 1.5; // Speed: +1.5% (Total 6.5%)
+            distanceGain += 1.5;
             boostType = 'speed';
         }
 
@@ -269,7 +275,6 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
         setRaceProgress(nextProgress);
         onAwardXP(20);
         
-        // Manual Mastery Update since we don't have the prop passed down directly in this view context usually
         setStats(prev => {
             const currentMastery = Number(prev.wordMastery?.[answer]) || 0;
             return {
@@ -285,7 +290,6 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
             const finalTime = Date.now() - raceStartTimeRef.current;
             if (stopwatchRef.current) clearInterval(stopwatchRef.current);
             
-            // Update Personal Best if beat
             if (!stats.fastestRaceTime || finalTime < stats.fastestRaceTime) {
                 setStats(prev => ({ ...prev, fastestRaceTime: finalTime }));
             }
@@ -334,8 +338,6 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     }
     return () => { if (raceTimerRef.current) clearInterval(raceTimerRef.current); };
   }, [raceStarted, raceFinished, raceFeedback, raceIndex, raceWords]);
-
-
 
   const handleMarkAsDone = () => {
     if (stats.dailyVocabCompleted) return;
