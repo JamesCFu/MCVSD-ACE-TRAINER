@@ -27,6 +27,15 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
   const [showAdvanceConfirm, setShowAdvanceConfirm] = useState(false);
   const [selectedWord, setSelectedWord] = useState<VocabularyWord | null>(null);
 
+  // Stats / Progression State
+  const maxDay = stats.dailyVocabDay || 1;
+  const [viewingDay, setViewingDay] = useState(maxDay);
+
+  // Sync viewing day if user levels up
+  useEffect(() => {
+    setViewingDay(stats.dailyVocabDay || 1);
+  }, [stats.dailyVocabDay]);
+
   // Flashcard State
   const [cardIndex, setCardIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
@@ -56,7 +65,6 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
   const raceStartTimeRef = useRef<number>(0);
   const stopwatchRef = useRef<number | null>(null);
 
-  const currentDay = stats.dailyVocabDay || 1;
   const currentSeed = stats.dailyVocabSeed || 0;
 
   // Starred Words Logic
@@ -81,8 +89,8 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     const WORDS_PER_DAY = 25;
     const REVIEW_WORDS_COUNT = 5;
     
-    // 1. Sequential 20 words for the day
-    const startIndex = ((currentDay - 1) * WORDS_PER_DAY) % words.length;
+    // 1. Sequential 20 words for the day (Using viewingDay instead of maxDay)
+    const startIndex = ((viewingDay - 1) * WORDS_PER_DAY) % words.length;
     const mainBatch: VocabularyWord[] = [];
     
     for (let i = 0; i < Math.min(WORDS_PER_DAY, words.length); i++) {
@@ -90,7 +98,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
         if (words[idx]) mainBatch.push(words[idx]);
     }
 
-    // 2. 5 Random words from the rest of the pool (not just the next 5)
+    // 2. 5 Random words from the rest of the pool
     const restOfPool = words.filter(w => !mainBatch.some(mb => mb.word === w.word));
     
     // Sort the rest of the pool by the persistent daily seed to get 5 "random" words
@@ -104,7 +112,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
       .slice(0, REVIEW_WORDS_COUNT);
     
     return [...mainBatch, ...reviewBatch].sort((a, b) => a.word.localeCompare(b.word));
-  }, [words, currentDay, currentSeed]);
+  }, [words, viewingDay, currentSeed]);
 
   // Determine Flashcard Deck (Starred vs All)
   useEffect(() => {
@@ -384,6 +392,23 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handlePrevDay = () => {
+    if (viewingDay > 1) {
+      setViewingDay(prev => prev - 1);
+      // Reset games or states if necessary when switching days
+      setCardIndex(0);
+      setRaceStarted(false);
+    }
+  };
+
+  const handleNextDay = () => {
+    if (viewingDay < maxDay) {
+      setViewingDay(prev => prev + 1);
+      setCardIndex(0);
+      setRaceStarted(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh]">
@@ -393,41 +418,75 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     );
   }
 
+  const isCurrentMaxDay = viewingDay === maxDay;
+
   return (
     <div className="max-w-6xl mx-auto animate-in fade-in duration-500 pb-20">
       <header className="mb-8 flex flex-col md:flex-row justify-between items-start gap-6">
         <div className="flex-1">
           <div className="flex items-center gap-4 mb-2">
-            <h2 className="text-4xl font-black text-slate-900 tracking-tight uppercase">Daily Focus ({(dailyWords.length-5)*currentDay}/{words.length})</h2>
-            {stats.dailyVocabCompleted && (
+            <h2 className="text-4xl font-black text-slate-900 tracking-tight uppercase">Daily Focus ({(dailyWords.length-5)*viewingDay}/{words.length})</h2>
+            {isCurrentMaxDay && stats.dailyVocabCompleted && (
               <span className="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-emerald-200">Cycle Logged</span>
             )}
+            {!isCurrentMaxDay && (
+                <span className="bg-slate-100 text-slate-500 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-slate-200">Review Mode</span>
+            )}
           </div>
-          <p className="text-slate-500 font-medium italic">Mastering 25 main and 5 random review terms for Stage {currentDay}.</p>
+          <p className="text-slate-500 font-medium italic">Mastering 25 main and 5 random review terms for Stage {viewingDay}.</p>
         </div>
         
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-            <div className="flex gap-4 w-full md:w-auto">
-              <button 
-                onClick={handleMarkAsDone}
-                disabled={stats.dailyVocabCompleted}
-                className={`flex-1 md:flex-none px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest transition-all shadow-lg ${stats.dailyVocabCompleted ? 'bg-emerald-500 text-white cursor-default' : 'bg-white border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white active:scale-95'}`}
-              >
-                {stats.dailyVocabCompleted ? 'Mastery Authenticated' : 'Confirm Mastery'}
-              </button>
+            {/* Navigation Controls */}
+            <div className="flex items-center gap-4 w-full md:w-auto">
               
-              {stats.dailyVocabCompleted && (
+              {/* Back Button */}
+              {viewingDay > 1 && (
                 <button 
-                  onClick={() => setShowAdvanceConfirm(true)}
-                  className="flex-1 md:flex-none px-8 py-4 bg-indigo-600 text-white rounded-2xl font-black uppercase text-xs tracking-widest transition-all shadow-xl hover:bg-indigo-700 hover:scale-105 active:scale-95 ring-4 ring-indigo-600/10"
+                  onClick={handlePrevDay}
+                  className="w-12 h-12 flex items-center justify-center rounded-2xl bg-white border border-slate-200 text-slate-400 hover:border-indigo-400 hover:text-indigo-600 transition-all shadow-sm"
+                  title="Previous Stage"
                 >
-                  Advance to Next Stage
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+              )}
+
+              {/* Action Buttons OR Forward Button */}
+              {isCurrentMaxDay ? (
+                // Current Day - Show Mastery/Advance Buttons
+                <div className="flex gap-4">
+                  <button 
+                    onClick={handleMarkAsDone}
+                    disabled={stats.dailyVocabCompleted}
+                    className={`flex-1 md:flex-none px-8 py-3 rounded-2xl font-black uppercase text-xs tracking-widest transition-all shadow-lg min-w-[160px] flex items-center justify-center h-12 ${stats.dailyVocabCompleted ? 'bg-emerald-500 text-white cursor-default' : 'bg-white border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white active:scale-95'}`}
+                  >
+                    {stats.dailyVocabCompleted ? 'Mastery Authenticated' : 'Confirm Mastery'}
+                  </button>
+                  
+                  {stats.dailyVocabCompleted && (
+                    <button 
+                      onClick={() => setShowAdvanceConfirm(true)}
+                      className="flex-1 md:flex-none px-8 py-3 bg-indigo-600 text-white rounded-2xl font-black uppercase text-xs tracking-widest transition-all shadow-xl hover:bg-indigo-700 hover:scale-105 active:scale-95 ring-4 ring-indigo-600/10 h-12 flex items-center justify-center"
+                    >
+                      Advance
+                    </button>
+                  )}
+                </div>
+              ) : (
+                // Past Day - Show Forward Arrow Only
+                <button 
+                  onClick={handleNextDay}
+                  className="flex-1 md:flex-none w-full md:w-auto px-8 py-3 bg-white border border-slate-200 text-indigo-600 rounded-2xl font-black uppercase text-xs tracking-widest transition-all shadow-sm hover:bg-indigo-50 hover:border-indigo-200 active:scale-95 h-12 flex items-center justify-center gap-2"
+                >
+                  <span>Next Stage</span>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7"></path></svg>
                 </button>
               )}
             </div>
             
-            <div className="text-right flex-shrink-0 bg-white px-6 py-3.5 rounded-2xl shadow-sm border border-slate-100 min-w-[100px] w-full md:w-auto">
-                <div className="text-2xl font-black text-slate-800 text-center md:text-right uppercase tracking-tighter">Day {currentDay}</div>
+            {/* Day Indicator */}
+            <div className="text-right flex-shrink-0 bg-white px-6 py-3.5 rounded-2xl shadow-sm border border-slate-100 min-w-[100px] w-full md:w-auto h-16 flex items-center justify-center">
+                <div className="text-2xl font-black text-slate-800 text-center uppercase tracking-tighter">Day {viewingDay}</div>
             </div>
         </div>
       </header>
@@ -711,7 +770,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
               </div>
               <h3 className="text-2xl font-black text-slate-900 mb-3 tracking-tight uppercase">Advance Stage</h3>
               <p className="text-slate-600 font-medium leading-relaxed mb-8">
-                Confirming advancement will lock in current mastery and load the next sequential batch of vocabulary. Are you ready for Stage {currentDay + 1}?
+                Confirming advancement will lock in current mastery and load the next sequential batch of vocabulary. Are you ready for Stage {maxDay + 1}?
               </p>
               <div className="flex justify-center gap-4">
                 <button
@@ -724,7 +783,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
                   onClick={handleAdvanceDay}
                   className="px-10 py-4 bg-indigo-600 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-600/30"
                 >
-                  Initiate Stage {currentDay + 1}
+                  Initiate Stage {maxDay + 1}
                 </button>
               </div>
             </div>
