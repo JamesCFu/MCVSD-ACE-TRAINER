@@ -81,7 +81,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     const WORDS_PER_DAY = 25;
     const REVIEW_WORDS_COUNT = 5;
     
-    // 1. Sequential 20 words for the day
+    // 1. Sequential words for the day
     const startIndex = ((currentDay - 1) * WORDS_PER_DAY) % words.length;
     const mainBatch: VocabularyWord[] = [];
     
@@ -90,11 +90,9 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
         if (words[idx]) mainBatch.push(words[idx]);
     }
 
-    // 2. 5 Random words from the rest of the pool (not just the next 5)
+    // 2. 5 Random words from the rest of the pool
     const restOfPool = words.filter(w => !mainBatch.some(mb => mb.word === w.word));
     
-    // Sort the rest of the pool by the persistent daily seed to get 5 "random" words
-    // that stay the same for this specific day/seed combination
     const reviewBatch = [...restOfPool]
       .sort((a, b) => {
         const hashA = hashString(a.word + currentSeed);
@@ -109,13 +107,9 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
   // Determine Flashcard Deck (Starred vs All)
   useEffect(() => {
     const starredInDaily = dailyWords.filter(w => starredSet.has(w.word));
-    
-    // If we have starred words in this daily set, use only them. Otherwise use all.
     const newDeck = starredInDaily.length > 0 ? starredInDaily : dailyWords;
-    
     setFlashcardDeck(newDeck);
     
-    // Ensure index is valid when deck shrinks/changes
     setCardIndex(prev => {
         if (prev >= newDeck.length) return 0;
         return prev;
@@ -166,7 +160,6 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     fetchShortDefs();
   }, [mode, dailyWords]);
 
-  // Clean up race timer on unmount
   useEffect(() => {
     return () => {
       if (raceTimerRef.current) clearInterval(raceTimerRef.current);
@@ -189,12 +182,11 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
   };
 
   const handleShuffleDeck = () => {
-  // Create a shuffled copy of the current deck
-  const shuffled = [...flashcardDeck].sort(() => Math.random() - 0.5);
-  setFlashcardDeck(shuffled);
-  setCardIndex(0);
-  setIsFlipped(false);
-};
+    const shuffled = [...flashcardDeck].sort(() => Math.random() - 0.5);
+    setFlashcardDeck(shuffled);
+    setCardIndex(0);
+    setIsFlipped(false);
+  };
 
   const handleMatch = (id: string, type: 'word' | 'def') => {
     if (matches.has(id) || matchingError) return;
@@ -277,14 +269,14 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     onRecordAnswer(isCorrect, Category.VOCABULARY);
 
     if (isCorrect) {
-        let distanceGain = 5; // Base gain (5% means ~20 words to finish)
+        let distanceGain = 5;
         let boostType: 'none' | 'speed' | 'turbo' = 'none';
 
         if (timeTakenSeconds < 1.5) {
-            distanceGain += 3; // Turbo: +3% (Total 8%)
+            distanceGain += 3;
             boostType = 'turbo';
         } else if (timeTakenSeconds < 3) {
-            distanceGain += 1.5; // Speed: +1.5% (Total 6.5%)
+            distanceGain += 1.5;
             boostType = 'speed';
         }
 
@@ -295,7 +287,6 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
         setRaceProgress(nextProgress);
         onAwardXP(20);
         
-        // Manual Mastery Update since we don't have the prop passed down directly in this view context usually
         setStats(prev => {
             const currentMastery = Number(prev.wordMastery?.[answer]) || 0;
             return {
@@ -311,7 +302,6 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
             const finalTime = Date.now() - raceStartTimeRef.current;
             if (stopwatchRef.current) clearInterval(stopwatchRef.current);
             
-            // Update Personal Best if beat
             if (!stats.fastestRaceTime || finalTime < stats.fastestRaceTime) {
                 setStats(prev => ({ ...prev, fastestRaceTime: finalTime }));
             }
@@ -360,8 +350,6 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     }
     return () => { if (raceTimerRef.current) clearInterval(raceTimerRef.current); };
   }, [raceStarted, raceFinished, raceFeedback, raceIndex, raceWords]);
-
-
 
   const handleMarkAsDone = () => {
     if (stats.dailyVocabCompleted) return;
@@ -484,7 +472,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
            </div>
 
            <div className="w-full max-w-2xl h-[28rem] relative perspective-1000 cursor-pointer" onClick={() => setIsFlipped(!isFlipped)}>
-              <div className={`relative w-full h-full transition-transform duration-700 transform-style-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
+              <div className={`relative w-full h-full transition-transform duration-700 transform-style-3d ${isFlipped ? 'flip-y-180' : ''}`}>
                  <div className="absolute w-full h-full backface-hidden bg-white border-2 border-indigo-600 rounded-[3rem] shadow-2xl flex flex-col items-center justify-center p-12 text-center relative group">
                    
                    {/* Star Button for Flashcard Front */}
@@ -500,7 +488,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
                    <h2 className="text-6xl font-black text-slate-900 tracking-tighter uppercase">{flashcardDeck[cardIndex]?.word}</h2>
                    <div className="mt-16 text-slate-300 text-[10px] font-black uppercase animate-pulse tracking-[0.3em]">Flip for Definition</div>
                  </div>
-                 <div className="absolute w-full h-full backface-hidden rotate-y-180 bg-slate-900 border-2 border-indigo-50 rounded-[3rem] shadow-2xl flex flex-col items-center justify-center p-12 text-center text-white overflow-y-auto no-scrollbar relative">
+                 <div className="absolute w-full h-full backface-hidden flip-y-180 bg-slate-900 border-2 border-indigo-50 rounded-[3rem] shadow-2xl flex flex-col items-center justify-center p-12 text-center text-white overflow-y-auto no-scrollbar relative">
                    
                     {/* Star Button for Flashcard Back */}
                     <button 
@@ -730,8 +718,9 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
         .animate-shake { animation: shake 0.2s ease-in-out 0s 2; }
         .perspective-1000 { perspective: 1000px; }
         .transform-style-3d { transform-style: preserve-3d; }
-        .backface-hidden { backface-visibility: hidden; }
-        .rotate-y-180 { transform: rotateY(180deg); }
+        .backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+        .flip-y-180 { transform: rotateY(180deg); -webkit-transform: rotateY(180deg); transform-origin: center center; }
+        .rotate-y-180 { transform: rotateY(180deg); -webkit-transform: rotateY(180deg); } /* Keep for legacy reference if needed */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         @keyframes speed-lines {
