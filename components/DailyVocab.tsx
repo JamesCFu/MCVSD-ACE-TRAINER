@@ -59,15 +59,21 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
   const currentDay = stats.dailyVocabDay || 1;
   const currentSeed = stats.dailyVocabSeed || 0;
 
-  // Ensure seed exists on first load for better randomness
-  useEffect(() => {
-    if (stats.dailyVocabSeed === undefined) {
-      setStats(prev => ({
-        ...prev,
-        dailyVocabSeed: Math.floor(Math.random() * 1000000)
-      }));
-    }
-  }, [stats.dailyVocabSeed, setStats]);
+  // Starred Words Logic
+  const starredSet = useMemo(() => new Set(stats.starredWords || []), [stats.starredWords]);
+
+  const toggleStar = (e: React.MouseEvent, word: string) => {
+    e.stopPropagation(); // Prevent card click
+    setStats(prev => {
+      const current = new Set(prev.starredWords || []);
+      if (current.has(word)) {
+        current.delete(word);
+      } else {
+        current.add(word);
+      }
+      return { ...prev, starredWords: Array.from(current) };
+    });
+  };
 
   const dailyWords = useMemo(() => {
     if (!words || words.length === 0) return [];
@@ -75,7 +81,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     const WORDS_PER_DAY = 25;
     const REVIEW_WORDS_COUNT = 5;
     
-    // 1. Sequential 25 words for the day
+    // 1. Sequential 20 words for the day
     const startIndex = ((currentDay - 1) * WORDS_PER_DAY) % words.length;
     const mainBatch: VocabularyWord[] = [];
     
@@ -84,15 +90,15 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
         if (words[idx]) mainBatch.push(words[idx]);
     }
 
-    // 2. 5 Random words from the rest of the pool
+    // 2. 5 Random words from the rest of the pool (not just the next 5)
     const restOfPool = words.filter(w => !mainBatch.some(mb => mb.word === w.word));
     
-    // Sort the rest of the pool using a hash that combines word + seed + currentDay
-    // This ensures a unique random order for every specific stage
+    // Sort the rest of the pool by the persistent daily seed to get 5 "random" words
+    // that stay the same for this specific day/seed combination
     const reviewBatch = [...restOfPool]
       .sort((a, b) => {
-        const hashA = hashString(`${a.word}-${currentSeed}-${currentDay}`);
-        const hashB = hashString(`${b.word}-${currentSeed}-${currentDay}`);
+        const hashA = hashString(a.word + currentSeed);
+        const hashB = hashString(b.word + currentSeed);
         return hashA - hashB;
       })
       .slice(0, REVIEW_WORDS_COUNT);
@@ -100,9 +106,22 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     return [...mainBatch, ...reviewBatch].sort((a, b) => a.word.localeCompare(b.word));
   }, [words, currentDay, currentSeed]);
 
+  // Determine Flashcard Deck (Starred vs All)
   useEffect(() => {
-    setFlashcardDeck(dailyWords);
-  }, [dailyWords]);
+    const starredInDaily = dailyWords.filter(w => starredSet.has(w.word));
+    
+    // If we have starred words in this daily set, use only them. Otherwise use all.
+    const newDeck = starredInDaily.length > 0 ? starredInDaily : dailyWords;
+    
+    setFlashcardDeck(newDeck);
+    
+    // Ensure index is valid when deck shrinks/changes
+    setCardIndex(prev => {
+        if (prev >= newDeck.length) return 0;
+        return prev;
+    });
+
+  }, [dailyWords, starredSet]);
   
   const matchingPairs = useMemo(() => {
     if (mode !== 'matching' || matchingGameWords.length === 0) {
@@ -170,11 +189,12 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
   };
 
   const handleShuffleDeck = () => {
-    const shuffled = [...flashcardDeck].sort(() => Math.random() - 0.5);
-    setFlashcardDeck(shuffled);
-    setCardIndex(0);
-    setIsFlipped(false);
-  };
+  // Create a shuffled copy of the current deck
+  const shuffled = [...flashcardDeck].sort(() => Math.random() - 0.5);
+  setFlashcardDeck(shuffled);
+  setCardIndex(0);
+  setIsFlipped(false);
+};
 
   const handleMatch = (id: string, type: 'word' | 'def') => {
     if (matches.has(id) || matchingError) return;
@@ -257,14 +277,14 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     onRecordAnswer(isCorrect, Category.VOCABULARY);
 
     if (isCorrect) {
-        let distanceGain = 5; // Base gain
+        let distanceGain = 5; // Base gain (5% means ~20 words to finish)
         let boostType: 'none' | 'speed' | 'turbo' = 'none';
 
         if (timeTakenSeconds < 1.5) {
-            distanceGain += 3;
+            distanceGain += 3; // Turbo: +3% (Total 8%)
             boostType = 'turbo';
         } else if (timeTakenSeconds < 3) {
-            distanceGain += 1.5;
+            distanceGain += 1.5; // Speed: +1.5% (Total 6.5%)
             boostType = 'speed';
         }
 
@@ -275,6 +295,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
         setRaceProgress(nextProgress);
         onAwardXP(20);
         
+        // Manual Mastery Update since we don't have the prop passed down directly in this view context usually
         setStats(prev => {
             const currentMastery = Number(prev.wordMastery?.[answer]) || 0;
             return {
@@ -290,6 +311,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
             const finalTime = Date.now() - raceStartTimeRef.current;
             if (stopwatchRef.current) clearInterval(stopwatchRef.current);
             
+            // Update Personal Best if beat
             if (!stats.fastestRaceTime || finalTime < stats.fastestRaceTime) {
                 setStats(prev => ({ ...prev, fastestRaceTime: finalTime }));
             }
@@ -338,6 +360,8 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     }
     return () => { if (raceTimerRef.current) clearInterval(raceTimerRef.current); };
   }, [raceStarted, raceFinished, raceFeedback, raceIndex, raceWords]);
+
+
 
   const handleMarkAsDone = () => {
     if (stats.dailyVocabCompleted) return;
@@ -421,9 +445,20 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
             <div 
               key={index} 
               onClick={() => setSelectedWord(word)}
-              className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-md animate-in fade-in slide-in-from-bottom-2 group hover:border-indigo-300 transition-all cursor-pointer hover:shadow-xl transform hover:-translate-y-1"
+              className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-md animate-in fade-in slide-in-from-bottom-2 group hover:border-indigo-300 transition-all cursor-pointer hover:shadow-xl transform hover:-translate-y-1 relative"
             >
-              <h3 className="text-2xl font-black text-indigo-800 tracking-tight mb-3 flex justify-between items-center uppercase">
+               {/* Star Button for List View */}
+               <button 
+                  onClick={(e) => toggleStar(e, word.word)}
+                  className="absolute top-8 right-8 p-2 rounded-full hover:bg-slate-100 transition-colors z-10"
+                  title={starredSet.has(word.word) ? "Unstar Word" : "Star Word"}
+               >
+                  <svg className={`w-6 h-6 transition-colors ${starredSet.has(word.word) ? 'text-yellow-400 fill-yellow-400' : 'text-slate-300 hover:text-slate-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                  </svg>
+               </button>
+
+              <h3 className="text-2xl font-black text-indigo-800 tracking-tight mb-3 flex justify-between items-center uppercase pr-12">
                 {word.word}
                 <span className="text-[10px] font-black bg-indigo-50 text-indigo-400 px-2 py-0.5 rounded-lg">{word.partOfSpeech}</span>
               </h3>
@@ -436,13 +471,47 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
 
       {mode === 'flashcards' && (
         <div className="flex flex-col items-center py-12">
+           {/* Deck Info Indicator */}
+           <div className="mb-6 bg-slate-100 px-4 py-1.5 rounded-full text-xs font-black uppercase text-slate-500 tracking-widest flex items-center gap-2">
+              {dailyWords.some(w => starredSet.has(w.word)) ? (
+                  <>
+                     <span className="text-yellow-500">★</span> 
+                     <span>Reviewing Starred ({flashcardDeck.length})</span>
+                  </>
+              ) : (
+                  <span>Reviewing All ({flashcardDeck.length})</span>
+              )}
+           </div>
+
            <div className="w-full max-w-2xl h-[28rem] relative perspective-1000 cursor-pointer" onClick={() => setIsFlipped(!isFlipped)}>
               <div className={`relative w-full h-full transition-transform duration-700 transform-style-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
-                 <div className="absolute w-full h-full backface-hidden bg-white border-2 border-indigo-600 rounded-[3rem] shadow-2xl flex flex-col items-center justify-center p-12 text-center">
+                 <div className="absolute w-full h-full backface-hidden bg-white border-2 border-indigo-600 rounded-[3rem] shadow-2xl flex flex-col items-center justify-center p-12 text-center relative group">
+                   
+                   {/* Star Button for Flashcard Front */}
+                   <button 
+                      onClick={(e) => flashcardDeck[cardIndex] && toggleStar(e, flashcardDeck[cardIndex].word)}
+                      className="absolute top-10 right-10 p-3 rounded-full hover:bg-slate-50 transition-colors z-20"
+                   >
+                      <svg className={`w-8 h-8 transition-colors ${flashcardDeck[cardIndex] && starredSet.has(flashcardDeck[cardIndex].word) ? 'text-yellow-400 fill-yellow-400' : 'text-slate-200 group-hover:text-slate-300'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                      </svg>
+                   </button>
+
                    <h2 className="text-6xl font-black text-slate-900 tracking-tighter uppercase">{flashcardDeck[cardIndex]?.word}</h2>
                    <div className="mt-16 text-slate-300 text-[10px] font-black uppercase animate-pulse tracking-[0.3em]">Flip for Definition</div>
                  </div>
-                 <div className="absolute w-full h-full backface-hidden rotate-y-180 bg-slate-900 border-2 border-indigo-50 rounded-[3rem] shadow-2xl flex flex-col items-center justify-center p-12 text-center text-white overflow-y-auto no-scrollbar">
+                 <div className="absolute w-full h-full backface-hidden rotate-y-180 bg-slate-900 border-2 border-indigo-50 rounded-[3rem] shadow-2xl flex flex-col items-center justify-center p-12 text-center text-white overflow-y-auto no-scrollbar relative">
+                   
+                    {/* Star Button for Flashcard Back */}
+                    <button 
+                      onClick={(e) => flashcardDeck[cardIndex] && toggleStar(e, flashcardDeck[cardIndex].word)}
+                      className="absolute top-10 right-10 p-3 rounded-full hover:bg-white/10 transition-colors z-20"
+                   >
+                      <svg className={`w-8 h-8 transition-colors ${flashcardDeck[cardIndex] && starredSet.has(flashcardDeck[cardIndex].word) ? 'text-yellow-400 fill-yellow-400' : 'text-slate-600 hover:text-slate-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                      </svg>
+                   </button>
+
                    <p className="text-2xl font-bold leading-relaxed px-4">{flashcardDeck[cardIndex]?.definition}</p>
                    <div className="mt-8 pt-8 border-t border-white/10 w-full text-xs italic text-indigo-200">"{flashcardDeck[cardIndex]?.exampleSentence}"</div>
                  </div>
