@@ -1,7 +1,5 @@
-
 import { Category, Question, VocabularyWord, GrammarLesson } from "./types";
 import { fullReadingData } from "./data/readingData"; 
-
 
 export const GRAMMAR_TOPICS = [
   "Comma Mastery: Essential vs Non-Essential",
@@ -948,6 +946,7 @@ const LOCAL_MATH_POOL: Question[] = [
 ];
 
 const shuffleArray = <T>(array: T[]): T[] => {
+  if (!array || array.length === 0) return [];
   const newArr = [...array];
   for (let i = newArr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -956,7 +955,7 @@ const shuffleArray = <T>(array: T[]): T[] => {
   return newArr;
 };
 
-// --- Service Functions (Mocked for Local Use) ---
+// --- Service Functions ---
 
 export const generateGrammarLesson = async (topic: string): Promise<GrammarLesson> => {
   await new Promise(resolve => setTimeout(resolve, 300));
@@ -968,11 +967,17 @@ export const generateVocabulary = async (): Promise<VocabularyWord[]> => {
 };
 
 export const generateReadingTest = async (): Promise<any[]> => {
+  // Fix: Handle case where fullReadingData might be empty or undefined to prevent crash
+  if (!fullReadingData || fullReadingData.length === 0) return [];
   const shuffled = shuffleArray(fullReadingData);
-  return [shuffled[0]]; 
+  // Fix: Ensure we don't return [undefined]
+  return shuffled.length > 0 ? [shuffled[0]] : [];
 };
 
 export const generateVocabTest = async (count: number): Promise<Question[]> => {
+  // Fix: Ensure we have words to pick from
+  if (!FULL_PREP_VOCAB || FULL_PREP_VOCAB.length === 0) return [];
+  
   const shuffledWords = shuffleArray(FULL_PREP_VOCAB).slice(0, count);
   
   return shuffledWords.map((word, index) => {
@@ -1024,7 +1029,11 @@ export const generateMockTest = async (): Promise<Question[]> => {
   const math = await generateMathTest(15);
   const reading = await generateReadingTest();
   
-  const readingQuestions = reading.flatMap((r: any) => r.questions).slice(0, 15);
+  // Fix: Filter reading to ensure we don't crash on undefined entries if reading data is missing
+  const readingQuestions = reading
+    .filter(r => r && r.questions)
+    .flatMap((r: any) => r.questions)
+    .slice(0, 15);
 
   return shuffleArray([...vocab, ...grammar, ...math, ...readingQuestions]);
 };
@@ -1038,8 +1047,9 @@ export const generateQuestions = async (category: Category, count: number): Prom
         case Category.MOCK: return generateMockTest();
         case Category.READING: 
             const readingData = await generateReadingTest();
-            if (readingData && readingData.length > 0) {
-                return readingData[0].questions; 
+            // Fix: Strict check to ensure readingData has content before accessing index 0
+            if (readingData && readingData.length > 0 && readingData[0]) {
+                return readingData[0].questions || []; 
             }
             return [];
         default: return [];
