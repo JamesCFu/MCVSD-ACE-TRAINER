@@ -855,7 +855,6 @@ const LOCAL_SPELLING_POOL: Question[] = [
   { id: 'fs-18', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Ecstacy", "Extasy", "Ecstasy", "Estacy"], correctAnswer: 2, explanation: "Ends in -sy." },
   { id: 'fs-19', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Pronunciation", "Pronounciation", "Pronunsiation", "Protonciation"], correctAnswer: 0, explanation: "No 'o' in the second syllable (unlike 'pronounce')." },
   { id: 'fs-20', category: Category.SPELLING, questionText: "Identify the correct spelling:", options: ["Supercede", "Supersede", "Superseed", "Superceed"], correctAnswer: 1, explanation: "The only word ending in -sede." },
-  const LOCAL_SPELLING_POOL: Question[] = [
   { id: 'fs-21', category: Category.SPELLING, questionText: "Which of the following words is spelled incorrectly?", options: ["Calendar", "Receipt", "Believe", "Doubtfull"], correctAnswer: 3, explanation: "Doubtful only has one 'l' at the end." },
   { id: 'fs-22', category: Category.SPELLING, questionText: "Which of the following words is spelled incorrectly?", options: ["Foreign", "Height", "Arguement", "Library"], correctAnswer: 2, explanation: "Argument drops the 'e' from 'argue'." },
   { id: 'fs-23', category: Category.SPELLING, questionText: "Which of the following words is spelled incorrectly?", options: ["Absence", "Gratefull", "License", "Weather"], correctAnswer: 1, explanation: "Grateful is spelled with one 'l'." },
