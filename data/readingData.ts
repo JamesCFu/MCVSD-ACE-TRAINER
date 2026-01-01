@@ -1224,512 +1224,102 @@ Although protected by the Australian government, Great Barrier Reef faces enviro
 
   {
     id: "p59-lacrosse",
-    passage: `The roots of the modern-day sport of lacrosse are found in tribal stick and ball games developed and played by many native North American tribes... The Native American names for these games reflected the bellicose nature of those early contests... For example, the Algonquin called their game Baggattaway... The Cherokee Nation and the Six Tribes of the Iroquois called their sport Tewaarathon...`,
+    passage: "The roots of the modern-day sport of lacrosse are found in tribal stick and ball games developed and played by many native North American tribes dating back as early as the fifteenth century. The Native American names for these games reflected the bellicose nature of those early contests, many of which went far beyond friendly recreational competition. For example, the Algonquin called their game Baggattaway, which meant, “they bump hips.” The Cherokee Nation and the Six Tribes of the Iroquois called their sport Tewaarathon, which translated into “Little Brother of War.” Rules and style of play differed from tribe to tribe and games could be played by as few as fifteen to as many as 1,000 men and women at a time. These matches could last for three days, beginning at dawn each day and ending at sunset. The goals could be specific trees or rocks, and were a few hundred yards to a few miles apart. Despite these differences, the sole object of every game was the same: to score goals by any means necessary. Serious injuries caused by blows from the heavy wooden sticks used in the games were not uncommon, and often expected. Not surprisingly, the Native Americans considered these precursors to today’s lacrosse excellent battle preparation for young warriors, and games were often used to settle disputes between tribes without resorting to full-blown warfare. For the Six Tribes of the Iroquois, certain matches of Tewaarathon held religious significance, as well. One of the most important gods the Iroquois worshipped was the Creator, Deganawidah. In Iroquois legend, the Creator united the Six Tribes into the one nation. Tewaarathon was played to please the Creator, and the competition was viewed as a recreation of the Iroquois Creation Story, where supernatural forces of good and evil battled each other in an epic struggle.",
     questions: [
-      {
-        id: "q403",
-        category: Category.READING,
-        questionText: "In line 4, bellicose most closely means",
-        options: ["beautiful.", "warlike.", "peaceful.", "family minded.", "clumsy."],
-        correctAnswer: 1,
-        explanation: "Bellicose means demonstrating aggression and willingness to fight (warlike)."
-      },
-      {
-        id: "q404",
-        category: Category.READING,
-        questionText: "The passage describes the early versions of lacrosse as",
-        options: ["strictly regulated competitions.", "intense games played against the Pilgrims.", "serious and meaningful matches.", "played only by the best athletes selected from each tribe.", "friendly exhibitions."],
-        correctAnswer: 2,
-        explanation: "They were 'excellent battle preparation' and held religious significance."
-      },
-      {
-        id: "q405",
-        category: Category.READING,
-        questionText: "Which of the following titles would be the most appropriate for this passage?",
-        options: ["Little Brother of War", "Lacrosse: America’s Most Violent Sport", "The Origins of the Modern Lacrosse Stick", "Deganawidah and the Six Tribes", "Hockey: the Little Brother of Lacrosse"],
-        correctAnswer: 0,
-        explanation: "'Little Brother of War' is the translation of the original name and reflects the warlike nature described."
-      },
-      {
-        id: "q406",
-        category: Category.READING,
-        questionText: "In line 15, the author’s use of the phrase by any means necessary emphasizes the",
-        options: ["unpredictable nature of the game.", "mild nature of the game.", "violent nature of the game.", "fact that both women and men participated in the games.", "importance of scoring goals."],
-        correctAnswer: 2,
-        explanation: "The phrase implies that players would resort to rough tactics, highlighting the violence."
-      },
-      {
-        id: "q407",
-        category: Category.READING,
-        questionText: "The author’s main purpose for writing this passage is to",
-        options: ["illustrate the differences between the early games and today’s lacrosse.", "condemn the violent tactics often used by the Native American players.", "show how ancient games influenced many games played today.", "teach the reader about the Iroquois Creation Story.", "describe the importance of these games in Native American culture."],
-        correctAnswer: 4,
-        explanation: "The passage focuses on the role of the games in tribal life (battle prep, settling disputes, religion)."
-      }
+      { id: "q403", category: Category.READING, questionText: "In line 4, bellicose most closely means", options: ["beautiful.", "warlike.", "peaceful.", "family minded.", "clumsy."], correctAnswer: 1, explanation: "Bellicose means demonstrating aggression and willingness to fight (warlike)." },
+      { id: "q404", category: Category.READING, questionText: "The passage describes the early versions of lacrosse as", options: ["strictly regulated competitions.", "intense games played against the Pilgrims.", "serious and meaningful matches.", "played only by the best athletes selected from each tribe.", "friendly exhibitions."], correctAnswer: 2, explanation: "They were 'excellent battle preparation' and held religious significance." },
+      { id: "q405", category: Category.READING, questionText: "Which of the following titles would be the most appropriate for this passage?", options: ["Little Brother of War", "Lacrosse: America’s Most Violent Sport", "The Origins of the Modern Lacrosse Stick", "Deganawidah and the Six Tribes", "Hockey: the Little Brother of Lacrosse"], correctAnswer: 0, explanation: "'Little Brother of War' is the translation of the original name and reflects the warlike nature described." },
+      { id: "q406", category: Category.READING, questionText: "In line 15, the author’s use of the phrase by any means necessary emphasizes the", options: ["unpredictable nature of the game.", "mild nature of the game.", "violent nature of the game.", "fact that both women and men participated in the games.", "importance of scoring goals."], correctAnswer: 2, explanation: "The phrase implies that players would resort to rough tactics, highlighting the violence." },
+      { id: "q407", category: Category.READING, questionText: "The author’s main purpose for writing this passage is to", options: ["illustrate the differences between the early games and today’s lacrosse.", "condemn the violent tactics often used by the Native American players.", "show how ancient games influenced many games played today.", "teach the reader about the Iroquois Creation Story.", "describe the importance of these games in Native American culture."], correctAnswer: 4, explanation: "The passage focuses on the role of the games in tribal life (battle prep, settling disputes, religion)." }
     ]
   },
   {
     id: "p60-commercialism",
-    passage: `Traditional body signage seems largely to have disappeared. Well, many of the old symbols and names are still around, of course, but they are part of the commercial range of options... Proclaiming our high school or university or our athletic team or our community has a much lower priority nowadays... But we still must attach ourselves to something... we turn to the last resort of the modern world: the market.`,
+    passage: "Traditional body signage seems largely to have disappeared. Well, many of the old symbols and names are still around, of course, but they are part of the commercial range of options. Seeing someone in a Harvard or Oxford sweatshirt or a kilt or a military tie now communicates nothing at all significant about that person’s life other than the personal choice of a particular consumer. Religious signs are still evocative, to be sure, but are far less common than they used to be. Why should this be? I suspect one reason may be that we have lost a sense of significant connection to the various things indicated by such signs. Proclaiming our high school or university or our athletic team or our community has a much lower priority nowadays, in part because we live such rapidly changing lives in a society marked by constant motion that the stability essential to confer significance on such signs has largely gone. But we still must attach ourselves to something. Lacking the conviction that the traditional things matter, we turn to the last resort of the modern world: the market. Here there is a vast array of options, all equally meaningless in terms of traditional values, all equally important in identifying the one thing left to us for declaring our identity publicly, our fashion sense and disposable income. The market naturally manipulates the labels, making sure we keep purchasing what will most quickly declare us excellent consumers. If this year a Chicago Bulls jacket or Air Jordan shoes are so popular that we are prepared to spend our way into a trendy identity, then next year there will be something else.",
     questions: [
-      {
-        id: "q408",
-        category: Category.READING,
-        questionText: "The main purpose of the passage is to",
-        options: ["discuss basketball’s importance in today’s fashions.", "relate the tribal history of tattoos.", "tell a story about the good old days.", "help the reader discover his or her own true identity.", "discuss commercialism’s powerful influence upon personal identity."],
-        correctAnswer: 4,
-        explanation: "The passage argues that people now use commercial brands to define their identity."
-      },
-      {
-        id: "q409",
-        category: Category.READING,
-        questionText: "What does the author mean by the commercial range of options (line 3)?",
-        options: ["the variety of commercials on television and radio", "the numerous products available to today’s consumer", "the ability to shop on the Internet", "let the buyer beware", "technology’s impact upon the world"],
-        correctAnswer: 1,
-        explanation: "It refers to the products people can buy (sweatshirts, kilts, etc.)."
-      },
-      {
-        id: "q410",
-        category: Category.READING,
-        questionText: "In line 20, disposable income refers to",
-        options: ["recyclable goods.", "spending money.", "life savings.", "a donation to charity.", "garbage."],
-        correctAnswer: 1,
-        explanation: "Disposable income is money available to be spent."
-      },
-      {
-        id: "q411",
-        category: Category.READING,
-        questionText: "The author would agree with all the following statements EXCEPT",
-        options: ["A person wearing a New York Yankees baseball hat is not necessarily a fan of the team or a resident of New York.", "Pride in our school or community is not as strong today as it was years ago.", "In today’s society, being trendy is more important than keeping tradition.", "You can tell a lot about somebody by what they are wearing.", "The last resort of the modern world is the marketplace."],
-        correctAnswer: 3,
-        explanation: "The author argues that wearing a symbol 'communicates nothing at all significant', contradicting option D."
-      },
-      {
-        id: "q412",
-        category: Category.READING,
-        questionText: "Which statement best simplifies the author’s point of view of today’s society in lines 12–14?",
-        options: ["Times have changed.", "People’s lives today are very similar to those of a generation ago.", "Fashion is very important in today’s world.", "People today don’t have proper nutrition.", "Life is short."],
-        correctAnswer: 0,
-        explanation: "The lines describe how rapidly changing lives and constant motion have eroded stability—times have changed."
-      }
+      { id: "q408", category: Category.READING, questionText: "The main purpose of the passage is to", options: ["discuss basketball’s importance in today’s fashions.", "relate the tribal history of tattoos.", "tell a story about the good old days.", "help the reader discover his or her own true identity.", "discuss commercialism’s powerful influence upon personal identity."], correctAnswer: 4, explanation: "The passage argues that people now use commercial brands to define their identity." },
+      { id: "q409", category: Category.READING, questionText: "What does the author mean by the commercial range of options (line 3)?", options: ["the variety of commercials on television and radio", "the numerous products available to today’s consumer", "the ability to shop on the Internet", "let the buyer beware", "technology’s impact upon the world"], correctAnswer: 1, explanation: "It refers to the products people can buy (sweatshirts, kilts, etc.)." },
+      { id: "q410", category: Category.READING, questionText: "In line 20, disposable income refers to", options: ["recyclable goods.", "spending money.", "life savings.", "a donation to charity.", "garbage."], correctAnswer: 1, explanation: "Disposable income is money available to be spent." },
+      { id: "q411", category: Category.READING, questionText: "The author would agree with all the following statements EXCEPT", options: ["A person wearing a New York Yankees baseball hat is not necessarily a fan of the team or a resident of New York.", "Pride in our school or community is not as strong today as it was years ago.", "In today’s society, being trendy is more important than keeping tradition.", "You can tell a lot about somebody by what they are wearing.", "The last resort of the modern world is the marketplace."], correctAnswer: 3, explanation: "The author argues that wearing a symbol 'communicates nothing at all significant', contradicting option D." },
+      { id: "q412", category: Category.READING, questionText: "Which statement best simplifies the author’s point of view of today’s society in lines 12–14?", options: ["Times have changed.", "People’s lives today are very similar to those of a generation ago.", "Fashion is very important in today’s world.", "People today don’t have proper nutrition.", "Life is short."], correctAnswer: 0, explanation: "The lines describe how rapidly changing lives and constant motion have eroded stability—times have changed." }
     ]
   },
   {
     id: "p61-surfing",
-    passage: `A wave is a communicated agitation. The water that composes the body of a wave does not move... And now to the particular physics of surf-riding. Get out on a flat board, six feet long, two feet wide, and roughly oval in shape. Lie down upon it like a small boy on a coaster and paddle with your hands out to deep water, where the waves begin to crest...`,
+    passage: "A wave is a communicated agitation. The water that composes the body of a wave does not move. If it did, when a stone is thrown into a pond and the ripples spread away in an ever-widening circle, there would appear at the center an ever-increasing hole. No, the water that composes the body of a wave is stationary. Thus, you may watch a particular portion of the ocean’s surface and you will see the same water rise and fall a thousand times to the agitation communicated by a thousand successive waves. Now imagine this communicated agitation moving shoreward. As the bottom shoals, the lower portion of the wave strikes land first and is stopped. But water is fluid, and the upper portion has not struck anything, wherefore it keeps on communicating its agitation, keeps on going. And when the top of the wave keeps on going, while the bottom of it lags behind, something is bound to happen. The bottom of the wave drops out from under and the top of the wave falls over, forward, and down, curling and cresting and roaring as it does so. It is the bottom of a wave striking against the top of the land that is the cause of all surfs. But the transformation from a smooth undulation to a breaker is not abrupt except where the bottom shoals abruptly. Say the bottom shoals gradually from a quarter of a mile to a mile, then an equal distance will be occupied by the transformation. Such a bottom is that off the beach of Waikiki, and it produces a splendid, surf-riding surf. One leaps upon the back of a breaker just as it begins to break, and stays on it as it continues to break all the way in to shore. And now to the particular physics of surf-riding. Get out on a flat board, six feet long, two feet wide, and roughly oval in shape. Lie down upon it like a small boy on a coaster and paddle with your hands out to deep water, where the waves begin to crest. Lie out there quietly on the board. Sea after sea breaks before, behind, and under and over you, and rushes in to shore, leaving you behind. When a wave crests, it gets steeper. Imagine yourself, on your board, on the face of that steep slope. If it stood still, you would slide down just as a boy slides down a hill on his coaster. “But,” you object, “the wave doesn’t stand still.” Very true, but the water composing the wave stands still, and there you have the secret. If ever you start sliding down the face of that wave, you’ll keep on sliding and you’ll never reach the bottom. Please don’t laugh. The face of that wave may be only six feet, yet you can slide down it a quarter of a mile, or half a mile, and not reach the bottom. For, see, since a wave is only a communicated agitation or impetus, and since the water that composes a wave is changing every instant, new water is rising into the wave as fast as the wave travels. You slide down this new water, and yet remain in your old position on the wave, sliding down the still newer water that is rising and forming the wave. You slide precisely as fast as the wave travels. If it travels fifteen miles an hour, you slide fifteen miles an hour. Between you and shore stretches a quarter of mile of water. As the wave travels, this water obligingly heaps itself into the wave, gravity does the rest, and down you go, sliding the whole length of it. If you still cherish the notion, while sliding, that the water is moving with you, thrust your arms into it and attempt to paddle; you will find that you have to be remarkably quick to get a stroke, for that water is dropping astern just as fast as you are rushing ahead.",
     questions: [
-      {
-        id: "q413",
-        category: Category.READING,
-        questionText: "The author compares surfing to",
-        options: ["an ever-increasing hole forming in the water.", "a chemistry experiment gone wrong.", "a boy sledding down a hill on a coaster.", "a transformation of time and space.", "flying through the air like a bird."],
-        correctAnswer: 2,
-        explanation: "The author explicitly says 'Lie down upon it like a small boy on a coaster'."
-      },
-      {
-        id: "q414",
-        category: Category.READING,
-        questionText: "All of the following questions can be answered based on information from the passage EXCEPT",
-        options: ["When a wave crests, it gets steeper.", "If a wave is moving at eight miles per hour, so is the surfer on that wave.", "A wave is constantly recomposing itself with new water.", "A flat board is the most popular type of surfboard.", "The conditions at Waikiki make are excellent for surfing."],
-        correctAnswer: 3,
-        explanation: "The passage describes *a* board, but doesn't claim it is the *most popular* type."
-      },
-      {
-        id: "q415",
-        category: Category.READING,
-        questionText: "According to the author, why is Waikiki ideal for surfing?",
-        options: ["The weather is great and the water is warm.", "The waves break abruptly as they approach the shore.", "The waves at Waikiki are a communicated agitation.", "Waikiki has some of the biggest waves in the world.", "The waves break gradually as they approach the shore."],
-        correctAnswer: 4,
-        explanation: "The bottom shoals gradually, producing a splendid surf-riding surf."
-      },
-      {
-        id: "q416",
-        category: Category.READING,
-        questionText: "The word shoals in line 9 refers to",
-        options: ["the sand kicked up as the waves break upon the beach.", "water becoming shallower as it approaches the shore.", "the steep cresting of a wave.", "the salty smell of the sea.", "water becoming deeper as you move away from the shore."],
-        correctAnswer: 1,
-        explanation: "Shoals as a verb means to become shallow."
-      },
-      {
-        id: "q417",
-        category: Category.READING,
-        questionText: "What part of a wave is responsible for the forming of surf?",
-        options: ["the upper portion of the wave", "the lower portion of the wave", "the strongest part of the wave", "the trailing portion of the wave", "the roaring part of the wave."],
-        correctAnswer: 1,
-        explanation: "The bottom (lower portion) strikes land and stops, while the top keeps going, causing the break."
-      },
-      {
-        id: "q418",
-        category: Category.READING,
-        questionText: "The word impetus in line 40 most nearly means",
-        options: ["a moving force.", "a serious obstacle.", "a slight annoyance.", "a slight hindrance.", "an area of very warm water."],
-        correctAnswer: 0,
-        explanation: "Impetus refers to a driving or moving force."
-      },
-      {
-        id: "q419",
-        category: Category.READING,
-        questionText: "The author’s description of the transformation of a smooth undulating wave to a breaking wave (lines 18–21) indicates that",
-        options: ["The distance of a wave’s break is dependent upon the bottom of the approaching the shoreline.", "It is rare for a wave to break gradually.", "It common for a wave to break abruptly.", "The size of a wave has to do with its speed through the water.", "A wave only travels through deep water."],
-        correctAnswer: 0,
-        explanation: "The transformation distance equals the distance over which the bottom shoals."
-      },
-      {
-        id: "q420",
-        category: Category.READING,
-        questionText: "The sentence A wave is a communicated agitation (line 1) is best defined by which statement?",
-        options: ["the roar of a wave sounds angry when it breaks upon the shore.", "waves are a display of the ocean’s fury.", "a wave is a surging movement that travels through the water.", "the size of a wave can vary.", "the ocean has baffled sailors for centuries."],
-        correctAnswer: 2,
-        explanation: "It describes the transfer of energy (agitation) through the medium, not the movement of the water itself."
-      },
-      {
-        id: "q421",
-        category: Category.READING,
-        questionText: "What is the secret referred to in line 35?",
-        options: ["why a good wave for surfing must to be at least six feet tall", "A six-foot wave is between a quarter mile and a half mile in length.", "how a surfer can slide down a six-foot wave for a quarter of mile", "The smarter surfers paddle out to the deep water to catch the best waves.", "The water that composes a wave remains with the wave until it reaches the shore."],
-        correctAnswer: 2,
-        explanation: "The secret explains how one can slide down a wave face for a long distance without reaching the bottom."
-      }
+      { id: "q413", category: Category.READING, questionText: "The author compares surfing to", options: ["an ever-increasing hole forming in the water.", "a chemistry experiment gone wrong.", "a boy sledding down a hill on a coaster.", "a transformation of time and space.", "flying through the air like a bird."], correctAnswer: 2, explanation: "The author explicitly says 'Lie down upon it like a small boy on a coaster'." },
+      { id: "q414", category: Category.READING, questionText: "All of the following questions can be answered based on information from the passage EXCEPT", options: ["When a wave crests, it gets steeper.", "If a wave is moving at eight miles per hour, so is the surfer on that wave.", "A wave is constantly recomposing itself with new water.", "A flat board is the most popular type of surfboard.", "The conditions at Waikiki make are excellent for surfing."], correctAnswer: 3, explanation: "The passage describes *a* board, but doesn't claim it is the *most popular* type." },
+      { id: "q415", category: Category.READING, questionText: "According to the author, why is Waikiki ideal for surfing?", options: ["The weather is great and the water is warm.", "The waves break abruptly as they approach the shore.", "The waves at Waikiki are a communicated agitation.", "Waikiki has some of the biggest waves in the world.", "The waves break gradually as they approach the shore."], correctAnswer: 4, explanation: "The bottom shoals gradually, producing a splendid surf-riding surf." },
+      { id: "q416", category: Category.READING, questionText: "The word shoals in line 9 refers to", options: ["the sand kicked up as the waves break upon the beach.", "water becoming shallower as it approaches the shore.", "the steep cresting of a wave.", "the salty smell of the sea.", "water becoming deeper as you move away from the shore."], correctAnswer: 1, explanation: "Shoals as a verb means to become shallow." },
+      { id: "q417", category: Category.READING, questionText: "What part of a wave is responsible for the forming of surf?", options: ["the upper portion of the wave", "the lower portion of the wave", "the strongest part of the wave", "the trailing portion of the wave", "the roaring part of the wave."], correctAnswer: 1, explanation: "The bottom (lower portion) strikes land and stops, while the top keeps going, causing the break." },
+      { id: "q418", category: Category.READING, questionText: "The word impetus in line 40 most nearly means", options: ["a moving force.", "a serious obstacle.", "a slight annoyance.", "a slight hindrance.", "an area of very warm water."], correctAnswer: 0, explanation: "Impetus refers to a driving or moving force." },
+      { id: "q419", category: Category.READING, questionText: "The author’s description of the transformation of a smooth undulating wave to a breaking wave (lines 18–21) indicates that", options: ["The distance of a wave’s break is dependent upon the bottom of the approaching the shoreline.", "It is rare for a wave to break gradually.", "It common for a wave to break abruptly.", "The size of a wave has to do with its speed through the water.", "A wave only travels through deep water."], correctAnswer: 0, explanation: "The transformation distance equals the distance over which the bottom shoals." },
+      { id: "q420", category: Category.READING, questionText: "The sentence A wave is a communicated agitation (line 1) is best defined by which statement?", options: ["the roar of a wave sounds angry when it breaks upon the shore.", "waves are a display of the ocean’s fury.", "a wave is a surging movement that travels through the water.", "the size of a wave can vary.", "the ocean has baffled sailors for centuries."], correctAnswer: 2, explanation: "It describes the transfer of energy (agitation) through the medium, not the movement of the water itself." },
+      { id: "q421", category: Category.READING, questionText: "What is the secret referred to in line 35?", options: ["why a good wave for surfing must to be at least six feet tall", "A six-foot wave is between a quarter mile and a half mile in length.", "how a surfer can slide down a six-foot wave for a quarter of mile", "The smarter surfers paddle out to the deep water to catch the best waves.", "The water that composes a wave remains with the wave until it reaches the shore."], correctAnswer: 2, explanation: "The secret explains how one can slide down a wave face for a long distance without reaching the bottom." }
     ]
   },
   {
     id: "p62-althea-gibson",
-    passage: `Today, watching Venus and Serena Williams dominate the sport of women’s tennis... it is hard to imagine that just over fifty years ago African-American tennis players were barred from competing... Althea Gibson was born on a cotton farm... In 1950... The editorial caused a national uproar that quickly led the USLTA to finally extend Althea an invitation...`,
+    passage: "Today, watching Venus and Serena Williams dominate the sport of women’s tennis with their talent and flair, it is hard to imagine that just over fifty years ago African-American tennis players were barred from competing on the grandest stages of their sport. Jackie Robinson broke the color barrier in Major League Baseball in 1947, but the walls that kept African-Americans from playing professional sports did not come tumbling down overnight. Almost four years passed from Jackie Robinson’s major league debut until a female African-American made a similar impact upon the sport of women’s tennis. That woman’s name was Althea Gibson.\n\nAlthea Gibson was born on a cotton farm on August 25, 1927, in Silver, South Carolina. The early stages of the Great Depression forced her sharecropper father to move the family from the bucolic Silver to the urban bustle of New York City when she was just three years old. As a child growing up in the Harlem section of the Manhattan, Althea found she had an affinity for athletics. Basketball and paddle tennis were her favorite sports, and she excelled at both. In fact, her talent at paddle tennis was so remarkable that in 1939 she won her age group at the New York City paddle tennis championships. Shortly after, a very good friend of Althea’s suggested that she try lawn tennis. She showed an incredible aptitude for the sport and her play caught the attention of members of the predominately African-American Harlem Cosmopolitan Tennis Club, who helped her raise money to become a member. At the age of fourteen, Althea took her first real tennis lesson at the club under the tutelage of one-armed tennis coach Fred Johnson. She would never look back.\n\nA year later in 1942, the major governing body for African-American tennis tournaments—the American Tennis Association (ATA)—sponsored the New York Girls Singles Championship at Althea’s club. With her aggressive and dominating style of play, she won the title easily. It was her first of what was to be many victories, on and off the court.\n\nAlthea dropped out of high school shortly after winning the New York Girls Championship. She found the classes boring and wanted to concentrate on tennis. Her decision raised many eyebrows amongst members of the ATA, who had hoped that she would become one of the sport’s new stars. She was encouraged to leave New York City and move to Wilmington, North Carolina to live with the family of Hubert Eaton, a wealthy doctor who was active in the African-American tennis community. Dr. Eaton welcomed Althea into his family. He not only offered her guidance with her tennis career, he also convinced her to finish the remaining three years of high school. While living with the Eaton family in Wilmington, she would travel around the country to compete in ATA tournaments. By the time she graduated in 1949, Althea had already won the first two of what would be ten consecutive ATA national titles. She was regarded by many as one of the most impressive young talents in the female game, but because of segregation she was not permitted to practice on any of the public courts in Wilmington. She was also yet to be invited to any of the major segregated tournaments.\n\nBy early 1950 Althea was making some headway. She was the first African American to play in the national indoor tournament, where she finished second. Althea believed her two national championships and her strong showing at the indoor tournament was proof that she was one of female tennis’s elite players. She and the ATA tried to lobby the United States Lawn Tennis Association (USLTA) for an invitation to the 1950 U.S. Nationals, but despite the ATA’s efforts and Althea’s obvious merit, the USLTA failed to extend her an invitation.\n\nNot every member of the USLTA was pleased with the organization’s decision. Former U.S. National and Wimbledon champion Alice Marble wrote a scathing editorial in the July 1950 issue of American Lawn Tennis magazine criticizing the USLTA’s segregationist stance. Ms. Marble wrote, “The entrance of (African-Americans) into national tennis is as inevitable as it has proven in baseball, in football, or in boxing; there is no denying so much talent. . . . If Althea Gibson represents a challenge to the present crop of players, then it’s only fair that they meet this challenge on the courts.” The editorial caused a national uproar that quickly led the USLTA to finally extend Althea an invitation to play in the 1950 U.S. Nationals tournament. This invitation would open many doors for Althea, and the following year she was the first African American to compete at Wimbledon.\n\nIt took a few years for Althea to adjust to the world-class level of play. She won her first major tournament in 1956 and would dominate the sport for the next five years, winning six doubles titles and a total of eleven Grand Slam events including the U.S. Nationals and Wimbledon twice. Yet even at the height of her career as an international tennis champ, Althea was forced to endure discrimination. She was often refused hotels rooms and reservations at restaurants simply because of her skin color. Althea once said that her extraordinary success was the product of being “game enough to take a lot of punishment along the way.” The pioneering example set by Althea Gibson paved the way for future generations of African-American tennis players, and proved that beyond her tennis glory she was a true champion of the human spirit.",
     questions: [
-      {
-        id: "q422",
-        category: Category.READING,
-        questionText: "What is the main purpose of the passage?",
-        options: ["to glimpse a piece of the past", "to glorify athletes", "to disparage segregation", "to teach the history of tennis", "to tell a story"],
-        correctAnswer: 4,
-        explanation: "The passage tells the story of Althea Gibson's life and career."
-      },
-      {
-        id: "q423",
-        category: Category.READING,
-        questionText: "The word bucolic in line 13 most nearly means",
-        options: ["rural.", "urban.", "sickly.", "depressing.", "wealthy."],
-        correctAnswer: 0,
-        explanation: "Bucolic means relating to the pleasant aspects of the countryside and country life (rural)."
-      },
-      {
-        id: "q424",
-        category: Category.READING,
-        questionText: "All of the following questions can be answered based on information from the passage EXCEPT",
-        options: ["What factors influenced the USLTA to invite Althea Gibson to the U.S. Nationals?", "Did Althea play in another ATA tournament after she was invited to the U.S. Nationals?", "Why did Althea go to live with Dr. Eaton?", "To what specific types of discrimination was Althea subjected?", "How many times did Althea compete at Wimbledon?"],
-        correctAnswer: 4,
-        explanation: "The passage mentions she won Wimbledon twice, but not how many times she competed in total."
-      },
-      {
-        id: "q425",
-        category: Category.READING,
-        questionText: "Which of the following best describes the USLTA’s change of heart regarding Althea’s invitation?",
-        options: ["buckling under the pressure of public opinion", "a calculated strike against segregation", "a sudden recognition of Althea’s abilities", "a bold marketing strategy", "a desire to diversify the women’s game"],
-        correctAnswer: 0,
-        explanation: "The 'national uproar' caused by the editorial led to the invitation."
-      },
-      {
-        id: "q426",
-        category: Category.READING,
-        questionText: "The author uses Althea’s quote about being game enough in line 80 to illustrate that",
-        options: ["Althea’s career was plagued with injuries.", "the sport of tennis is more grueling than people realize.", "Althea believed the discrimination she faced served only to make her a stronger competitor.", "Althea was often fined for yelling at the referee.", "Althea believed talent was more important than mental toughness."],
-        correctAnswer: 2,
-        explanation: "Taking 'punishment along the way' refers to the discrimination and hardship she faced."
-      },
-      {
-        id: "q427",
-        category: Category.READING,
-        questionText: "Althea’s achievements are best described as",
-        options: ["remarkable displays of talent and athleticism.", "groundbreaking triumphs in the face of adversity.", "important events that led to immediate civil rights reform.", "one woman’s fight against the world.", "historically insignificant."],
-        correctAnswer: 1,
-        explanation: "She broke barriers (groundbreaking) despite segregation (adversity)."
-      },
-      {
-        id: "q428",
-        category: Category.READING,
-        questionText: "Which statement best summarizes Alice Marble’s quote in lines 60–64?",
-        options: ["Baseball, football, and boxing are more entertaining than tennis.", "Talent should dictate who could be a champion at a USLTA tournament, not race.", "There are players in the U.S. Nationals who do not deserve to be there.", "The USLTA should do away with invitations and make the tournament open to anybody.", "The ATA and USTLA should merge for the benefit of the sport."],
-        correctAnswer: 1,
-        explanation: "Marble argues that if she is a challenge (has talent), she should be met on the courts, implying race shouldn't bar her."
-      },
-      {
-        id: "q429",
-        category: Category.READING,
-        questionText: "Why did Althea’s friend suggest that she try lawn tennis?",
-        options: ["Lawn tennis is a more competitive game than paddle tennis.", "The friend preferred playing lawn tennis.", "There was more money to be made playing lawn tennis than paddle tennis.", "The friend thought Althea might enjoy playing lawn tennis, and excel at it.", "The friend was looking for a tennis partner."],
-        correctAnswer: 3,
-        explanation: "She had talent at paddle tennis, so the friend suggested lawn tennis, implying she would excel."
-      },
-      {
-        id: "q430",
-        category: Category.READING,
-        questionText: "All of the following statements are supported by the passage EXCEPT",
-        options: ["Alice Marble was a white tennis player.", "Dr. Eaton’s guidance helped Althea’s career.", "Althea won the New York Girls Singles championship when she fifteen.", "The public tennis courts in Wilmington were segregated.", "Althea Gibson won more Grand Slam titles than any other female tennis player."],
-        correctAnswer: 4,
-        explanation: "The passage lists her wins but does not claim she won more than *any* other female player."
-      }
+      { id: "q422", category: Category.READING, questionText: "What is the main purpose of the passage?", options: ["to glimpse a piece of the past", "to glorify athletes", "to disparage segregation", "to teach the history of tennis", "to tell a story"], correctAnswer: 4, explanation: "The passage tells the story of Althea Gibson's life and career." },
+      { id: "q423", category: Category.READING, questionText: "The word bucolic in line 13 most nearly means", options: ["rural.", "urban.", "sickly.", "depressing.", "wealthy."], correctAnswer: 0, explanation: "Bucolic means relating to the pleasant aspects of the countryside and country life (rural)." },
+      { id: "q424", category: Category.READING, questionText: "All of the following questions can be answered based on information from the passage EXCEPT", options: ["What factors influenced the USLTA to invite Althea Gibson to the U.S. Nationals?", "Did Althea play in another ATA tournament after she was invited to the U.S. Nationals?", "Why did Althea go to live with Dr. Eaton?", "To what specific types of discrimination was Althea subjected?", "How many times did Althea compete at Wimbledon?"], correctAnswer: 4, explanation: "The passage mentions she won Wimbledon twice, but not how many times she competed in total." },
+      { id: "q425", category: Category.READING, questionText: "Which of the following best describes the USLTA’s change of heart regarding Althea’s invitation?", options: ["buckling under the pressure of public opinion", "a calculated strike against segregation", "a sudden recognition of Althea’s abilities", "a bold marketing strategy", "a desire to diversify the women’s game"], correctAnswer: 0, explanation: "The 'national uproar' caused by the editorial led to the invitation." },
+      { id: "q426", category: Category.READING, questionText: "The author uses Althea’s quote about being game enough in line 80 to illustrate that", options: ["Althea’s career was plagued with injuries.", "the sport of tennis is more grueling than people realize.", "Althea believed the discrimination she faced served only to make her a stronger competitor.", "Althea was often fined for yelling at the referee.", "Althea believed talent was more important than mental toughness."], correctAnswer: 2, explanation: "Taking 'punishment along the way' refers to the discrimination and hardship she faced." },
+      { id: "q427", category: Category.READING, questionText: "Althea’s achievements are best described as", options: ["remarkable displays of talent and athleticism.", "groundbreaking triumphs in the face of adversity.", "important events that led to immediate civil rights reform.", "one woman’s fight against the world.", "historically insignificant."], correctAnswer: 1, explanation: "She broke barriers (groundbreaking) despite segregation (adversity)." },
+      { id: "q428", category: Category.READING, questionText: "Which statement best summarizes Alice Marble’s quote in lines 60–64?", options: ["Baseball, football, and boxing are more entertaining than tennis.", "Talent should dictate who could be a champion at a USLTA tournament, not race.", "There are players in the U.S. Nationals who do not deserve to be there.", "The USLTA should do away with invitations and make the tournament open to anybody.", "The ATA and USTLA should merge for the benefit of the sport."], correctAnswer: 1, explanation: "Marble argues that if she is a challenge (has talent), she should be met on the courts, implying race shouldn't bar her." },
+      { id: "q429", category: Category.READING, questionText: "Why did Althea’s friend suggest that she try lawn tennis?", options: ["Lawn tennis is a more competitive game than paddle tennis.", "The friend preferred playing lawn tennis.", "There was more money to be made playing lawn tennis than paddle tennis.", "The friend thought Althea might enjoy playing lawn tennis, and excel at it.", "The friend was looking for a tennis partner."], correctAnswer: 3, explanation: "She had talent at paddle tennis, so the friend suggested lawn tennis, implying she would excel." },
+      { id: "q430", category: Category.READING, questionText: "All of the following statements are supported by the passage EXCEPT", options: ["Alice Marble was a white tennis player.", "Dr. Eaton’s guidance helped Althea’s career.", "Althea won the New York Girls Singles championship when she fifteen.", "The public tennis courts in Wilmington were segregated.", "Althea Gibson won more Grand Slam titles than any other female tennis player."], correctAnswer: 4, explanation: "The passage lists her wins but does not claim she won more than *any* other female player." }
     ]
   },
   {
     id: "p63-black-sox",
-    passage: `Professional baseball suffered during the two years the United States was involved in World War I... The Chicago White Sox, called The White Stockings until 1902, were owned by an ex-ballplayer named Charles Comiskey... Comiskey’s frugality did not sit well with the players... In 1920, allegations involving gambling among Chicago Cubs players brought to light a scandal... Eight members of the White Sox had thrown the 1919 World Series.`,
+    passage: "Professional baseball suffered during the two years the United States was involved in World War I. Many Americans who were preoccupied with the seriousness of the war raging overseas had little concern for the trivialities of a baseball game. After the war ended in 1919, many Americans wanted to put those dark years behind them and get back to the normal activities of a peaceful life. One of those activities was watching baseball. In the summer of 1919, ballparks that just one year earlier had been practically empty were now filled daily with the sights and sounds of America’s favorite pastime. That year, both the Cleveland Indians and New York Yankees were two of the strongest teams in baseball’s American League, but one team stood head and shoulders above the rest: The Chicago White Sox.\n\nThe Chicago White Sox, called The White Stockings until 1902, were owned by an ex-ballplayer named Charles Comiskey. Between the years of 1900 and 1915 the White Sox had won the World Series only once, and Comiskey was determined to change that. In 1915, he purchased the contracts of three of the most promising stars in the league: outfielders “Shoeless” Joe Jackson and “Happy” Oscar Felsch, and second baseman Eddie Collins. Comiskey had only to wait two years for his plan to come to fruition; the 1917 White Sox, playing in a park named for their owner, won the World Series. Two years later they had the best record in all of baseball and were again on their way to the Series.\n\nBaseball players’ salaries in that era were much different than the exorbitant paychecks of today’s professional athletes. Often, ballplayers would have second careers in the off-season because of the mediocrity of their pay. To make matters worse, war-torn 1918 was such a horrible year for baseball attendance that many owners cut player salaries for the following season. However, it is said in all of baseball there was no owner as parsimonious as Charles Comiskey. In 1917 he reportedly promised every player on the White Sox a bonus if they won the American League Championship. After winning the championship, they returned to the clubhouse to receive their bonus—a bottle of inexpensive champagne. Unlike other owners, Comiskey also required the players to pay for the cleaning of their uniforms. The Sox had the best record in baseball, but they were the least paid, were the most discontented, and wore the dirtiest uniforms.\n\nComiskey’s frugality did not sit well with the players. They were most upset with the fact that he did not raise salaries back to their 1918 levels, even though the ballpark attendance figures for 1919 were higher than any previous year. One player, Eddie Ciccotte, felt especially ill-treated by Comiskey. The owner promised the pitcher a bonus of $10,000 if he won thirty games, but after Ciccotte won his twenty-ninth game he was benched by Comiskey for the rest of the season.\n\nGamblers were such a common sight around the Chicago ballpark that Charles Comiskey had signs proclaiming “No Betting Allowed In This Park” posted conspicuously in the stands. The money with which these gamblers tempted the players was hard to refuse, and it was rumored that to supplement their income some of the lower-paid athletes would offer inside tips to the bettors. But gamblers’ mingling with ballplayers wasn’t solely confined to the White Sox. In 1920, allegations involving gambling among Chicago Cubs players brought to light a scandal that would shock Chicago and the rest of America: Eight members of the White Sox had thrown the 1919 World Series.\n\nThe exact facts regarding the scandal will never be known, but the most accepted theory is that just prior to the World Series, White Sox player Chick Gandil had approached a gambler by the name of Joseph Sullivan with a proposal that for $100,000 Gandil would make sure the Sox lost the Series. Gandil needed to recruit other players for the plan to work. It was not hard for him to do—there were many underpaid players on the White Sox who were dissatisfied with the way Comiskey operated the team. Ultimately, the seven other players that were allegedly involved in the scheme were Eddie Cicotte, Happy Felsch, Joe Jackson, Fred McMullin, Charles “Swede” Risberg, Buck Weaver, and Claude Williams.\n\nThey were successful. The Chicago White Sox, heavily favored to beat an inferior Cincinnati Reds team, lost the nine-game World Series in eight games, due in most part to the inferior play of the eight conspiring players. When the scandal made headlines the following year the press began to refer to them as the Black Sox, and the ignominious label would be used to describe them forever.\n\nWhen the eight players stood before an Illinois grand jury, it was determined that that there was not enough substantial evidence for any convictions, and the players were all eventually acquitted of any criminal wrongdoing. Interestingly enough, Charles Comiskey paid for the players’ high-priced defense lawyers. Unfortunately for Comiskey, there was to be no similar reprieve from major league baseball: Every single one of the accused players was banned from the game for life. Comiskey’s once mighty team was decimated by the loss of its most talented players, and the 1921 White Sox finished the season in seventh place.",
     questions: [
-      {
-        id: "q431",
-        category: Category.READING,
-        questionText: "According to the passage, who was the supposed ringleader of the Black Sox scandal?",
-        options: ["Charles Comiskey", "“Shoeless” Joe Jackson", "Eddie Ciccotte", "Eddie Collins", "Chick Gandil"],
-        correctAnswer: 4,
-        explanation: "Chick Gandil approached the gambler Joseph Sullivan."
-      },
-      {
-        id: "q432",
-        category: Category.READING,
-        questionText: "In line 29, the word parsimonious most nearly means",
-        options: ["generous.", "stingy.", "powerful.", "friendly.", "jovial."],
-        correctAnswer: 1,
-        explanation: "Parsimonious means frugal or stingy, as evidenced by Comiskey's low pay and champagne bonus."
-      },
-      {
-        id: "q433",
-        category: Category.READING,
-        questionText: "According to facts from the passage, what was the name of the White Sox’s ballpark?",
-        options: ["Chicago Park", "Comiskey Park", "Sullivan Stadium", "White Sox Park", "Sox Field"],
-        correctAnswer: 1,
-        explanation: "The team played in a park 'named for their owner' (Comiskey)."
-      },
-      {
-        id: "q434",
-        category: Category.READING,
-        questionText: "In line 54, the word thrown refers to",
-        options: ["losing intentionally.", "pitching a baseball.", "projecting upon.", "dashing upon.", "abandoning something."],
-        correctAnswer: 0,
-        explanation: "To 'throw' a game or series means to lose it on purpose for illicit gain."
-      },
-      {
-        id: "q435",
-        category: Category.READING,
-        questionText: "According to the passage, how many World Series’ did the White Sox win between 1900 and 1919?",
-        options: ["none", "one", "two", "three", "four"],
-        correctAnswer: 2,
-        explanation: "They won once between 1900-1915, and again in 1917. 1+1=2."
-      },
-      {
-        id: "q436",
-        category: Category.READING,
-        questionText: "All of the following questions can be answered based on information from the passage EXCEPT",
-        options: ["Who was the second baseman for the 1915 White Sox?", "Did the White Sox play in the American League or the National League?", "What was the White Sox’s original name?", "How many games did Eddie Ciccotte pitch in 1918?", "Why did many baseball owners lower player salaries for the 1919 season?"],
-        correctAnswer: 3,
-        explanation: "The passage mentions Ciccotte won 29 games in 1919, but does not state how many he pitched in 1918."
-      },
-      {
-        id: "q437",
-        category: Category.READING,
-        questionText: "In lines 71–72, word ignominious most nearly means",
-        options: ["uneducated.", "dishonorable.", "exalted.", "worthy.", "unentertaining."],
-        correctAnswer: 1,
-        explanation: "Ignominious means deserving or causing public disgrace or shame."
-      },
-      {
-        id: "q438",
-        category: Category.READING,
-        questionText: "The last paragraph of the passage suggests that Charles Comiskey",
-        options: ["thought the team was better off without the eight players.", "hoped all eight players would be convicted and sent to jail.", "wanted the players involved in the scandal to return to the team.", "was contemplating retirement.", "had a plan to get the White Sox back to the World Series."],
-        correctAnswer: 2,
-        explanation: "Comiskey paid for their lawyers, suggesting he wanted them acquitted so they could return."
-      },
-      {
-        id: "q439",
-        category: Category.READING,
-        questionText: "The passage as a whole suggests that",
-        options: ["The White Sox probably fixed the 1917 World Series, too.", "Charles Comiskey may have been in part to blame for his players’ actions.", "ballplayers betting on games was a highly unusual occurrence.", "baseball never recovered after World War I.", "Charles Comiskey often bet against his own team."],
-        correctAnswer: 1,
-        explanation: "The detailed description of Comiskey's frugality and mistreatment of players suggests a motive for their betrayal."
-      }
+      { id: "q431", category: Category.READING, questionText: "According to the passage, who was the supposed ringleader of the Black Sox scandal?", options: ["Charles Comiskey", "“Shoeless” Joe Jackson", "Eddie Ciccotte", "Eddie Collins", "Chick Gandil"], correctAnswer: 4, explanation: "Chick Gandil approached the gambler Joseph Sullivan." },
+      { id: "q432", category: Category.READING, questionText: "In line 29, the word parsimonious most nearly means", options: ["generous.", "stingy.", "powerful.", "friendly.", "jovial."], correctAnswer: 1, explanation: "Parsimonious means frugal or stingy, as evidenced by Comiskey's low pay and champagne bonus." },
+      { id: "q433", category: Category.READING, questionText: "According to facts from the passage, what was the name of the White Sox’s ballpark?", options: ["Chicago Park", "Comiskey Park", "Sullivan Stadium", "White Sox Park", "Sox Field"], correctAnswer: 1, explanation: "The team played in a park 'named for their owner' (Comiskey)." },
+      { id: "q434", category: Category.READING, questionText: "In line 54, the word thrown refers to", options: ["losing intentionally.", "pitching a baseball.", "projecting upon.", "dashing upon.", "abandoning something."], correctAnswer: 0, explanation: "To 'throw' a game or series means to lose it on purpose for illicit gain." },
+      { id: "q435", category: Category.READING, questionText: "According to the passage, how many World Series’ did the White Sox win between 1900 and 1919?", options: ["none", "one", "two", "three", "four"], correctAnswer: 2, explanation: "They won once between 1900-1915, and again in 1917. 1+1=2." },
+      { id: "q436", category: Category.READING, questionText: "All of the following questions can be answered based on information from the passage EXCEPT", options: ["Who was the second baseman for the 1915 White Sox?", "Did the White Sox play in the American League or the National League?", "What was the White Sox’s original name?", "How many games did Eddie Ciccotte pitch in 1918?", "Why did many baseball owners lower player salaries for the 1919 season?"], correctAnswer: 3, explanation: "The passage mentions Ciccotte won 29 games in 1919, but does not state how many he pitched in 1918." },
+      { id: "q437", category: Category.READING, questionText: "In lines 71–72, word ignominious most nearly means", options: ["uneducated.", "dishonorable.", "exalted.", "worthy.", "unentertaining."], correctAnswer: 1, explanation: "Ignominious means deserving or causing public disgrace or shame." },
+      { id: "q438", category: Category.READING, questionText: "The last paragraph of the passage suggests that Charles Comiskey", options: ["thought the team was better off without the eight players.", "hoped all eight players would be convicted and sent to jail.", "wanted the players involved in the scandal to return to the team.", "was contemplating retirement.", "had a plan to get the White Sox back to the World Series."], correctAnswer: 2, explanation: "Comiskey paid for their lawyers, suggesting he wanted them acquitted so they could return." },
+      { id: "q439", category: Category.READING, questionText: "The passage as a whole suggests that", options: ["The White Sox probably fixed the 1917 World Series, too.", "Charles Comiskey may have been in part to blame for his players’ actions.", "ballplayers betting on games was a highly unusual occurrence.", "baseball never recovered after World War I.", "Charles Comiskey often bet against his own team."], correctAnswer: 1, explanation: "The detailed description of Comiskey's frugality and mistreatment of players suggests a motive for their betrayal." }
     ]
   },
   {
     id: "p64-olympics",
-    passage: `For several months an unwonted activity has prevailed in one quarter of Athens. Herodes Atticus Street... has resounded all day long with the rattle of heavy wagons bringing blocks of marble... the Panathenaic Stadium, now being lined with marble for the Olympic games which are to be held in it early in April... But some may wonder why, since the games come to Greece, they are not to be held at Olympia... A successful athletic contest cannot be held in the wilderness...`,
+    passage: "For several months an unwonted activity has prevailed in one quarter of Athens. Herodes Atticus Street behind the royal garden, one of the most retired streets of the city, has resounded all day long with the rattle of heavy wagons bringing blocks of marble from Pentelikon. At sunrise and sunset crowds of workingmen are seen moving through this street, the lower end of which opens upon a bridge across the Ilissos, and on the opposite bank lies the Panathenaic Stadium, now being lined with marble for the Olympic games which are to be held in it early in April. The time is short, and the work is being pressed forward.\n\nWhen the International Athletic Committee, at a session in Paris last year, decided to have a series of athletic contests once in four years in various countries, it is not surprising that they selected Greece for the first contest. Although Greece now has as little of the athletic habit as any nation of the civilized world, its past is interwoven with athletics. Olympia is a magic word, and the committee were doubtless swayed partly by sentimental reasons in the choice of name and place. But some may wonder why, since the games come to Greece, they are not to be held at Olympia, to justify the name which they have taken. This is because the originators of the scheme, although they have conceded something to sentiment, are no visionaries, but men of practical common sense. Even their concession to sentiment is likely to turn out to be a clever piece of practical management, calculated to launch the games upon the world with more success than could have been secured in any other way. The games also have a name which will be just as true in 1900 at Paris, and 1904 in America, as it is this year in Athens.\n\nNow, however fine a thing it might be to let athletes stir real Olympic dust, and to let runners put their heels into the very groove of the old starting-sill, with the feeling that thirty centuries looked down upon them, it would not be practical. A successful athletic contest cannot be held in the wilderness. It demands a crowd and sustenance for a crowd. The crowd is the one essential concomitant of the athletes. But a crowd will not go where it cannot eat and sleep. To bring to Olympia a concourse sufficient to in modern times make the games anything like a success would demand the organization of a first-class commissary department, and that too for a service of half a month only. Shelter and food for such an occasion come naturally only in connection with some city with a market. Ancient Olympia, with all its magnificent buildings, was of course that sort of city, albeit practically a deserted city except for a few days once in four years.\n\nThe visitors at Athens next April—and it is hoped that there will be tens of thousands of them—will doubtless feel keenly enough the inadequacy even of a city of 130,000 inhabitants, to give them all that they seek in the way of material comforts. The problem of seating a large crowd of spectators did not come up before the International Committee. But it is this problem which has found a most happy solution in Athens. The Stadium at Olympia, although excavated at each end by the Germans, still lies in most of its course under fifteen or twenty feet of earth. But the Stadium at Athens has always been a fit place for a monster meeting, provided people would be contented to sit on its sloping sides without seats. When a local Athenian committee was formed, composed of most of the citizens conspicuous for wealth or position, and some resident foreigners, under the presidency of Constantine, crown prince of Greece, one of the first questions before it was this question of seating; and its attention was naturally directed to the Stadium.\n\nA wealthy and generous Greek of Alexandria, George Averoff, who was known as a man always on the watch to do something for Athens, readily took upon himself the expense of restoring the Stadium to something like its former splendor, when it was lined with marble and seated fifty-thousand spectators. He has already given over nine hundred thousand drachmas, which, if the drachma were at par, would be $180,000, but which now amounts to only about $100,000. There is a sub-committee of the general committee above described, designated as the committee on the preparation of the Stadium, composed of several practical architects, but including also the Ephor General of Antiquities, and the directors of the foreign archaeological schools. The presence of the archaeological element on this committee emphasizes the fact that the new work is to be a restoration of the old.",
     questions: [
-      {
-        id: "q440",
-        category: Category.READING,
-        questionText: "In line 1, the word unwonted most nearly means",
-        options: ["not welcome.", "out of the ordinary.", "unexpected.", "ancient.", "nocturnal."],
-        correctAnswer: 1,
-        explanation: "Unwonted means unaccustomed or unusual (out of the ordinary)."
-      },
-      {
-        id: "q441",
-        category: Category.READING,
-        questionText: "Herodes Atticus Street (line 2) is located where in relation to the Stadium at Athens?",
-        options: ["behind the royal garden", "on Mount Olympus", "across the Illissos river", "just north of Pentelikon", "directly adjacent to"],
-        correctAnswer: 2,
-        explanation: "The street opens upon a bridge across the Ilissos, and on the *opposite bank* lies the Stadium."
-      },
-      {
-        id: "q442",
-        category: Category.READING,
-        questionText: "Based on information in the passage, what year were the first modern Olympics to be held?",
-        options: ["1892", "1896", "1900", "1904", "1908"],
-        correctAnswer: 1,
-        explanation: "It mentions games in 1900 and 1904 as future events, and mentions 'this year' (1896, implied by context of restoration)."
-      },
-      {
-        id: "q443",
-        category: Category.READING,
-        questionText: "One of the sentimental reasons the author refers to in line 16 is",
-        options: ["Athens was always the largest city in Greece.", "Panathenaic Stadium is the oldest stadium in Ancient Olympia.", "Olympia, Greece was the site of the original Olympics.", "Paris was a better choice for the first modern Olympic games.", "George Averoff was once the King of Greece."],
-        correctAnswer: 2,
-        explanation: "The sentimental reason is the connection to the ancient site of Olympia."
-      },
-      {
-        id: "q444",
-        category: Category.READING,
-        questionText: "All of the following are reasons why the first modern games were held in Athens and not in Olympia EXCEPT",
-        options: ["Olympia was a much smaller city than Athens.", "Parts of the Stadium at Olympia were buried underground.", "Athens offered better facilities for the crowd in terms of food and shelter.", "The Germans voted against Olympia in favor of Athens.", "The city of Olympia would not attract the same crowd as Athens."],
-        correctAnswer: 3,
-        explanation: "The passage mentions the Germans excavated Olympia, but does not say they voted against it."
-      },
-      {
-        id: "q445",
-        category: Category.READING,
-        questionText: "Who was in charge of solving the problem of seating the crowds expected at Athens?",
-        options: ["the International Athletic Committee", "the Germans", "George Averoff", "the Ephor General of Antiquities", "a local Athenian Committee"],
-        correctAnswer: 4,
-        explanation: "The text states 'When a local Athenian committee was formed... one of the first questions before it was this question of seating'."
-      },
-      {
-        id: "q446",
-        category: Category.READING,
-        questionText: "According to the passage, about how long were the games to be?",
-        options: ["two weeks", "the month of April", "four years", "three weeks", "a few days"],
-        correctAnswer: 0,
-        explanation: "The text mentions 'a service of half a month', which is roughly two weeks."
-      },
-      {
-        id: "q447",
-        category: Category.READING,
-        questionText: "In line 62, the word drachma refers to",
-        options: ["a block of marble.", "the Greek word for marble.", "the name of Greek money.", "a type of stadium seat.", "a type of Greek food."],
-        correctAnswer: 2,
-        explanation: "Drachma is the currency, as indicated by the conversion to dollars."
-      },
-      {
-        id: "q448",
-        category: Category.READING,
-        questionText: "In line 30, what does the author claim would not be practical?",
-        options: ["trying to revive the spirit of the ancient games", "holding the new Olympics in Olympia", "excavating the Stadium at Olympia for use at the modern games", "refurbishing the Stadium at Athens", "seating fifty-thousand spectators"],
-        correctAnswer: 1,
-        explanation: "Holding them in the 'wilderness' of Olympia would not be practical due to lack of facilities."
-      },
-      {
-        id: "q449",
-        category: Category.READING,
-        questionText: "The phrase the feeling that thirty centuries looked down upon them (lines 29–30) refers to the",
-        options: ["political importance of holding the first modern games at the site of Ancient Olympia.", "decision to hold the second modern Olympics in France.", "importance of reviving the spirit of the ancient Olympic games.", "sentimental value of holding the modern games at the site of Ancient Olympia.", "need for the best amateur athletes to compete."],
-        correctAnswer: 3,
-        explanation: "It captures the historical and sentimental weight of the ancient location."
-      }
+      { id: "q440", category: Category.READING, questionText: "In line 1, the word unwonted most nearly means", options: ["not welcome.", "out of the ordinary.", "unexpected.", "ancient.", "nocturnal."], correctAnswer: 1, explanation: "Unwonted means unaccustomed or unusual (out of the ordinary)." },
+      { id: "q441", category: Category.READING, questionText: "Herodes Atticus Street (line 2) is located where in relation to the Stadium at Athens?", options: ["behind the royal garden", "on Mount Olympus", "across the Illissos river", "just north of Pentelikon", "directly adjacent to"], correctAnswer: 2, explanation: "The street opens upon a bridge across the Ilissos, and on the *opposite bank* lies the Stadium." },
+      { id: "q442", category: Category.READING, questionText: "Based on information in the passage, what year were the first modern Olympics to be held?", options: ["1892", "1896", "1900", "1904", "1908"], correctAnswer: 1, explanation: "It mentions games in 1900 and 1904 as future events, and mentions 'this year' (1896, implied by context of restoration)." },
+      { id: "q443", category: Category.READING, questionText: "One of the sentimental reasons the author refers to in line 16 is", options: ["Athens was always the largest city in Greece.", "Panathenaic Stadium is the oldest stadium in Ancient Olympia.", "Olympia, Greece was the site of the original Olympics.", "Paris was a better choice for the first modern Olympic games.", "George Averoff was once the King of Greece."], correctAnswer: 2, explanation: "The sentimental reason is the connection to the ancient site of Olympia." },
+      { id: "q444", category: Category.READING, questionText: "All of the following are reasons why the first modern games were held in Athens and not in Olympia EXCEPT", options: ["Olympia was a much smaller city than Athens.", "Parts of the Stadium at Olympia were buried underground.", "Athens offered better facilities for the crowd in terms of food and shelter.", "The Germans voted against Olympia in favor of Athens.", "The city of Olympia would not attract the same crowd as Athens."], correctAnswer: 3, explanation: "The passage mentions the Germans excavated Olympia, but does not say they voted against it." },
+      { id: "q445", category: Category.READING, questionText: "Who was in charge of solving the problem of seating the crowds expected at Athens?", options: ["the International Athletic Committee", "the Germans", "George Averoff", "the Ephor General of Antiquities", "a local Athenian Committee"], correctAnswer: 4, explanation: "The text states 'When a local Athenian committee was formed... one of the first questions before it was this question of seating'." },
+      { id: "q446", category: Category.READING, questionText: "According to the passage, about how long were the games to be?", options: ["two weeks", "the month of April", "four years", "three weeks", "a few days"], correctAnswer: 0, explanation: "The text mentions 'a service of half a month', which is roughly two weeks." },
+      { id: "q447", category: Category.READING, questionText: "In line 62, the word drachma refers to", options: ["a block of marble.", "the Greek word for marble.", "the name of Greek money.", "a type of stadium seat.", "a type of Greek food."], correctAnswer: 2, explanation: "Drachma is the currency, as indicated by the conversion to dollars." },
+      { id: "q448", category: Category.READING, questionText: "In line 30, what does the author claim would not be practical?", options: ["trying to revive the spirit of the ancient games", "holding the new Olympics in Olympia", "excavating the Stadium at Olympia for use at the modern games", "refurbishing the Stadium at Athens", "seating fifty-thousand spectators"], correctAnswer: 1, explanation: "Holding them in the 'wilderness' of Olympia would not be practical due to lack of facilities." },
+      { id: "q449", category: Category.READING, questionText: "The phrase the feeling that thirty centuries looked down upon them (lines 29–30) refers to the", options: ["political importance of holding the first modern games at the site of Ancient Olympia.", "decision to hold the second modern Olympics in France.", "importance of reviving the spirit of the ancient Olympic games.", "sentimental value of holding the modern games at the site of Ancient Olympia.", "need for the best amateur athletes to compete."], correctAnswer: 3, explanation: "It captures the historical and sentimental weight of the ancient location." }
     ]
   },
   {
     id: "p65-ships",
-    passage: `PASSAGE 1
-Reader, have you ever been at Plymouth? ... there you will see, lying at single anchor, a cutter; and you may also see, by her pendant and ensign, that she is a yacht...
-
-PASSAGE 2
-My very first sea voyage was in a small merchant vessel out of New York called the Alba... I was to serve as the ship’s boy... What I found when I dismounted the ladder below was an entirely different world...`,
+    passage: "PASSAGE 1\nReader, have you ever been at Plymouth? If you have, your eye must have dwelt with ecstasy upon the beautiful property of the Earl of Mount Edgcumbe: if you have not been at Plymouth, the sooner that you go there the better. You will see ships building and ships in ordinary; and ships repairing and ships fitting; and hulks and convict ships, and the guard-ship; ships ready to sail and ships under sail; besides lighters, men-of-war’s boats, dockyard-boats, bum-boats, and shore boats. In short, there is a great deal to see at Plymouth besides the sea itself: but what I particularly wish now is, that you will stand at the battery of Mount Edgcumbe and look into Barn Pool below you, and there you will see, lying at single anchor, a cutter; and you may also see, by her pendant and ensign, that she is a yacht. You observe that this yacht is cutter-rigged, and that she sits gracefully on the smooth water. She is just heaving up her anchor; her foresail is loose, all ready to cast her—in a few minutes she will be under way. You see that there are ladies sitting at the taffrail; and there are five haunches of venison hanging over the stern. Of all amusements, give me yachting. But we must go on board. The deck, you observe, is of narrow deal planks as white as snow; the guns are of polished brass; the bitts and binnacles of mahogany: she is painted with taste; and all the moldings are gilded. There is nothing wanting; and yet how clear and unencumbered are her decks! Let us go below. There is the ladies’ cabin: can anything be more tasteful or elegant? Is it not luxurious? And, although so small, does not its very confined space astonish you, when you view so many comforts so beautifully arranged? This is the dining-room, and where the gentlemen repair. And just peep into their state-rooms and bed-places. Here is the steward’s room and the buffet: the steward is squeezing lemons for the punch, and there is the champagne in ice; and by the side of the pail the long-corks are ranged up, all ready. Now, let us go forwards: here are, the men’s berths, not confined as in a man-of-war. No! Luxury starts from abaft, and is not wholly lost, even at the fore-peak. This is the kitchen; is it not admirably arranged? And how delightful are the fumes of the turtle-soup! At sea we do meet with rough weather at times; but, for roughing it out, give me a yacht.\n\nPASSAGE 2\nMy very first sea voyage was in a small merchant vessel out of New York called the Alba. I was only twelve years old at the time, and full of dreams of boundless adventure upon the high seas. I was to serve as the ship’s boy. I was given the post by my Uncle Joseph, the weathered old captain of the Alba who uttered few words, choosing to speak more with his menacing gaze than with his mouth. The moment I stepped upon the bustling deck my Uncle Joseph set me straight about shipboard life. There were to be no special privileges afforded to me because of our relations. I was to live and mess in the ‘tween decks with the other seamen, and because I was his nephew, I would probably have to work twice as hard as the others to prove my worth. From that point on I was to refer to my uncle as “Sir” or “Captain,” and only speak to him when he addressed me. He then told me a bit about the Alba. I learned that she was a cutter, and all cutters were fore-and-aft rigged, and possessed only a single mast. After my brief lesson, he then sent me below deck to get myself situated.\n\nWhat I found when I dismounted the ladder below was an entirely different world than the orderly brightness of the top deck. Here was a stuffy and dimly lit space barely tall enough for me to stand up straight in. It was the middle of July, and the heat was oppressive. There seemed to be no air at all, there certainly were no windows, and the stench that rose up from the bilge was so pungent it made me gag. From the shadows, a pair of eyes materialized. They belonged to a grimy boy no older than me. “Hello mate, you must be the new lubber just shipped aboard. I’m Nigel. Follow me, we’re just in time for dinner.” My new friend led me into the tiny dining room where the crew messed. The men ate shoulder to shoulder on wooden tables bolted to the deck. The horrific smell of so many men crammed together was overpowering. We received our food from the ship’s cook, a portly man in a filthy apron who, with the dirtiest hands I’d ever seen, ladled us out a sort of stew. We found two open spots at a mess table and sat down to eat. The stew was lukewarm and the mysterious meat in it was so tough I could barely chew it. I managed to swallow a few spoonfuls and pushed my dish aside. With a smile that was graveyard of yellow sincerity, Nigel pushed the dish back to me and said, “I’d get used to the grub, mate. It ain’t so bad. Besides, this is the freshest it’ll be on the voyage.”\n\nAfter dinner, Nigel showed me our berth. It was a tiny lightless cubbyhole near the bow of the boat that was barely six feet long and only five feet high. There was a small area where I could stow my clothes, and at night we would string up our hammocks side by side with two other boys, both of whom were on duty at the moment. That night when we were under way, the boat ran into a vicious Atlantic storm. The waves tossed the Alba around like it was a tiny raft. The ship made such noises; I was afraid it would simply break apart at any moment. The seawater that crashed upon the deck leaked through the planks and dripped upon my head. It would have bothered me if I were not already horribly seasick. As I lay there miserably rocking back and forth in my damp hammock, I asked myself, “What have I gotten myself into?”",
     questions: [
-      {
-        id: "q450",
-        category: Category.READING,
-        questionText: "According to both passages, it is not uncommon for ships to",
-        options: ["meet rough seas.", "run out of fresh drinking water.", "not return home for quite a while.", "leak in heavy weather.", "have children onboard."],
-        correctAnswer: 0,
-        explanation: "Passage 1 mentions 'rough weather at times'. Passage 2 describes a 'vicious Atlantic storm'."
-      },
-      {
-        id: "q451",
-        category: Category.READING,
-        questionText: "In the last sentence of Passage 2 the narrator suggests that he",
-        options: ["may never recover from the seasickness.", "does not like Nigel.", "made a mistake taking the voyage aboard the Alba.", "should have eaten the stew.", "should have stayed in school."],
-        correctAnswer: 2,
-        explanation: "He asks 'What have I gotten myself into?', implying regret and mistake."
-      },
-      {
-        id: "q452",
-        category: Category.READING,
-        questionText: "Which statement best summarizes the narrator’s description of Plymouth in lines 3–8?",
-        options: ["The port at Plymouth is full of rowdy sailors.", "Plymouth is a dreary and overcrowded place.", "Plymouth is a deserted and over-industrialized area", "There are many interest sights to behold at Plymouth.", "The British Royal Navy anchors at Plymouth."],
-        correctAnswer: 3,
-        explanation: "The narrator lists many types of ships and says 'there is a great deal to see'."
-      },
-      {
-        id: "q453",
-        category: Category.READING,
-        questionText: "What do the yacht in Passage 1 and the Alba in Passage 2 have in common?",
-        options: ["They were both built in England.", "They both have only a single mast.", "They are both made of iron.", "They both have lifeboats.", "They are both fast."],
-        correctAnswer: 1,
-        explanation: "Both are described as 'cutters', and Passage 2 states cutters 'possessed only a single mast'."
-      },
-      {
-        id: "q454",
-        category: Category.READING,
-        questionText: "How do the yacht in Passage 1, and the Alba in Passage 2 differ?",
-        options: ["The yacht does not carry cargo.", "The yacht is much bigger than the Alba.", "There are no passengers aboard the Alba, only crew.", "The yacht is much more luxurious than the Alba.", "The yacht is much faster than the Alba."],
-        correctAnswer: 3,
-        explanation: "Passage 1 describes luxury (champagne, velvet). Passage 2 describes a dirty merchant vessel."
-      },
-      {
-        id: "q455",
-        category: Category.READING,
-        questionText: "Why does the captain in Passage 2 (lines 11–12) demand that his nephew call him Sir or Captain?",
-        options: ["The captain wanted his nephew to understand who was in charge.", "The captain did not want any member of the crew to know the narrator was his nephew.", "The captain was afraid that if he showed affection to his nephew, he would lose his authority over the crew.", "The captain was not really the narrator’s uncle.", "It was important that the crew understood that the boy was no more privileged than anyone else aboard."],
-        correctAnswer: 4,
-        explanation: "The text says 'There were to be no special privileges afforded to me because of our relations'."
-      },
-      {
-        id: "q456",
-        category: Category.READING,
-        questionText: "In Passage 1, line 26, the use of the word repair most nearly means",
-        options: ["go.", "fix things.", "sit in pairs.", "get dressed.", "exercise."],
-        correctAnswer: 0,
-        explanation: "In this context, 'repair' means to betake oneself or go to a place."
-      },
-      {
-        id: "q457",
-        category: Category.READING,
-        questionText: "The narrator of Passage 1 most probably",
-        options: ["is a seasoned sea captain.", "is very wealthy.", "is an experienced yachtsman.", "suffers from seasickness.", "was in the Royal Navy."],
-        correctAnswer: 2,
-        explanation: "The narrator knows nautical terms and expresses a deep love for yachting ('give me yachting')."
-      },
-      {
-        id: "q458",
-        category: Category.READING,
-        questionText: "In Passage 2, line 36, the narrator describes Nigel’s smile as a graveyard of yellow sincerity. What figure of speech is the narrator employing?",
-        options: ["onomatopoeia", "simile", "personification", "alliteration", "metaphor"],
-        correctAnswer: 4,
-        explanation: "It compares the smile to a graveyard without using 'like' or 'as', making it a metaphor."
-      },
-      {
-        id: "q459",
-        category: Category.READING,
-        questionText: "Together, these two passages illustrate the idea that",
-        options: ["the reality of two seemingly similar situations can often be extremely different.", "boating is a very dangerous pastime.", "dreams sometimes fall very short of reality.", "Plymouth is much nicer than New York.", "hard work pays off in the end."],
-        correctAnswer: 0,
-        explanation: "Both are about life on a cutter, but one is luxurious and the other is harsh."
-      },
-      {
-        id: "q460",
-        category: Category.READING,
-        questionText: "The word berth, found in Passage 1, line 31 and Passage 2, line 39 most nearly means",
-        options: ["a sailor’s hometown.", "the sleeping quarters aboard a boat.", "the kitchen aboard a boat.", "the bathroom aboard a boat.", "the lower deck of a boat."],
-        correctAnswer: 1,
-        explanation: "Berth refers to the bed or sleeping place on a ship."
-      }
+      { id: "q450", category: Category.READING, questionText: "According to both passages, it is not uncommon for ships to", options: ["meet rough seas.", "run out of fresh drinking water.", "not return home for quite a while.", "leak in heavy weather.", "have children onboard."], correctAnswer: 0, explanation: "Passage 1 mentions 'rough weather at times'. Passage 2 describes a 'vicious Atlantic storm'." },
+      { id: "q451", category: Category.READING, questionText: "In the last sentence of Passage 2 the narrator suggests that he", options: ["may never recover from the seasickness.", "does not like Nigel.", "made a mistake taking the voyage aboard the Alba.", "should have eaten the stew.", "should have stayed in school."], correctAnswer: 2, explanation: "He asks 'What have I gotten myself into?', implying regret and mistake." },
+      { id: "q452", category: Category.READING, questionText: "Which statement best summarizes the narrator’s description of Plymouth in lines 3–8?", options: ["The port at Plymouth is full of rowdy sailors.", "Plymouth is a dreary and overcrowded place.", "Plymouth is a deserted and over-industrialized area", "There are many interest sights to behold at Plymouth.", "The British Royal Navy anchors at Plymouth."], correctAnswer: 3, explanation: "The narrator lists many types of ships and says 'there is a great deal to see'." },
+      { id: "q453", category: Category.READING, questionText: "What do the yacht in Passage 1 and the Alba in Passage 2 have in common?", options: ["They were both built in England.", "They both have only a single mast.", "They are both made of iron.", "They both have lifeboats.", "They are both fast."], correctAnswer: 1, explanation: "Both are described as 'cutters', and Passage 2 states cutters 'possessed only a single mast'." },
+      { id: "q454", category: Category.READING, questionText: "How do the yacht in Passage 1, and the Alba in Passage 2 differ?", options: ["The yacht does not carry cargo.", "The yacht is much bigger than the Alba.", "There are no passengers aboard the Alba, only crew.", "The yacht is much more luxurious than the Alba.", "The yacht is much faster than the Alba."], correctAnswer: 3, explanation: "Passage 1 describes luxury (champagne, velvet). Passage 2 describes a dirty merchant vessel." },
+      { id: "q455", category: Category.READING, questionText: "Why does the captain in Passage 2 (lines 11–12) demand that his nephew call him Sir or Captain?", options: ["The captain wanted his nephew to understand who was in charge.", "The captain did not want any member of the crew to know the narrator was his nephew.", "The captain was afraid that if he showed affection to his nephew, he would lose his authority over the crew.", "The captain was not really the narrator’s uncle.", "It was important that the crew understood that the boy was no more privileged than anyone else aboard."], correctAnswer: 4, explanation: "The text says 'There were to be no special privileges afforded to me because of our relations'." },
+      { id: "q456", category: Category.READING, questionText: "In Passage 1, line 26, the use of the word repair most nearly means", options: ["go.", "fix things.", "sit in pairs.", "get dressed.", "exercise."], correctAnswer: 0, explanation: "In this context, 'repair' means to betake oneself or go to a place." },
+      { id: "q457", category: Category.READING, questionText: "The narrator of Passage 1 most probably", options: ["is a seasoned sea captain.", "is very wealthy.", "is an experienced yachtsman.", "suffers from seasickness.", "was in the Royal Navy."], correctAnswer: 2, explanation: "The narrator knows nautical terms and expresses a deep love for yachting ('give me yachting')." },
+      { id: "q458", category: Category.READING, questionText: "In Passage 2, line 36, the narrator describes Nigel’s smile as a graveyard of yellow sincerity. What figure of speech is the narrator employing?", options: ["onomatopoeia", "simile", "personification", "alliteration", "metaphor"], correctAnswer: 4, explanation: "It compares the smile to a graveyard without using 'like' or 'as', making it a metaphor." },
+      { id: "q459", category: Category.READING, questionText: "Together, these two passages illustrate the idea that", options: ["the reality of two seemingly similar situations can often be extremely different.", "boating is a very dangerous pastime.", "dreams sometimes fall very short of reality.", "Plymouth is much nicer than New York.", "hard work pays off in the end."], correctAnswer: 0, explanation: "Both are about life on a cutter, but one is luxurious and the other is harsh." },
+      { id: "q460", category: Category.READING, questionText: "The word berth, found in Passage 1, line 31 and Passage 2, line 39 most nearly means", options: ["a sailor’s hometown.", "the sleeping quarters aboard a boat.", "the kitchen aboard a boat.", "the bathroom aboard a boat.", "the lower deck of a boat."], correctAnswer: 1, explanation: "Berth refers to the bed or sleeping place on a ship." }
     ]
   },
   {
