@@ -1220,8 +1220,8 @@ Although protected by the Australian government, Great Barrier Reef faces enviro
         explanation: "Horse shoes does not typically require the 'physical exertion' (breaking a sweat) defined in the text as essential."
       }
     ]
-  }
-},
+  },
+
   {
     id: "p59-lacrosse",
     passage: `The roots of the modern-day sport of lacrosse are found in tribal stick and ball games developed and played by many native North American tribes... The Native American names for these games reflected the bellicose nature of those early contests... For example, the Algonquin called their game Baggattaway... The Cherokee Nation and the Six Tribes of the Iroquois called their sport Tewaarathon...`,
