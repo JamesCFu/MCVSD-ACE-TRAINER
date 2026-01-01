@@ -1,7 +1,16 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { generateGrammarLesson, generateSpellingTest, generateShortDefinitions } from '../geminiService';
+// Combine all geminiService imports into one line and remove the "..."
+import { 
+  generateQuestions, 
+  generateGrammarLesson, 
+  generateSpellingTest, 
+  generateShortDefinitions,
+  generateReadingTest,
+  generateVocabTest,
+  generateMathTest,
+  generateMockTest 
+} from '../geminiService';
 import { VocabularyWord, GrammarLesson, Question, RootWord, Category } from '../types';
-import { generateQuestions, generateGrammarLesson, ... } from '../geminiService';
 
 const GRAMMAR_TOPICS = [
   "Comma Mastery: Essential vs Non-Essential",
