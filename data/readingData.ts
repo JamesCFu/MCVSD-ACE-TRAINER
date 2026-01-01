@@ -1324,374 +1324,79 @@ Although protected by the Australian government, Great Barrier Reef faces enviro
   },
   {
     id: "p66-toothpicks",
-    passage: `Could good dental hygiene be man’s earliest custom? The findings of paleontologist Leslea Hlusko suggest that 1.8 million years ago early hominids used grass stalks to clean their teeth. Many ancient hominid teeth unearthed in archaeological digs have curved grooves near the gumline...`,
+    passage: "Could good dental hygiene be man’s earliest custom? The findings of paleontologist Leslea Hlusko suggest that 1.8 million years ago early hominids used grass stalks to clean their teeth. Many ancient hominid teeth unearthed in archaeological digs have curved grooves near the gumline. Hlusko posited that these grooves were evidence of teeth cleaning by early man. However, critics pointed out that even though the use of toothpicks is still a common practice among modern man similar grooves are not found on modern teeth.\n\nHlusko, convinced that she was on the right track, experimented with grass stalks to see if they might have been the cause of the grooves. Unlike the wood used for modern toothpicks, grass contains hard silica particles that are more abrasive than the soft fibers found in wood. A stalk of grass is also about the same width as the marks found on the ancient teeth. To prove her theory Dr. Hlusko took a baboon tooth and patiently rubbed a grass stalk against it for eight hours. As she suspected, the result was grooves similar to those found on the ancient hominid teeth. She repeated the experiment with a human tooth and found the same result.\n\nIt seems that our early human ancestors may have used grass, which was easily found and ready to use, to floss between their teeth. As Hlusko suggests in the journal Current Anthropology, “Toothpicking with grass stalks probably represents the most persistent habit documented in human evolution.”",
     questions: [
-      {
-        id: "q461",
-        category: Category.READING,
-        questionText: "In line 5 the word posited most nearly means",
-        options: ["insisted.", "demanded.", "questioned.", "suggested.", "argued."],
-        correctAnswer: 3,
-        explanation: "Posited means put forward as a basis for argument, or suggested."
-      },
-      {
-        id: "q462",
-        category: Category.READING,
-        questionText: "Each of the following reasons is provided as evidence that early man used grass stalks as toothpicks EXCEPT the",
-        options: ["width of the grooves on ancient teeth.", "location of the grooves on ancient teeth.", "ready availability of grass.", "ongoing use of grass toothpicks.", "abrasive quality of grass."],
-        correctAnswer: 3,
-        explanation: "The passage mentions modern use of *toothpicks* (wood), not ongoing use of *grass* toothpicks."
-      },
-      {
-        id: "q463",
-        category: Category.READING,
-        questionText: "Dr. Hlusko’s approach to determining the source of the grooves on ancient teeth can best be described as",
-        options: ["zealous.", "persistent.", "sullen.", "serendipitous.", "cautious."],
-        correctAnswer: 1,
-        explanation: "She 'patiently rubbed a grass stalk against it for eight hours', showing persistence."
-      },
-      {
-        id: "q464",
-        category: Category.READING,
-        questionText: "The passage suggests the theory that early man used grass stalks as toothpicks is",
-        options: ["a possibility.", "very probable.", "absolutely certain.", "fanciful.", "uncorroborated."],
-        correctAnswer: 1,
-        explanation: "The experiments produced the same result, and it is published in a journal, suggesting it is very probable."
-      }
+      { id: "q461", category: Category.READING, questionText: "In line 5 the word posited most nearly means", options: ["insisted.", "demanded.", "questioned.", "suggested.", "argued."], correctAnswer: 3, explanation: "Posited means put forward as a basis for argument, or suggested." },
+      { id: "q462", category: Category.READING, questionText: "Each of the following reasons is provided as evidence that early man used grass stalks as toothpicks EXCEPT the", options: ["width of the grooves on ancient teeth.", "location of the grooves on ancient teeth.", "ready availability of grass.", "ongoing use of grass toothpicks.", "abrasive quality of grass."], correctAnswer: 3, explanation: "The passage mentions modern use of *toothpicks* (wood), not ongoing use of *grass* toothpicks." },
+      { id: "q463", category: Category.READING, questionText: "Dr. Hlusko’s approach to determining the source of the grooves on ancient teeth can best be described as", options: ["zealous.", "persistent.", "sullen.", "serendipitous.", "cautious."], correctAnswer: 1, explanation: "She 'patiently rubbed a grass stalk against it for eight hours', showing persistence." },
+      { id: "q464", category: Category.READING, questionText: "The passage suggests the theory that early man used grass stalks as toothpicks is", options: ["a possibility.", "very probable.", "absolutely certain.", "fanciful.", "uncorroborated."], correctAnswer: 1, explanation: "The experiments produced the same result, and it is published in a journal, suggesting it is very probable." }
     ]
   },
   {
     id: "p67-economics",
-    passage: `From year to year, the economic well being of many Americans changes considerably... One measure of economic well being is the income-to-poverty ratio... Between 1993 and 1994 roughly three-quarters of the population saw their economic well being fluctuate by 5% or more...`,
+    passage: "From year to year, the economic well being of many Americans changes considerably, even though the median income of the population as a whole does not vary much in real terms from one year to the next. One measure of economic well being is the income-to-poverty ratio. This ratio measures a family’s income compared to the poverty threshold (the income below which a family is considered to be in poverty) for that family. For example, the poverty threshold for a three-person family in 1994 was $11,817. A three person family with an income of $20,000 would have an income-to-poverty ratio of 1.69 ($20,000 / $11,817).\n\nBetween 1993 and 1994 roughly three-quarters of the population saw their economic well being fluctuate by 5% or more. Conversely, from year to year less than a quarter of Americans had stable incomes. In the 1990s fewer people saw their income grow than in the 1980s, and more people saw their incomes decline. Although the state of the economy is a notable factor in determining if incomes rise or fall, changes in personal circumstances are just as important. People had a good chance of seeing their income rise if they began to work full time, the number of workers or adults in their house increased, they married, or the number of children in the household decreased. Conversely, people could expect a decrease in their income if they ceased to be married or to work full-time.\n\nAnother factor that affected the direction of change in family income was its place on the economic ladder. The closer a family was to poverty the more likely they were to see their income rise. Whereas, 45% of families at the top of the economic ladder, those with income-to-poverty ratios of more than 4.0, experienced income decreases in 1994. While age, gender, and race play a significant role in determining one’s place on the economic ladder, these factors are not good predictors of a rise or fall in income. The only population for which one of these factors was significant was the elderly, whose incomes tended to be fairly stable.",
     questions: [
-      {
-        id: "q465",
-        category: Category.READING,
-        questionText: "According to the passage, in general, income across the United States tends to",
-        options: ["fluctuate wildly.", "change incrementally.", "increase slightly.", "decrease steadily.", "stay about the same."],
-        correctAnswer: 4,
-        explanation: "The passage states 'the median income of the population as a whole does not vary much'."
-      },
-      {
-        id: "q466",
-        category: Category.READING,
-        questionText: "The first paragraph of the passage serves all the following purposes EXCEPT to",
-        options: ["define the term poverty threshold.", "explain income-to-poverty ratio.", "provide an example of an income-to-poverty ratio.", "state the author’s thesis.", "establish the subject of the passage."],
-        correctAnswer: 3,
-        explanation: "The first paragraph explains concepts and definitions, but does not present a specific argumentative thesis."
-      },
-      {
-        id: "q467",
-        category: Category.READING,
-        questionText: "According to the passage, people’s income in the 1990s was",
-        options: ["likely to rise.", "likely to fall.", "greater than in the 1980s.", "less than in the 1980s.", "less likely to grow than in the 1980s."],
-        correctAnswer: 4,
-        explanation: "The passage states: 'In the 1990s fewer people saw their income grow than in the 1980s'."
-      },
-      {
-        id: "q468",
-        category: Category.READING,
-        questionText: "In the context of this passage, the phrase the economic ladder (line 26) most nearly means",
-        options: ["the range of occupations.", "the pecking order.", "the capitalist social structure.", "the caste system.", "the range of incomes."],
-        correctAnswer: 4,
-        explanation: "It refers to positioning based on income levels (poverty to wealth)."
-      },
-      {
-        id: "q469",
-        category: Category.READING,
-        questionText: "The tone of this passage can best be described as",
-        options: ["dry and neutral.", "statistical.", "unintentionally witty.", "theoretical.", "inflammatory."],
-        correctAnswer: 0,
-        explanation: "The passage presents data and definitions without emotion or strong opinion."
-      }
+      { id: "q465", category: Category.READING, questionText: "According to the passage, in general, income across the United States tends to", options: ["fluctuate wildly.", "change incrementally.", "increase slightly.", "decrease steadily.", "stay about the same."], correctAnswer: 4, explanation: "The passage states 'the median income of the population as a whole does not vary much'." },
+      { id: "q466", category: Category.READING, questionText: "The first paragraph of the passage serves all the following purposes EXCEPT to", options: ["define the term poverty threshold.", "explain income-to-poverty ratio.", "provide an example of an income-to-poverty ratio.", "state the author’s thesis.", "establish the subject of the passage."], correctAnswer: 3, explanation: "The first paragraph explains concepts and definitions, but does not present a specific argumentative thesis." },
+      { id: "q467", category: Category.READING, questionText: "According to the passage, people’s income in the 1990s was", options: ["likely to rise.", "likely to fall.", "greater than in the 1980s.", "less than in the 1980s.", "less likely to grow than in the 1980s."], correctAnswer: 4, explanation: "The passage states: 'In the 1990s fewer people saw their income grow than in the 1980s'." },
+      { id: "q468", category: Category.READING, questionText: "In the context of this passage, the phrase the economic ladder (line 26) most nearly means", options: ["the range of occupations.", "the pecking order.", "the capitalist social structure.", "the caste system.", "the range of incomes."], correctAnswer: 4, explanation: "It refers to positioning based on income levels (poverty to wealth)." },
+      { id: "q469", category: Category.READING, questionText: "The tone of this passage can best be described as", options: ["dry and neutral.", "statistical.", "unintentionally witty.", "theoretical.", "inflammatory."], correctAnswer: 0, explanation: "The passage presents data and definitions without emotion or strong opinion." }
     ]
   },
   {
     id: "p68-fishermen",
-    passage: `Beliefs are easily the most enduring and distinctive aspects of maritime culture... Common examples include beliefs about good and bad luck... Because maritime occupations often place workers in a highly unpredictable and hazardous environment... A Florida shrimp fisherman told a researcher that when shrimps’ legs are blood red you can expect a strong northeaster...`,
+    passage: "Beliefs are easily the most enduring and distinctive aspects of maritime culture. Traditional beliefs, commonly called superstitions, are convictions that are usually related to causes and effects, and are often manifest in certain practices. Common examples include beliefs about good and bad luck, signs for predicting the weather, interpretations of supernatural happenings, and remedies for sickness and injury.\n\nBecause maritime occupations often place workers in a highly unpredictable and hazardous environment, it is not surprising that fishermen hold many beliefs about fortune and misfortune. A primary function of such beliefs is to explain the unexplainable. Watermen can cite many actions that invite bad luck. These actions include uttering certain words while aboard a boat, taking certain objects aboard a boat, going out in a boat on a certain day, or painting boats certain colors. Among Florida fishermen, saying “alligator,” bringing aboard shells or black suitcases, and whistling are all considered bad luck while on a boat.\n\nBeliefs about actions that invite good luck appear to be fewer in number than those about bad luck. Beliefs about good luck include breaking a bottle of champagne or other liquid over the bow of a vessel when it is launched, participating in a blessing-of-the-fleet ceremony, placing a coin under the mast, carrying a lucky object when aboard, and stepping on or off the boat with the same foot. There are many beliefs about predicting the weather and the movement of fish. These beliefs are often linked to the detection of minute changes in the environment and reflect fishermen’s intimate contact with the natural environment.\n\nA Florida shrimp fisherman told a researcher that when shrimps’ legs are blood red you can expect a strong northeaster or strong southeaster. The direction of the wind is used to predict the best location for catching shrimp. Other signs for weather prediction include rings around the moon, the color of the sky at sunrise and sunset, and the color and texture of the sea. Sometimes beliefs are expressed in concise rhymes. An oysterman from Apalachicola, Florida, uses the rhyme, “East is the least, and west in the best” to recall that winds from the west generally produce conditions that are conducive to good catches.\n\nBeliefs related to the supernatural—the existence of ghosts, phantom ships, burning ships, or sea monsters—are also found in maritime communities. Many fishermen are reluctant to discuss the supernatural, so these beliefs are less conspicuous than those about luck and the weather. However, one net maker told a researcher about his encounter with a ghost ship. He saw a schooner, a ship that was prevalent in the nineteenth century, come in across the Gulf and pass through water that was far too shallow for a ship of its size. The ship then suddenly disappeared from sight.\n\nCommercial fishing is considered to be the most hazardous of all industrial occupations in the United States. Statistics show that fishermen are seven times more likely to die than workers in the next most dangerous occupation. Adhering to a system of beliefs most likely helps bring sense and order to a world in which natural disasters and misfortune are a part of daily life. Many fishermen also make a precarious living at best. Maritime beliefs contain the collective wisdom of generations and following these traditions may help fishermen catch more fish without taking unnecessary risks.",
     questions: [
-      {
-        id: "q470",
-        category: Category.READING,
-        questionText: "In line 4, the phrase manifest in certain practices most nearly means",
-        options: ["obviously rehearsed.", "recorded in some religions.", "destined in certain circumstances.", "evident in particular activities.", "decreed in unwavering terms."],
-        correctAnswer: 3,
-        explanation: "Manifest means clear or evident."
-      },
-      {
-        id: "q471",
-        category: Category.READING,
-        questionText: "According to the passage, fishermen are superstitious because",
-        options: ["they learn it from previous generations.", "they believe in the supernatural.", "fishing is a dangerous and unpredictable occupation.", "they are afraid of stormy weather.", "fishing is a terrible way to make a living."],
-        correctAnswer: 2,
-        explanation: "The passage links beliefs to the 'highly unpredictable and hazardous environment'."
-      },
-      {
-        id: "q472",
-        category: Category.READING,
-        questionText: "The author’s attitude toward fishermen’s beliefs about predicting the weather can best be characterized as",
-        options: ["unqualified respect.", "veiled disbelief.", "tempered belief.", "absolute fascination.", "minimal enthusiasm."],
-        correctAnswer: 0,
-        explanation: "The author presents these beliefs as linked to 'intimate contact with the natural environment', implying respect."
-      },
-      {
-        id: "q473",
-        category: Category.READING,
-        questionText: "According to information in the passage, fishermen’s beliefs about the supernatural do not conform to the author’s definition of traditional beliefs (lines 2–4) in that",
-        options: ["fishermen do not like to talk about them.", "they are not related to cause and effect.", "they are not conspicuous.", "they are not manifest.", "they are less rooted in the natural world."],
-        correctAnswer: 1,
-        explanation: "Traditional beliefs are defined as related to causes and effects; supernatural beliefs are just about existence (ghosts, etc.)."
-      },
-      {
-        id: "q474",
-        category: Category.READING,
-        questionText: "The purpose of the statistic in lines 45–47 is to",
-        options: ["qualify the statement that fishing is hazardous.", "prove that fishing is an undesirable occupation.", "illustrate the relative ease of other professions.", "quantify the hazardous nature of commercial fishing.", "demonstrate that fishermen need a system of beliefs."],
-        correctAnswer: 3,
-        explanation: "The statistic (7x more likely to die) provides a quantity to support the hazard claim."
-      },
-      {
-        id: "q475",
-        category: Category.READING,
-        questionText: "In lines 49–50, precarious most nearly means",
-        options: ["dangerous.", "steady.", "reduced.", "meager.", "uncertain."],
-        correctAnswer: 4,
-        explanation: "Precarious means uncertain or insecure."
-      },
-      {
-        id: "q476",
-        category: Category.READING,
-        questionText: "The primary purpose of the passage is to",
-        options: ["catalog the beliefs of Florida fishermen.", "demonstrate that traditional beliefs are effective.", "describe some traditional beliefs found among Florida fishermen.", "prove that superstitions are a valid guide to behavior.", "amuse readers with the peculiar beliefs of Florida fishermen."],
-        correctAnswer: 2,
-        explanation: "The passage describes various beliefs (luck, weather, supernatural) among this group."
-      }
+      { id: "q470", category: Category.READING, questionText: "In line 4, the phrase manifest in certain practices most nearly means", options: ["obviously rehearsed.", "recorded in some religions.", "destined in certain circumstances.", "evident in particular activities.", "decreed in unwavering terms."], correctAnswer: 3, explanation: "Manifest means clear or evident." },
+      { id: "q471", category: Category.READING, questionText: "According to the passage, fishermen are superstitious because", options: ["they learn it from previous generations.", "they believe in the supernatural.", "fishing is a dangerous and unpredictable occupation.", "they are afraid of stormy weather.", "fishing is a terrible way to make a living."], correctAnswer: 2, explanation: "The passage links beliefs to the 'highly unpredictable and hazardous environment'." },
+      { id: "q472", category: Category.READING, questionText: "The author’s attitude toward fishermen’s beliefs about predicting the weather can best be characterized as", options: ["unqualified respect.", "veiled disbelief.", "tempered belief.", "absolute fascination.", "minimal enthusiasm."], correctAnswer: 0, explanation: "The author presents these beliefs as linked to 'intimate contact with the natural environment', implying respect." },
+      { id: "q473", category: Category.READING, questionText: "According to information in the passage, fishermen’s beliefs about the supernatural do not conform to the author’s definition of traditional beliefs (lines 2–4) in that", options: ["fishermen do not like to talk about them.", "they are not related to cause and effect.", "they are not conspicuous.", "they are not manifest.", "they are less rooted in the natural world."], correctAnswer: 1, explanation: "Traditional beliefs are defined as related to causes and effects; supernatural beliefs are just about existence (ghosts, etc.)." },
+      { id: "q474", category: Category.READING, questionText: "The purpose of the statistic in lines 45–47 is to", options: ["qualify the statement that fishing is hazardous.", "prove that fishing is an undesirable occupation.", "illustrate the relative ease of other professions.", "quantify the hazardous nature of commercial fishing.", "demonstrate that fishermen need a system of beliefs."], correctAnswer: 3, explanation: "The statistic (7x more likely to die) provides a quantity to support the hazard claim." },
+      { id: "q475", category: Category.READING, questionText: "In lines 49–50, precarious most nearly means", options: ["dangerous.", "steady.", "reduced.", "meager.", "uncertain."], correctAnswer: 4, explanation: "Precarious means uncertain or insecure." },
+      { id: "q476", category: Category.READING, questionText: "The primary purpose of the passage is to", options: ["catalog the beliefs of Florida fishermen.", "demonstrate that traditional beliefs are effective.", "describe some traditional beliefs found among Florida fishermen.", "prove that superstitions are a valid guide to behavior.", "amuse readers with the peculiar beliefs of Florida fishermen."], correctAnswer: 2, explanation: "The passage describes various beliefs (luck, weather, supernatural) among this group." }
     ]
   },
   {
     id: "p69-parenting",
-    passage: `Does a baby have a moral conscience? While a baby is not faced with many serious ethical dilemmas, his or her moral character is formed from the earliest stages of infancy... The cornerstone of good parenting is love... The warm-restrictive style of parenting helps develop the two key dimensions of moral character: empathy and self-discipline...`,
+    passage: "Does a baby have a moral conscience? While a baby is not faced with many serious ethical dilemmas, his or her moral character is formed from the earliest stages of infancy. Recent research has shown that the type of parenting an infant receives has a dramatic impact on the child’s moral development and, consequently, success later in life. The renowned childcare expert T. Berry Brazelton claims that he can observe a child of eight months and tell if that child will succeed or fail in life. This may be a harsh sentence for an eight-month-old baby, but it underscores the importance of educating parents in good child-rearing techniques and of intervening early in cases of child endangerment.\n\nBut what are good parenting techniques? The cornerstone of good parenting is love, and the building blocks are trust, acceptance, and discipline. The concept of “attachment parenting” has come to dominate early childhood research. It is the relatively simple idea that an infant who is firmly attached to his or her “primary caregiver”—often, but not always, the mother—develops into a secure and confident child. Caregivers who respond promptly and affectionately to their infants’ needs—to eat, to play, to be held, to sleep, and to be left alone—form secure attachments with their children. A study conducted with rhesus monkeys showed that infant monkeys preferred mothers who gave comfort and contact but no food to mothers who gave food but no comfort and contact. This study indicates that among primates love and nurturing are even more important than food.\n\nFortunately, loving their infants comes naturally to most parents and the first requisite for good parenting is one that is easily met. The second component—setting limits and teaching self-discipline—can be more complicated. Many parents struggle to find a balance between responding promptly to their babies’ needs and “spoiling” their child. Norton Garfinkle, chair of the Executive Committee of the Lamaze Institute for Family Education, has identified four parenting styles: warm and restrictive, warm and permissive, cold and restrictive, and cold and permissive. A warm parent is one who exhibits love and affection; a cold parent withholds love; a restrictive parent sets limits on her child’s behavior and a permissive parent does not restrict her child. Garfinkle finds that the children of warm-restrictive parents exhibit self-confidence and self-control; the children of warm-permissive parents are self-assured but have difficulty following rules; children of cold-restrictive parents tend to be angry and sullenly compliant, and the most troubled children are those of cold-permissive parents. These children are hostile and defiant.\n\nThe warm-restrictive style of parenting helps develop the two key dimensions of moral character: empathy and self-discipline. A warm attachment with his or her parent helps the child develop empathetic feelings about other human beings, while parental limit-setting teaches the child self-discipline and the ability to defer gratification. The ability to defer gratification is an essential skill for negotiating the adult world. A study conducted by Daniel Goleman, author of Emotional Intelligence, tested a group of four-year-olds’ ability to defer gratification. Each child in the study was offered a marshmallow. The child could choose to eat the marshmallow right away or wait fifteen minutes to eat the marshmallow and receive another marshmallow as a reward for waiting. Researchers followed the children and found that by high school those children who ate their marshmallow right away were more likely to be lonely, more prone to stress, and more easily frustrated. Conversely, the children who demonstrated self-control were outgoing, confident, and dependable.\n\nThis research seems to answer the old adage, “you can’t spoil a baby.” It seems that a baby who is fed at the first sign of hunger and picked up on demand can perhaps be “spoiled.” Most parents, however, tend to balance their baby’s needs with their own. Many parents will teach their baby to sleep through the night by not picking up the baby when she awakes in the middle of the night. Although it can be heart wrenching for these parents to ignore their baby’s cries, they are teaching their baby to fall asleep on her own and getting the benefit of a full night’s sleep. While many parents will come to good parenting techniques instinctually and through various community supports, others parents are not equipped for the trials of raising a baby. Are these babies doomed to lives of frustration, poor impulse-control, and anti-social behavior? Certainly not. Remedial actions—such as providing enrichment programs at daycare centers and educating parents—can be taken to reverse the effects of bad parenting. However, the research indicates that the sooner these remedies are put into action the better.",
     questions: [
-      {
-        id: "q477",
-        category: Category.READING,
-        questionText: "The primary purpose of the passage is to",
-        options: ["advocate for the ability to defer gratification.", "educate readers about moral development in infants.", "chastise parents for spoiling their children.", "inform readers of remedies for bad parenting.", "demonstrate the importance of love in child rearing."],
-        correctAnswer: 1,
-        explanation: "The passage discusses how parenting styles affect moral development (conscience, empathy, discipline) from infancy."
-      },
-      {
-        id: "q478",
-        category: Category.READING,
-        questionText: "In line 8, the word sentence most nearly means",
-        options: ["statement.", "pronouncement.", "declaration.", "judgment.", "punishment."],
-        correctAnswer: 3,
-        explanation: "In this context, 'sentence' implies a judgment or verdict on the child's future."
-      },
-      {
-        id: "q479",
-        category: Category.READING,
-        questionText: "The author presents the study about rhesus monkeys (lines 19–22) to",
-        options: ["prove that humans and monkeys have a lot in common.", "suggest that food is used as a substitute for love.", "support her assertion that love is the most important aspect of good parenting.", "disprove the idea that you can’t spoil a baby.", "broaden the scope of her argument to include all primates."],
-        correctAnswer: 2,
-        explanation: "The study showed monkeys preferred comfort (love) over food, supporting the 'cornerstone of love' assertion."
-      },
-      {
-        id: "q480",
-        category: Category.READING,
-        questionText: "According to the third paragraph of the passage, a cold-restrictive parent can best be characterized as",
-        options: ["an aloof disciplinarian.", "an angry autocrat.", "a frustrated teacher.", "a sullen despot.", "an unhappy dictator."],
-        correctAnswer: 0,
-        explanation: "Cold means withholding love (aloof), and restrictive means setting limits (disciplinarian)."
-      },
-      {
-        id: "q481",
-        category: Category.READING,
-        questionText: "Based on the information in paragraph four, one can infer that children who are unable to defer gratification are most unlikely to succeed because",
-        options: ["they are unpopular.", "they lack empathy.", "their parents neglected them.", "they are unable to follow directions.", "they lack self-discipline."],
-        correctAnswer: 4,
-        explanation: "The passage links deferring gratification directly to self-discipline."
-      },
-      {
-        id: "q482",
-        category: Category.READING,
-        questionText: "Which of the following techniques is used in lines 59–64?",
-        options: ["explanation of terms", "comparison of different arguments", "contrast of opposing views", "generalized statement", "illustration by example"],
-        correctAnswer: 4,
-        explanation: "The author uses the example of sleep training to illustrate balancing needs."
-      },
-      {
-        id: "q483",
-        category: Category.READING,
-        questionText: "The author of this passage would be most likely to agree with which statement?",
-        options: ["Babies of cold-permissive parents are doomed to lives of failure.", "Good parenting is the product of education.", "Instincts are a good guide for most parents.", "Conventional wisdom is usually wrong.", "Parents should strive to raise self-sufficient babies."],
-        correctAnswer: 2,
-        explanation: "The passage states 'loving their infants comes naturally to most parents' and 'many parents will come to good parenting techniques instinctually'."
-      }
+      { id: "q477", category: Category.READING, questionText: "The primary purpose of the passage is to", options: ["advocate for the ability to defer gratification.", "educate readers about moral development in infants.", "chastise parents for spoiling their children.", "inform readers of remedies for bad parenting.", "demonstrate the importance of love in child rearing."], correctAnswer: 1, explanation: "The passage discusses how parenting styles affect moral development (conscience, empathy, discipline) from infancy." },
+      { id: "q478", category: Category.READING, questionText: "In line 8, the word sentence most nearly means", options: ["statement.", "pronouncement.", "declaration.", "judgment.", "punishment."], correctAnswer: 3, explanation: "In this context, 'sentence' implies a judgment or verdict on the child's future." },
+      { id: "q479", category: Category.READING, questionText: "The author presents the study about rhesus monkeys (lines 19–22) to", options: ["prove that humans and monkeys have a lot in common.", "suggest that food is used as a substitute for love.", "support her assertion that love is the most important aspect of good parenting.", "disprove the idea that you can’t spoil a baby.", "broaden the scope of her argument to include all primates."], correctAnswer: 2, explanation: "The study showed monkeys preferred comfort (love) over food, supporting the 'cornerstone of love' assertion." },
+      { id: "q480", category: Category.READING, questionText: "According to the third paragraph of the passage, a cold-restrictive parent can best be characterized as", options: ["an aloof disciplinarian.", "an angry autocrat.", "a frustrated teacher.", "a sullen despot.", "an unhappy dictator."], correctAnswer: 0, explanation: "Cold means withholding love (aloof), and restrictive means setting limits (disciplinarian)." },
+      { id: "q481", category: Category.READING, questionText: "Based on the information in paragraph four, one can infer that children who are unable to defer gratification are most unlikely to succeed because", options: ["they are unpopular.", "they lack empathy.", "their parents neglected them.", "they are unable to follow directions.", "they lack self-discipline."], correctAnswer: 4, explanation: "The passage links deferring gratification directly to self-discipline." },
+      { id: "q482", category: Category.READING, questionText: "Which of the following techniques is used in lines 59–64?", options: ["explanation of terms", "comparison of different arguments", "contrast of opposing views", "generalized statement", "illustration by example"], correctAnswer: 4, explanation: "The author uses the example of sleep training to illustrate balancing needs." },
+      { id: "q483", category: Category.READING, questionText: "The author of this passage would be most likely to agree with which statement?", options: ["Babies of cold-permissive parents are doomed to lives of failure.", "Good parenting is the product of education.", "Instincts are a good guide for most parents.", "Conventional wisdom is usually wrong.", "Parents should strive to raise self-sufficient babies."], correctAnswer: 2, explanation: "The passage states 'loving their infants comes naturally to most parents' and 'many parents will come to good parenting techniques instinctually'." }
     ]
   },
   {
     id: "p70-potlatch-kula",
-    passage: `PASSAGE 1
-Among traditional societies of the Pacific Northwest... the gift-giving ceremony called potlatch was a central feature of social life... Each nation held potlatches to celebrate important life passages... The more a host gave away, the more status was accorded him...
-
-PASSAGE 2
-The inhabitants of the Trobriand Islands... are united by a ceremonial trading system called the kula ring... Each man in the kula ring has two kula trading partners... The exchange of these ceremonial items... is enacted with a host of ritual activities...`,
+    passage: "PASSAGE 1\nAmong traditional societies of the Pacific Northwest—including the Haidas, Kwakiuls, Makahs, Nootkas, Tlingits, and Tsimshians—the gift-giving ceremony called potlatch was a central feature of social life. The word potlatch, meaning “to give,” comes from a Chinook trading language that was used all along the Pacific Coast. Each nation, or tribe, had its own particular word for the ceremony and each had different potlatch traditions. However, the function and basic features of the ceremony were universal among the tribes.\n\nEach nation held potlatches to celebrate important life passages, such as birth, coming of age, marriage, and death. Potlatches were also held to honor ancestors and to mark the passing of leadership. A potlatch, which could last four or more days, was usually held in the winter when the tribes were not engaged in gathering and storing food. Each potlatch included the formal display of the host family’s crest and masks. The hosts performed ritual dances and provided feasts for their guests. However, the most important ritual was the lavish distribution of gifts to the guests. Some hosts might give away most or all of their accumulated wealth in one potlatch. The more a host gave away, the more status was accorded him. In turn, the guests, who had to accept the proffered gifts, were then expected to host their own potlatches and give away gifts of equal value.\n\nPrior to contact with Europeans, gifts might include food, slaves, copper plates, and goat’s hair blankets. After contact, the potlatch was fundamentally transformed by the influx of manufactured goods. As tribes garnered wealth in the fur trade, gifts came to include guns, woolen blankets, and other Western goods. Although potlatches had always been a means for individuals to win prestige, potlatches involving manufactured goods became a way for nobles to validate tenuous claims to leadership, sometimes through the destruction of property. It was this willful destruction of property that led Canadian authorities, and later the U.S. government, to ban potlatches in the late 1880s.\n\nDespite the ban, the potlatch remained an important part of native Pacific Northwest culture. Giving wealth—not accumulating wealth, as is prized in Western culture—was a means of cementing leadership, affirming status, establishing and maintaining alliances, as well as ensuring the even distribution of food and goods. Agnes Alfred, an Indian from Albert Bay, explained the potlatch this way, “When one’s heart is glad, he gives away gifts. . . . The potlatch was given to us to be our way of expressing joy.”\n\nPASSAGE 2\nThe inhabitants of the Trobriand Islands, an archipelago off the coast of Papua New Guinea in the South Pacific, are united by a ceremonial trading system called the kula ring. Kula traders sail to neighboring islands in large ocean-going canoes to offer either shell necklaces or shell armbands. The necklaces, made of red shells called bagi, travel around the trading ring clockwise, and the armbands, made of white shells called mwali, travel counterclockwise.\n\nEach man in the kula ring has two kula trading partners—one partner to whom he gives a necklace for an armband of equal value, although the exchanges are made on separate occasions, and one partner with whom he makes the reverse exchange. Each partner has one other partner with whom he trades, thus linking all the men around the kula ring. For example, if A trades with B and C, B trades with A and D, and C trades with A and E, and so on. A man may have only met his own specific kula partners, but he will know by reputation all the men in his kula ring. It can take anywhere from two to ten years for a particular object to complete a journey around the ring. The more times an object has made the trip around the ring the more value it accrues. Particularly beautiful necklaces and armbands are also prized. Some famous kula objects are known by special names and through elaborate stories. Objects also gain fame through ownership by powerful men, and, likewise, men can gain status by possessing particularly prized kula objects.\n\nThe exchange of these ceremonial items, which often accompanies trade in more mundane wares, is enacted with a host of ritual activities. The visitors, who travel to receive kula from their hosts, are seen as aggressors. They are met with ritual hostility and must charm their hosts in order to receive the necklaces or armbands. The visitors take care to make themselves beautiful, because beauty conveys strength and protects them from danger. The hosts, who are the “victims” of their visitors’ charm and beauty, give the prized objects because they know that the next time it will be their turn to be the aggressor. Each man hopes that his charm and beauty will compel his trading partner to give him the most valuable kula object.\n\nThe objects cannot be bought or sold. They have no value other than their ceremonial importance, and the voyages that the traders make to neighboring islands are hazardous, time-consuming, and expensive. Yet, a man’s standing in the kula ring is his primary concern. This ceremonial exchange has numerous tangible benefits. It establishes friendly relations through a far-flung chain of islands; it provides a means for the utilitarian exchange of necessary goods; and it reinforces the power of those individuals who win and maintain the most valuable kula items. Although the kula ring might mystify Western traders, this system, which has been in operation for hundreds of years, is a highly effective means of unifying these distant islanders and creating a common bond among peoples who might otherwise view one another as hostile outsiders.",
     questions: [
-      {
-        id: "q484",
-        category: Category.READING,
-        questionText: "According to Passage 1, potlatch is best defined as a",
-        options: ["ceremony with rigid protocol to which all Pacific Northwest tribes adhere.", "generic term for a gift-giving ceremony celebrated in the Pacific Northwest.", "socialist ritual of the Pacific Northwest.", "lavish feast celebrated in the Pacific Northwest.", "wasteful ritual that was banned in the 1880s."],
-        correctAnswer: 1,
-        explanation: "The passage says potlatch is a word from a trading language used for the ceremony, but each tribe had its own word."
-      },
-      {
-        id: "q485",
-        category: Category.READING,
-        questionText: "According to Passage 1, the gift-giving central to the potlatch can best be characterized as",
-        options: ["reciprocal.", "wasteful.", "selfless.", "spendthrift.", "commercialized."],
-        correctAnswer: 0,
-        explanation: "Guests were 'expected to host their own potlatches and give away gifts of equal value'."
-      },
-      {
-        id: "q486",
-        category: Category.READING,
-        questionText: "In Passage 1, the author’s attitude toward the potlatch can best be described as",
-        options: ["condescending.", "antagonistic.", "wistful.", "respectful.", "romantic."],
-        correctAnswer: 3,
-        explanation: "The author describes the cultural importance and function neutrally and respectfully."
-      },
-      {
-        id: "q487",
-        category: Category.READING,
-        questionText: "According to Passage 2, the men in a kula ring are",
-        options: ["linked by mutual admiration.", "hostile aggressors.", "greedy.", "motivated by vanity.", "known to one another by reputation."],
-        correctAnswer: 4,
-        explanation: "A man 'will know by reputation all the men in his kula ring'."
-      },
-      {
-        id: "q488",
-        category: Category.READING,
-        questionText: "In Passage 2, line 30, the word victims is in quotation marks because the",
-        options: ["word might be unfamiliar to some readers.", "author is implying that the hosts are self-pitying.", "author is reinforcing the idea that the hosts are playing a prescribed role.", "author wants to stress the brutal nature of the exchange.", "author is taking care not to be condescending to the Trobriand culture."],
-        correctAnswer: 2,
-        explanation: "The 'victims' are just playing a part in the ritual; they aren't actual victims."
-      },
-      {
-        id: "q489",
-        category: Category.READING,
-        questionText: "According to Passage 2, necklaces and armbands gain value through all the following means EXCEPT being",
-        options: ["in circulation for a long time.", "especially attractive.", "owned by a powerful man.", "made of special shells.", "known by a special name."],
-        correctAnswer: 3,
-        explanation: "The passage lists circulation time, beauty, ownership, and stories/names. It mentions they are made of shells, but not that 'special shells' give value."
-      },
-      {
-        id: "q490",
-        category: Category.READING,
-        questionText: "Gift-giving in the potlatch ceremony and the ritual exchange of the kula ring are both",
-        options: ["a ritualized means of maintaining community ties.", "dangerous and expensive endeavors.", "a means of ascending to a position of leadership.", "falling prey to Western culture.", "peculiar rituals of a bygone era."],
-        correctAnswer: 0,
-        explanation: "Both passages emphasize maintaining alliances/friendly relations/community bonds."
-      },
-      {
-        id: "q491",
-        category: Category.READING,
-        questionText: "Based on information presented in the two passages, both authors would be most likely to agree with which statement?",
-        options: ["Traditional societies are more generous than Western societies.", "The value of some endeavors cannot be measured in monetary terms.", "It is better to give than to receive.", "Westerners are only interested in money.", "Traditional societies could benefit from better business sense."],
-        correctAnswer: 1,
-        explanation: "Both ceremonies place high value on prestige, status, and relationships rather than accumulation of wealth."
-      },
-      {
-        id: "q492",
-        category: Category.READING,
-        questionText: "Which of the following titles would be most appropriate for both Passage 1 or Passage 2?",
-        options: ["A Gift-giving Ceremony", "Ritual Exchange in Traditional Societies", "Ceremonial Giving and Receiving in a Traditional Society", "The Kindness of Strangers", "Giving and Receiving in a Faraway Land"],
-        correctAnswer: 2,
-        explanation: "Both passages describe ceremonial giving and receiving (exchange) in specific traditional societies."
-      }
+      { id: "q484", category: Category.READING, questionText: "According to Passage 1, potlatch is best defined as a", options: ["ceremony with rigid protocol to which all Pacific Northwest tribes adhere.", "generic term for a gift-giving ceremony celebrated in the Pacific Northwest.", "socialist ritual of the Pacific Northwest.", "lavish feast celebrated in the Pacific Northwest.", "wasteful ritual that was banned in the 1880s."], correctAnswer: 1, explanation: "The passage says potlatch is a word from a trading language used for the ceremony, but each tribe had its own word." },
+      { id: "q485", category: Category.READING, questionText: "According to Passage 1, the gift-giving central to the potlatch can best be characterized as", options: ["reciprocal.", "wasteful.", "selfless.", "spendthrift.", "commercialized."], correctAnswer: 0, explanation: "Guests were 'expected to host their own potlatches and give away gifts of equal value'." },
+      { id: "q486", category: Category.READING, questionText: "In Passage 1, the author’s attitude toward the potlatch can best be described as", options: ["condescending.", "antagonistic.", "wistful.", "respectful.", "romantic."], correctAnswer: 3, explanation: "The author describes the cultural importance and function neutrally and respectfully." },
+      { id: "q487", category: Category.READING, questionText: "According to Passage 2, the men in a kula ring are", options: ["linked by mutual admiration.", "hostile aggressors.", "greedy.", "motivated by vanity.", "known to one another by reputation."], correctAnswer: 4, explanation: "A man 'will know by reputation all the men in his kula ring'." },
+      { id: "q488", category: Category.READING, questionText: "In Passage 2, line 30, the word victims is in quotation marks because the", options: ["word might be unfamiliar to some readers.", "author is implying that the hosts are self-pitying.", "author is reinforcing the idea that the hosts are playing a prescribed role.", "author wants to stress the brutal nature of the exchange.", "author is taking care not to be condescending to the Trobriand culture."], correctAnswer: 2, explanation: "The 'victims' are just playing a part in the ritual; they aren't actual victims." },
+      { id: "q489", category: Category.READING, questionText: "According to Passage 2, necklaces and armbands gain value through all the following means EXCEPT being", options: ["in circulation for a long time.", "especially attractive.", "owned by a powerful man.", "made of special shells.", "known by a special name."], correctAnswer: 3, explanation: "The passage lists circulation time, beauty, ownership, and stories/names. It mentions they are made of shells, but not that 'special shells' give value." },
+      { id: "q490", category: Category.READING, questionText: "Gift-giving in the potlatch ceremony and the ritual exchange of the kula ring are both", options: ["a ritualized means of maintaining community ties.", "dangerous and expensive endeavors.", "a means of ascending to a position of leadership.", "falling prey to Western culture.", "peculiar rituals of a bygone era."], correctAnswer: 0, explanation: "Both passages emphasize maintaining alliances/friendly relations/community bonds." },
+      { id: "q491", category: Category.READING, questionText: "Based on information presented in the two passages, both authors would be most likely to agree with which statement?", options: ["Traditional societies are more generous than Western societies.", "The value of some endeavors cannot be measured in monetary terms.", "It is better to give than to receive.", "Westerners are only interested in money.", "Traditional societies could benefit from better business sense."], correctAnswer: 1, explanation: "Both ceremonies place high value on prestige, status, and relationships rather than accumulation of wealth." },
+      { id: "q492", category: Category.READING, questionText: "Which of the following titles would be most appropriate for both Passage 1 or Passage 2?", options: ["A Gift-giving Ceremony", "Ritual Exchange in Traditional Societies", "Ceremonial Giving and Receiving in a Traditional Society", "The Kindness of Strangers", "Giving and Receiving in a Faraway Land"], correctAnswer: 2, explanation: "Both passages describe ceremonial giving and receiving (exchange) in specific traditional societies." }
     ]
   },
   {
     id: "p71-affirmative-action",
-    passage: `When I began teaching at Big State U in the late 1960s, the students in my American literature survey were almost uniformly of European heritage... Since the 1960s there has been a sea change in university admissions. Key Supreme Court decisions and federal laws made equal opportunity the law of the land... Affirmative action programs in college admissions have been guided by the principle that it is not enough to simply remove barriers to social mobility but it is also necessary to encourage it for minority groups.
-
-In recent years, affirmative action programs have come under public scrutiny... In my view, this trend is very dangerous not only for minority students but for all students. Thanks to a diversified student body, my classes today are much richer...
-
-Some may argue that affirmative action had its place in the years following the Civil Rights Movement, but that it is no longer necessary. To assume that all students are now on a level playing field is naïve...`,
+    passage: "When I began teaching at Big State U in the late 1960s, the students in my American literature survey were almost uniformly of European heritage, and most were from middle-class Protestant families. Attending college for these students was a lesson in homogeneity. Although a number of students were involved in the Civil Rights Movement and some even worked “down South” on voter registration, most students considered segregation to be a Southern problem and many did not see the discrimination that was rampant on their own campus.\n\nSince the 1960s there has been a sea change in university admissions. Key Supreme Court decisions and federal laws made equal opportunity the law of the land, and many institutions of higher learning adopted policies of affirmative action. The term affirmative action was first used in the 1960s to describe the active recruitment and promotion of minority candidates in both the workplace and in colleges and universities. President Lyndon Johnson, speaking at Howard University in 1965, aptly explained the reasoning behind affirmative action. As he said, “You do not take a man who, for years, has been hobbled by chains and liberate him, bring him to the starting line in a race and then say, ‘You are free compete with all the others,’ and still believe that you have been completely fair.” Affirmative action programs in college admissions have been guided by the principle that it is not enough to simply remove barriers to social mobility but it is also necessary to encourage it for minority groups.\n\nIn recent years, affirmative action programs have come under public scrutiny, and some schools have been faced with charges of reverse discrimination. Preferential treatment of minority applicants is seen as discrimination against qualified applicants from the majority group. Despite widespread support for the elimination of prejudice, most whites do not favor the preferential treatment of minority applicants, and affirmative action in college admissions has been abolished in several states. In my view, this trend is very dangerous not only for minority students but for all students. Thanks to a diversified student body, my classes today are much richer than when I began teaching in the 1960s. For example, when I teach A Light in August by William Faulkner, as I do every fall, today there is likely to be a student in the class who has firsthand knowledge of the prejudice that is a central theme of the novel. This student’s contribution to the class discussion of the novel is an invaluable part of all my students’ education and a boon to my experience as a teacher.\n\nSome may argue that affirmative action had its place in the years following the Civil Rights Movement, but that it is no longer necessary. To assume that all students are now on a level playing field is naïve. Take for example the extra-curricular activities, AP classes, and internships that help certain applicants impress the admissions board: These are not available or economically feasible for many minority candidates. This is just one example of why affirmative action still has an important place on American campuses. When all things are equal, choosing the minority candidate not only gives minorities fair access to institutions of higher learning, but it ensures diversity on our campuses. Exposing all students to a broad spectrum of American society is a lesson that may be the one that best prepares them to participate in American society and succeed in the future.",
     questions: [
-      {
-        id: "q493",
-        category: Category.READING,
-        questionText: "In line 4, the phrase a lesson in homogeneity can be most accurately described as",
-        options: ["a slight against civil rights workers.", "an ironic observation about the uniform character of the student body.", "a comment on the poor quality of the education at Big State U.", "a sarcastic comment about the authors’ former students.", "the author’s’ rueful view of his poor teaching skills."],
-        correctAnswer: 1,
-        explanation: "Homogeneity means sameness. The author notes the students were 'uniformly of European heritage'."
-      },
-      {
-        id: "q494",
-        category: Category.READING,
-        questionText: "In line 10, the expression sea change means",
-        options: ["increase.", "storm.", "decrease.", "wave.", "transformation."],
-        correctAnswer: 4,
-        explanation: "A 'sea change' is an idiom for a substantial transformation."
-      },
-      {
-        id: "q495",
-        category: Category.READING,
-        questionText: "The author uses the quote from President Lyndon Johnson in (lines 18–21) to",
-        options: ["provide an example of discrimination in the past.", "show how Howard University benefited from affirmative action policies.", "make the passage more interesting.", "explain the rationale for affirmative action.", "prove that affirmative action has been effective at promoting diversity."],
-        correctAnswer: 3,
-        explanation: "The quote explains *why* simply removing barriers isn't enough; it explains the reasoning."
-      },
-      {
-        id: "q496",
-        category: Category.READING,
-        questionText: "According to the passage, the greatest danger of abolishing affirmative action in college admissions is",
-        options: ["allowing reverse discrimination to take hold of college admissions.", "creating a “slippery slope” of discrimination and prejudice.", "losing the benefits of a diverse campus.", "returning to the segregation of the past.", "complicating the job of the college admissions board."],
-        correctAnswer: 2,
-        explanation: "The author states the trend is dangerous because classes are 'much richer' with diversity."
-      },
-      {
-        id: "q497",
-        category: Category.READING,
-        questionText: "From the information provided in the passage, one can conclude that the author",
-        options: ["has personally benefited from the effects of affirmative action.", "considers affirmative action a necessary evil.", "favors accepting poorly qualified candidates for the sake of diversity.", "despises the opponents of affirmative action.", "thinks that affirmative action will eventually be unnecessary."],
-        correctAnswer: 0,
-        explanation: "The author states diversity has been 'a boon to my experience as a teacher'."
-      },
-      {
-        id: "q498",
-        category: Category.READING,
-        questionText: "The word feasible in line 46 most nearly means",
-        options: ["advantageous.", "possible.", "attractive.", "probable.", "suitable."],
-        correctAnswer: 1,
-        explanation: "Feasible means capable of being done or possible."
-      },
-      {
-        id: "q499",
-        category: Category.READING,
-        questionText: "The tone of this passage can best be described as",
-        options: ["impassioned.", "impartial.", "reasonable.", "sarcastic.", "dispassionate."],
-        correctAnswer: 2,
-        explanation: "The author argues a point of view but uses reasoned arguments and personal experience."
-      },
-      {
-        id: "q500",
-        category: Category.READING,
-        questionText: "The author gives all the following reasons for continuing affirmative action in college admissions EXCEPT that it",
-        options: ["fosters diversity.", "provides fair access to higher education.", "is necessary to promote social mobility.", "exposes students to a broad spectrum of society.", "prepares students for the future."],
-        correctAnswer: 2,
-        explanation: "While social mobility is mentioned as a general principle of AA, the author's specific arguments focus on diversity, access, and preparation."
-      },
-      {
-        id: "q501",
-        category: Category.READING,
-        questionText: "The argument for affirmative action in the workplace that most closely mirrors the author’s reasoning about affirmative action in college admissions is",
-        options: ["it is the law of the land.", "diversity in the workplace better prepares a company to compete in the marketplace.", "a diverse workforce is more efficient.", "a less-qualified minority candidate is still a great asset to a company.", "it is the right thing to do."],
-        correctAnswer: 1,
-        explanation: "The author argues diversity prepares students to succeed; similarly, diversity prepares companies to compete."
-      }
+      { id: "q493", category: Category.READING, questionText: "In line 4, the phrase a lesson in homogeneity can be most accurately described as", options: ["a slight against civil rights workers.", "an ironic observation about the uniform character of the student body.", "a comment on the poor quality of the education at Big State U.", "a sarcastic comment about the authors’ former students.", "the author’s’ rueful view of his poor teaching skills."], correctAnswer: 1, explanation: "Homogeneity means sameness. The author notes the students were 'uniformly of European heritage'." },
+      { id: "q494", category: Category.READING, questionText: "In line 10, the expression sea change means", options: ["increase.", "storm.", "decrease.", "wave.", "transformation."], correctAnswer: 4, explanation: "A 'sea change' is an idiom for a substantial transformation." },
+      { id: "q495", category: Category.READING, questionText: "The author uses the quote from President Lyndon Johnson in (lines 18–21) to", options: ["provide an example of discrimination in the past.", "show how Howard University benefited from affirmative action policies.", "make the passage more interesting.", "explain the rationale for affirmative action.", "prove that affirmative action has been effective at promoting diversity."], correctAnswer: 3, explanation: "The quote explains *why* simply removing barriers isn't enough; it explains the reasoning." },
+      { id: "q496", category: Category.READING, questionText: "According to the passage, the greatest danger of abolishing affirmative action in college admissions is", options: ["allowing reverse discrimination to take hold of college admissions.", "creating a “slippery slope” of discrimination and prejudice.", "losing the benefits of a diverse campus.", "returning to the segregation of the past.", "complicating the job of the college admissions board."], correctAnswer: 2, explanation: "The author states the trend is dangerous because classes are 'much richer' with diversity." },
+      { id: "q497", category: Category.READING, questionText: "From the information provided in the passage, one can conclude that the author", options: ["has personally benefited from the effects of affirmative action.", "considers affirmative action a necessary evil.", "favors accepting poorly qualified candidates for the sake of diversity.", "despises the opponents of affirmative action.", "thinks that affirmative action will eventually be unnecessary."], correctAnswer: 0, explanation: "The author states diversity has been 'a boon to my experience as a teacher'." },
+      { id: "q498", category: Category.READING, questionText: "The word feasible in line 46 most nearly means", options: ["advantageous.", "possible.", "attractive.", "probable.", "suitable."], correctAnswer: 1, explanation: "Feasible means capable of being done or possible." },
+      { id: "q499", category: Category.READING, questionText: "The tone of this passage can best be described as", options: ["impassioned.", "impartial.", "reasonable.", "sarcastic.", "dispassionate."], correctAnswer: 2, explanation: "The author argues a point of view but uses reasoned arguments and personal experience." },
+      { id: "q500", category: Category.READING, questionText: "The author gives all the following reasons for continuing affirmative action in college admissions EXCEPT that it", options: ["fosters diversity.", "provides fair access to higher education.", "is necessary to promote social mobility.", "exposes students to a broad spectrum of society.", "prepares students for the future."], correctAnswer: 2, explanation: "While social mobility is mentioned as a general principle of AA, the author's specific arguments focus on diversity, access, and preparation." },
+      { id: "q501", category: Category.READING, questionText: "The argument for affirmative action in the workplace that most closely mirrors the author’s reasoning about affirmative action in college admissions is", options: ["it is the law of the land.", "diversity in the workplace better prepares a company to compete in the marketplace.", "a diverse workforce is more efficient.", "a less-qualified minority candidate is still a great asset to a company.", "it is the right thing to do."], correctAnswer: 1, explanation: "The author argues diversity prepares students to succeed; similarly, diversity prepares companies to compete." }
     ]
   }
 
