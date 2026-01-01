@@ -1293,30 +1293,11 @@ export const generateMockTest = async (): Promise<Question[]> => {
   const vocab = await generateVocabTest(15);
   const grammar = await generateGrammarTest(15);
   const math = await generateMathTest(15);
-  const reading = await generateReadingTest();
 
   // Create a mapping of reading questions to ensure they have the standard 'Question' structure
   // This specifically fixes the issue where reading questions might not show options 
   // if they use a different key (like 'choices') in the raw data, or if the UI needs 'options'.
-  let formattedReadingQuestions: Question[] = [];
   
-  if (reading && reading.length > 0) {
-      const passageObj = reading[0];
-      if (passageObj && passageObj.questions) {
-          formattedReadingQuestions = passageObj.questions.map((q: any, idx: number) => ({
-             id: `reading-${Date.now()}-${idx}`,
-             category: Category.READING,
-             questionText: q.questionText || q.question,
-             // Ensure 'options' is populated. Some data sources use 'choices'.
-             options: q.options || q.choices || [], 
-             correctAnswer: typeof q.correctAnswer === 'number' ? q.correctAnswer : 0,
-             explanation: q.explanation || "Refer to the passage."
-          }));
-      }
-  }
-
-  // Combine and shuffle, prioritizing a mix but keeping ensuring stability
-  return shuffleArray([...vocab, ...grammar, ...math, ...formattedReadingQuestions]);
 };
 
 export const generateQuestions = async (category: Category, count: number): Promise<Question[]> => {
