@@ -944,7 +944,6 @@ const LOCAL_MATH_POOL: Question[] = [
   { id: 'lm-39', category: Category.MATH, questionText: "If the radius of a circle is decreased by 50%, by what percentage does the area decrease?", options: ["50%", "25%", "75%", "100%"], correctAnswer: 2, explanation: "A = πr². If r becomes 0.5r, A_new = π(0.5r)² = 0.25πr². The new area is 25% of original, so it decreased by 75%." },
   { id: 'lm-40', category: Category.MATH, questionText: "Solve for x: |2x - 5| = 7", options: ["6 and -1", "1 and -6", "6 and 1", "2 and -5"], correctAnswer: 0, explanation: "2x-5=7 -> 2x=12 -> x=6. OR 2x-5=-7 -> 2x=-2 -> x=-1." }
 ];
-
 const shuffleArray = <T>(array: T[]): T[] => {
   if (!array || array.length === 0) return [];
   const newArr = [...array];
@@ -970,12 +969,11 @@ export const generateReadingTest = async (): Promise<any[]> => {
   // Fix: Handle case where fullReadingData might be empty or undefined to prevent crash
   if (!fullReadingData || fullReadingData.length === 0) return [];
   const shuffled = shuffleArray(fullReadingData);
-  // Fix: Ensure we don't return [undefined]
+  // Return the raw passage objects
   return shuffled.length > 0 ? [shuffled[0]] : [];
 };
 
 export const generateVocabTest = async (count: number): Promise<Question[]> => {
-  // Fix: Ensure we have words to pick from
   if (!FULL_PREP_VOCAB || FULL_PREP_VOCAB.length === 0) return [];
   
   const shuffledWords = shuffleArray(FULL_PREP_VOCAB).slice(0, count);
@@ -1028,14 +1026,29 @@ export const generateMockTest = async (): Promise<Question[]> => {
   const grammar = await generateGrammarTest(15);
   const math = await generateMathTest(15);
   const reading = await generateReadingTest();
-  
-  // Fix: Filter reading to ensure we don't crash on undefined entries if reading data is missing
-  const readingQuestions = reading
-    .filter(r => r && r.questions)
-    .flatMap((r: any) => r.questions)
-    .slice(0, 15);
 
-  return shuffleArray([...vocab, ...grammar, ...math, ...readingQuestions]);
+  // Create a mapping of reading questions to ensure they have the standard 'Question' structure
+  // This specifically fixes the issue where reading questions might not show options 
+  // if they use a different key (like 'choices') in the raw data, or if the UI needs 'options'.
+  let formattedReadingQuestions: Question[] = [];
+  
+  if (reading && reading.length > 0) {
+      const passageObj = reading[0];
+      if (passageObj && passageObj.questions) {
+          formattedReadingQuestions = passageObj.questions.map((q: any, idx: number) => ({
+             id: `reading-${Date.now()}-${idx}`,
+             category: Category.READING,
+             questionText: q.questionText || q.question,
+             // Ensure 'options' is populated. Some data sources use 'choices'.
+             options: q.options || q.choices || [], 
+             correctAnswer: typeof q.correctAnswer === 'number' ? q.correctAnswer : 0,
+             explanation: q.explanation || "Refer to the passage."
+          }));
+      }
+  }
+
+  // Combine and shuffle, prioritizing a mix but keeping ensuring stability
+  return shuffleArray([...vocab, ...grammar, ...math, ...formattedReadingQuestions]);
 };
 
 export const generateQuestions = async (category: Category, count: number): Promise<Question[]> => {
@@ -1047,9 +1060,17 @@ export const generateQuestions = async (category: Category, count: number): Prom
         case Category.MOCK: return generateMockTest();
         case Category.READING: 
             const readingData = await generateReadingTest();
-            // Fix: Strict check to ensure readingData has content before accessing index 0
             if (readingData && readingData.length > 0 && readingData[0]) {
-                return readingData[0].questions || []; 
+                // Return formatted questions for standard reading test too
+                const passageQuestions = readingData[0].questions || [];
+                return passageQuestions.map((q: any, idx: number) => ({
+                   id: `reading-solo-${Date.now()}-${idx}`,
+                   category: Category.READING,
+                   questionText: q.questionText || q.question,
+                   options: q.options || q.choices || [],
+                   correctAnswer: q.correctAnswer,
+                   explanation: q.explanation || ""
+                }));
             }
             return [];
         default: return [];
