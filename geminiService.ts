@@ -1211,7 +1211,7 @@ const LOCAL_MATH_POOL: Question[] = [
   { id: 'lm-99', category: Category.MATH, questionText: "Find the length of an arc of a circle with radius 10 that subtends a central angle of 90°.", options: ["10π", "2.5π", "5π", "20π"], correctAnswer: 2, explanation: "90° is 1/4 of a circle. (1/4) * 2π(10) = 20π/4 = 5π." },
   { id: 'lm-100', category: Category.MATH, questionText: "If i² = -1, what is the value of (2 + 3i)(2 - 3i)?", options: ["-5", "13", "4", "4 - 9i"], correctAnswer: 1, explanation: "Difference of squares: 2² - (3i)² = 4 - 9i² = 4 - 9(-1) = 4 + 9 = 13." }
 ];
-];
+
 const shuffleArray = <T>(array: T[]): T[] => {
   if (!array || array.length === 0) return [];
   const newArr = [...array];
