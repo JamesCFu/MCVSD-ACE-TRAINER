@@ -687,9 +687,7 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'learn' | 'grammar' | 'spelling' | 'roots'>('learn');
   const [learnSubTab, setLearnSubTab] = useState<'list' | 'flashcards' | 'session'>('list');
-  
-  // UPDATED: Added 'list' to the union type
-  const [sessionMode, setSessionMode] = useState<'list' | 'flashcards' | 'matching' | 'racecar'>('list');
+  const [sessionMode, setSessionMode] = useState<'flashcards' | 'matching' | 'racecar'>('flashcards');
   
   const [currentWords, setCurrentWords] = useState<VocabularyWord[]>([]);
   const [spellingQuestions, setSpellingQuestions] = useState<Question[]>([]);
@@ -708,7 +706,7 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
   const [rootCardIndex, setRootCardIndex] = useState(0);
   const [rootIsFlipped, setRootIsFlipped] = useState(false);
   const [rootsMode, setRootsMode] = useState<'list' | 'flashcards'>('list');
-  const [shuffledRoots, setShuffledRoots] = useState<RootWord[]>([]); // Initialize empty, load in effect if needed
+  const [shuffledRoots, setShuffledRoots] = useState<RootWord[]>(ROOT_DATA);
 
   // Match State
   const [selectedMatch, setSelectedMatch] = useState<{ id: string, type: 'word' | 'def' } | null>(null);
@@ -742,18 +740,94 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
   const [spellingFinished, setSpellingFinished] = useState(false);
   const [spellingScore, setSpellingScore] = useState(0);
 
-  // ... (Keep existing effects for Grammar, Initial Words, Spelling, Race Timer) ...
-  
-  // Ensure we have root data
+  // Preload Grammar Registry in background
   useEffect(() => {
-     if (shuffledRoots.length === 0) {
-        // Assuming ROOT_DATA is defined in scope as per original file
-        // setShuffledRoots(ROOT_DATA); 
-     }
-  }, []);
+    if (activeTab === 'grammar' && !registryInitiated.current) {
+      registryInitiated.current = true;
+      const bootAllLessons = async () => {
+        for (const topic of GRAMMAR_TOPICS) {
+          // Optimization: Skip if already fetched in this session
+          if (grammarRegistry[topic]) {
+            setRegistryLoadingCount(prev => prev + 1);
+            continue;
+          }
 
-  // ... (Keep existing helper functions: pickNewSessionBatch, shuffleFlashcards, etc.) ...
-  
+          try {
+            const lesson = await generateGrammarLesson(topic);
+            setGrammarRegistry(prev => ({ 
+                ...prev, 
+                [topic]: lesson || FALLBACK_GRAMMAR_DATA[topic] 
+            }));
+          } catch (e) {
+            // Silently fall back to base-level if AI fails
+            setGrammarRegistry(prev => ({ 
+                ...prev, 
+                [topic]: FALLBACK_GRAMMAR_DATA[topic] 
+            }));
+          }
+          setRegistryLoadingCount(prev => prev + 1);
+        }
+      };
+      bootAllLessons();
+    }
+  }, [activeTab]);
+
+  useEffect(() => {
+    if (initialWords.length > 0 && currentWords.length === 0) {
+      setCurrentWords(initialWords);
+    }
+  }, [initialWords, currentWords.length]);
+
+  const selectGrammarLesson = (topic: string) => {
+    // If not in registry (still loading), use base-level version immediately
+    const lesson = grammarRegistry[topic] || FALLBACK_GRAMMAR_DATA[topic];
+    if (lesson) {
+      setQuizAnswer(null);
+      setShowQuizResult(false);
+      setCurrentLesson(lesson);
+    }
+  };
+
+  const loadSpelling = async () => {
+    try {
+      const questions = await generateSpellingTest(10);
+      if (questions && questions.length > 0) {
+        setSpellingQuestions(questions);
+      } else {
+        const shuffledPool = [...FALLBACK_SPELLING_POOL].sort(() => Math.random() - 0.5);
+        setSpellingQuestions(shuffledPool.slice(0, 25)); 
+      }
+      setSpellingIndex(0);
+      setSpellingFinished(false);
+      setSpellingScore(0);
+      setShowSpellingResult(false);
+      setSpellingAnswer(null);
+    } catch (e) { 
+      const shuffledPool = [...FALLBACK_SPELLING_POOL].sort(() => Math.random() - 0.5);
+      setSpellingQuestions(shuffledPool.slice(0, 25));
+      setSpellingIndex(0);
+      setSpellingFinished(false);
+      setSpellingScore(0);
+      setShowSpellingResult(false);
+      setSpellingAnswer(null);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'spelling' && spellingQuestions.length === 0) loadSpelling();
+    if (activeTab === 'learn' && initialWords.length > 0 && activeSessionWords.length === 0) {
+        pickNewSessionBatch(initialWords);
+    }
+  }, [activeTab, initialWords, activeSessionWords.length, spellingQuestions.length]);
+
+  useEffect(() => {
+    if (sessionMode !== 'racecar') {
+      setRaceStarted(false);
+      setRaceFinished(false);
+      if (stopwatchRef.current) clearInterval(stopwatchRef.current);
+    }
+  }, [sessionMode]);
+
   const pickNewSessionBatch = (source: VocabularyWord[]) => {
     const subset = [...source].sort(() => Math.random() - 0.5).slice(0, SESSION_WORD_COUNT);
     setActiveSessionWords(subset);
@@ -764,13 +838,64 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
     setSelectedMatch(null);
   };
 
+  const shuffleFlashcards = () => {
+    setCardIndex(0);
+    setIsFlipped(false);
+    setCurrentWords(prev => [...prev].sort(() => Math.random() - 0.5));
+  };
+
   const shuffleSessionFlashcards = () => {
     setCardIndex(0);
     setIsFlipped(false);
     setActiveSessionWords([...activeSessionWords].sort(() => Math.random() - 0.5));
   };
 
-  // ... (Keep filteredWords, filteredRoots, matchingPairs logic) ...
+  const shuffleRoots = () => {
+    setRootCardIndex(0);
+    setRootIsFlipped(false);
+    setShuffledRoots([...ROOT_DATA].sort(() => Math.random() - 0.5));
+  };
+
+  const filteredWords = useMemo(() => {
+    return initialWords.filter(w => 
+      w.word.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      w.definition.toLowerCase().includes(searchQuery.toLowerCase())
+    ).sort((a, b) => a.word.localeCompare(b.word));
+  }, [initialWords, searchQuery]);
+
+  const filteredRoots = useMemo(() => {
+    return ROOT_DATA.filter(r => 
+      r.root.toLowerCase().includes(rootsSearchQuery.toLowerCase()) ||
+      r.meaning.toLowerCase().includes(rootsSearchQuery.toLowerCase())
+    );
+  }, [rootsSearchQuery]);
+
+  const matchingPairs = useMemo(() => {
+    if (matchingGameWords.length === 0) return { words: [], defs: [] };
+    const wordsList = matchingGameWords.map(w => ({ id: w.word, text: w.word }));
+    const defsList = matchingGameWords.map(w => ({ id: w.word, text: w.shortDef }));
+    return {
+      words: [...wordsList].sort(() => Math.random() - 0.5),
+      defs: [...defsList].sort(() => Math.random() - 0.5)
+    };
+  }, [matchingGameWords]);
+
+  useEffect(() => {
+    const fetchShortDefs = async () => {
+      if (activeSessionWords.length > 0 && sessionMode === 'matching') {
+        setIsMatchingLoading(true);
+        try {
+          const shortDefs = await generateShortDefinitions(activeSessionWords);
+          setMatchingGameWords(shortDefs);
+        } catch (error) {
+          setMatchingGameWords(activeSessionWords.map(w => ({ word: w.word, shortDef: w.definition.split(' ').slice(0, 5).join(' ') + '...' })));
+        } finally {
+          setIsMatchingLoading(false);
+        }
+      }
+    };
+    fetchShortDefs();
+  }, [sessionMode, activeSessionWords]);
 
   const handleFlashcardNav = (direction: 'next' | 'prev') => {
     const list = learnSubTab === 'session' ? activeSessionWords : currentWords;
@@ -779,13 +904,176 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
     else setCardIndex((cardIndex - 1 + list.length) % list.length);
     setIsFlipped(false); 
   };
-  
-  // ... (Keep handleMatch, startRace, handleRaceAnswer logic) ...
 
+  const handleRootNav = (direction: 'next' | 'prev') => {
+    if (direction === 'next') setRootCardIndex((rootCardIndex + 1) % shuffledRoots.length);
+    else setRootCardIndex((rootCardIndex - 1 + shuffledRoots.length) % shuffledRoots.length);
+    setRootIsFlipped(false);
+  };
+
+  const handleMatch = (id: string, type: 'word' | 'def') => {
+    if (matches.has(id) || matchingError) return;
+    if (!selectedMatch) {
+      setSelectedMatch({ id, type });
+      return;
+    }
+    if (selectedMatch.id === id && selectedMatch.type !== type) {
+      const newMatches = new Set(matches);
+      newMatches.add(id);
+      setMatches(newMatches);
+      onAwardXP(10);
+      onRecordAnswer(true, Category.VOCABULARY);
+      setSelectedMatch(null);
+    } else if (selectedMatch.id !== id && selectedMatch.type !== type) {
+      setMatchingError(`${selectedMatch.id}-${id}`);
+      onRecordAnswer(false, Category.VOCABULARY);
+      
+      const wrongWordObj = activeSessionWords.find(w => w.word === (selectedMatch.type === 'word' ? selectedMatch.id : id));
+      if (wrongWordObj) {
+          onLogMistake({
+              id: `match-err-${Date.now()}-${wrongWordObj.word}`,
+              category: Category.VOCABULARY,
+              questionText: `Identify the correct definition for "${wrongWordObj.word}":`,
+              options: [wrongWordObj.definition, 'Incorrect match.'],
+              correctAnswer: 0,
+              explanation: `Mismatched in Matching Grid. Definition of ${wrongWordObj.word}: ${wrongWordObj.definition}`
+          });
+      }
+
+      setTimeout(() => {
+        setMatchingError(null);
+        setSelectedMatch(null);
+      }, 500);
+    } else {
+      setSelectedMatch({ id, type });
+    }
+  };
+
+  const generateRaceStep = useCallback((idx: number, set: VocabularyWord[]) => {
+    if (set.length === 0) return;
+    // Modulo ensures we loop forever until finish line is reached
+    const safeIndex = idx % set.length;
+    const current = set[safeIndex];
+    setRaceQuestion(current.definition);
+    const correct = current.word;
+    const others = set.filter(w => w.word !== correct).sort(() => Math.random() - 0.5).slice(0, 3).map(w => w.word);
+    setRaceOptions([correct, ...others].sort(() => Math.random() - 0.5));
+    setRaceTimeLeft(QUESTION_TIMER_SECONDS);
+  }, []);
+
+  const startRace = () => {
+    const shuffledForRace = [...activeSessionWords].sort(() => Math.random() - 0.5);
+    setActiveSessionWords(shuffledForRace);
+    setRaceStarted(true);
+    setRaceFinished(false);
+    setRaceProgress(0);
+    setRaceIndex(0);
+    setRaceFeedback(null);
+    setRaceBoost('none');
+    
+    // Timer Logic
+    raceStartTimeRef.current = Date.now();
+    setElapsedRaceTime(0);
+    stopwatchRef.current = window.setInterval(() => {
+      setElapsedRaceTime(Date.now() - raceStartTimeRef.current);
+    }, 50);
+
+    generateRaceStep(0, shuffledForRace);
+  };
+
+  const handleRaceAnswer = (answer: string) => {
+    if (raceFeedback || raceFinished) return;
+   // Safe index with modulo
+    const safeIndex = raceIndex % activeSessionWords.length;
+    const correctWord = activeSessionWords[safeIndex];
+    const isCorrect = answer === correctWord.word;
+    const timeTakenSeconds = QUESTION_TIMER_SECONDS - raceTimeLeft;
+
+    if (raceTimerRef.current) clearInterval(raceTimerRef.current);
+    onRecordAnswer(isCorrect, Category.VOCABULARY);
+
+    if (isCorrect) {
+      // Distance Calculation Logic
+      let distanceGain = 5; // Base gain (5% means ~20 words to finish)
+      let boostType: 'none' | 'speed' | 'turbo' = 'none';
+
+      if (timeTakenSeconds < 1.5) {
+        distanceGain += 3; // Turbo: +3% (Total 8%)
+        boostType = 'turbo';
+      } else if (timeTakenSeconds < 3) {
+        distanceGain += 1.5; // Speed: +1.5% (Total 6.5%)
+        boostType = 'speed';
+      }
+
+      setRaceFeedback('correct');
+      setRaceBoost(boostType);
+      
+      const nextProgress = Math.min(100, raceProgress + distanceGain);
+      setRaceProgress(nextProgress);
+      onAwardXP(50);
+      onUpdateMastery(answer, 5);
+      if (nextProgress >= 100) {
+        // Race Finished
+        const finalTime = Date.now() - raceStartTimeRef.current;
+        if (stopwatchRef.current) clearInterval(stopwatchRef.current);
+        if (onUpdateFastestRaceTime) onUpdateFastestRaceTime(finalTime);
+        
+        setTimeout(() => {
+          setRaceFinished(true);
+        }, 1000);
+      } else {
+        // Continue Race
+        setTimeout(() => {
+          setRaceFeedback(null);
+          setRaceBoost('none');
+          setRaceIndex(i => i + 1);
+          generateRaceStep(raceIndex + 1, activeSessionWords);
+        }, 1000);
+      }
+
+    } else {
+      // Wrong Answer
+      setRaceFeedback(answer === "" ? 'timeout' : answer);
+      setRaceBoost('none');
+
+      onLogMistake({
+          id: `race-err-${Date.now()}-${correctWord.word}`,
+          category: Category.VOCABULARY,
+          questionText: `Which word matches the definition: "${correctWord.definition}"?`,
+          options: raceOptions,
+          correctAnswer: raceOptions.indexOf(correctWord.word),
+          explanation: `Missed in Raceway. Word: ${correctWord.word}. Definition: ${correctWord.definition}`
+      });
+    
+
+      setTimeout(() => {
+        setRaceFeedback(null);
+        
+        setRaceIndex(i => i + 1);
+        generateRaceStep(raceIndex + 1, activeSessionWords);
+        
+      }, 1000);
+    }
+  };
+
+  useEffect(() => {
+    if (raceStarted && !raceFinished && !raceFeedback) {
+      raceTimerRef.current = window.setInterval(() => {
+        setRaceTimeLeft(prev => {
+          if (prev <= 0.1) { // Floating point tolerance
+            handleRaceAnswer("");
+            return 0;
+          }
+          return prev - 0.1;
+        });
+      }, 100);
+    }
+    return () => { if (raceTimerRef.current) clearInterval(raceTimerRef.current); };
+  }, [raceStarted, raceFinished, raceFeedback, raceIndex, activeSessionWords]);
   const formatTime = (ms: number) => {
     const minutes = Math.floor(ms / 60000);
     const seconds = Math.floor((ms % 60000) / 1000);
-    const milliseconds = Math.floor((ms % 1000) / 10);
+    const milliseconds = Math.floor((ms % 1000) / 10); // Hundredths
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(2, '0')}`;
   };
 
@@ -795,6 +1083,8 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
         <h2 className="text-4xl font-black text-slate-900 tracking-tight uppercase">Academy Laboratory</h2>
         <p className="text-slate-500 mt-2 font-medium italic">High-performance training sequence initiated.</p>
       </header>
+      {/* ... (Tab Buttons remain same) ... */}
+
 
       <div className="flex flex-wrap gap-2 bg-slate-200 p-1.5 rounded-[1.5rem] w-fit mb-12 shadow-inner border border-slate-300">
         <button onClick={() => setActiveTab('learn')} className={`px-8 py-3.5 rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest transition-all ${activeTab === 'learn' ? 'bg-white text-indigo-700 shadow-md' : 'text-slate-600 hover:text-slate-800'}`}>Vocabulary</button>
@@ -847,7 +1137,6 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
           )}
 
           {learnSubTab === 'flashcards' && (
-             // ... (Existing main flashcards render logic) ...
             <div className="flex flex-col items-center py-12">
                <div className="w-full max-w-lg h-96 relative perspective-1000 cursor-pointer" onClick={() => setIsFlipped(!isFlipped)}>
                   <div className={`relative w-full h-full transition-transform duration-700 transform-style-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
@@ -864,7 +1153,7 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
                </div>
                <div className="flex items-center space-x-10 mt-16">
                   <button onClick={() => handleFlashcardNav('prev')} className="p-5 bg-white border rounded-2xl shadow-sm hover:border-indigo-400 transition-all"><svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M15 19l-7-7 7-7"></path></svg></button>
-                  <button onClick={() => setCurrentWords(prev => [...prev].sort(() => Math.random() - 0.5))} className="p-5 bg-white border rounded-2xl shadow-sm hover:border-indigo-400 transition-all"><svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg></button>
+                  <button onClick={shuffleFlashcards} className="p-5 bg-white border rounded-2xl shadow-sm hover:border-indigo-400 transition-all"><svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg></button>
                   <button onClick={() => handleFlashcardNav('next')} className="p-5 bg-white border rounded-2xl shadow-sm hover:border-indigo-400 transition-all"><svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7"></path></svg></button>
                </div>
             </div>
@@ -874,37 +1163,14 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
             <div className="space-y-10 animate-in slide-in-from-bottom-4">
                <div className="flex items-center justify-between bg-slate-100 p-1.5 rounded-[1.25rem]">
                   <div className="flex space-x-2">
-                    {['list', 'flashcards', 'matching', 'racecar'].map((m) => (
-                      <button key={m} onClick={() => setSessionMode(m as any)} className={`px-8 py-3 rounded-2xl text-[10px] font-black uppercase transition-all ${sessionMode === m ? 'bg-indigo-700 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>
-                        {m === 'list' ? 'Word List' : m}
-                      </button>
+                    {['flashcards', 'matching', 'racecar'].map((m) => (
+                      <button key={m} onClick={() => setSessionMode(m as any)} className={`px-10 py-3 rounded-2xl text-[10px] font-black uppercase transition-all ${sessionMode === m ? 'bg-indigo-700 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>{m}</button>
                     ))}
                   </div>
                   <button onClick={() => pickNewSessionBatch(initialWords)} className="px-6 py-3 bg-white text-indigo-700 rounded-2xl text-[10px] font-black uppercase shadow-sm hover:bg-indigo-50 border border-slate-200">Reset Session (20 Random)</button>
                </div>
                
                <div className="min-h-[500px]">
-                  {/* NEW SESSION LIST VIEW */}
-                  {sessionMode === 'list' && (
-                     <div className="animate-in fade-in slide-in-from-bottom-2">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          {activeSessionWords.map((w, i) => (
-                            <div key={i} onClick={() => setSelectedWord(w)} className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm hover:border-indigo-200 transition-all hover:shadow-lg cursor-pointer group">
-                               <div className="flex justify-between items-start mb-4">
-                                  <h4 className="text-xl font-black text-indigo-900 tracking-tight uppercase group-hover:text-indigo-600 transition-colors">
-                                    <span className="text-slate-200 mr-3">{(i + 1).toString().padStart(2, '0')}</span>
-                                    {w.word}
-                                  </h4>
-                                  <span className="text-[9px] font-black bg-slate-50 text-slate-400 px-2 py-1 rounded-lg uppercase tracking-widest">{w.partOfSpeech}</span>
-                               </div>
-                               <p className="text-slate-700 text-sm font-bold leading-relaxed mb-4">{w.definition}</p>
-                               <div className="bg-indigo-50/50 p-4 rounded-xl text-xs italic text-indigo-900 border border-indigo-50">"{w.exampleSentence}"</div>
-                            </div>
-                          ))}
-                        </div>
-                     </div>
-                  )}
-
                   {sessionMode === 'flashcards' && (
                     <div className="flex flex-col items-center py-8">
                        <div className="w-full max-w-lg h-80 relative perspective-1000 cursor-pointer" onClick={() => setIsFlipped(!isFlipped)}>
@@ -957,7 +1223,6 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
                   )}
 
                   {sessionMode === 'racecar' && (
-                     // ... (Keep racecar render logic) ...
                     <div className="py-4">
                        {!raceStarted ? (
                          <div className="max-w-2xl mx-auto bg-slate-900 p-16 rounded-[4rem] text-center border-b-[12px] border-indigo-600 shadow-2xl relative overflow-hidden group">
@@ -1051,10 +1316,8 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
           )}
         </div>
       ) : activeTab === 'grammar' ? (
-        // ... (Keep grammar tab logic) ...
         <div className="space-y-12">
-            {/* Omitted for brevity: standard grammar rendering */}
-             {currentLesson ? (
+          {currentLesson ? (
             <div className="max-w-4xl mx-auto animate-in slide-in-from-bottom-6">
                <button onClick={() => setCurrentLesson(null)} className="mb-8 text-slate-400 hover:text-slate-700 flex items-center font-black uppercase text-[10px] tracking-widest transition group">
                  <svg className="w-5 h-5 mr-1 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
@@ -1138,14 +1401,7 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
                 {GRAMMAR_TOPICS.map((topic, i) => {
                   const isPremium = !!grammarRegistry[topic];
                   return (
-                    <div key={topic} onClick={() => {
-                        const lesson = grammarRegistry[topic] || FALLBACK_GRAMMAR_DATA[topic]; // Using fallback if sync isn't ready
-                        if(lesson) {
-                             setQuizAnswer(null);
-                             setShowQuizResult(false);
-                             setCurrentLesson(lesson);
-                        }
-                    }} className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:border-indigo-300 transition-all cursor-pointer group flex flex-col justify-between relative overflow-hidden">
+                    <div key={topic} onClick={() => selectGrammarLesson(topic)} className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:border-indigo-300 transition-all cursor-pointer group flex flex-col justify-between relative overflow-hidden">
                       {isPremium && <div className="absolute top-0 right-0 w-12 h-12 bg-indigo-50 rounded-bl-[2rem] flex items-center justify-center"><svg className="w-4 h-4 text-indigo-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg></div>}
                       <div>
                         <span className="text-[10px] font-black text-indigo-200 uppercase tracking-widest mb-4 block">Module {i + 1}</span>
@@ -1164,15 +1420,13 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
           )}
         </div>
       ) : activeTab === 'spelling' ? (
-        // ... (Keep spelling tab logic) ...
         <div className="max-w-3xl mx-auto space-y-12">
-            {/* Omitted for brevity: standard spelling rendering */}
-             {spellingFinished ? (
+          {spellingFinished ? (
             <div className="text-center py-24 bg-white rounded-[4rem] shadow-xl border border-slate-100 animate-in zoom-in">
                <div className="text-8xl mb-8">🎖️</div>
                <h3 className="text-4xl font-black text-slate-900 tracking-tighter uppercase mb-4">Ortho-Log Synchronized</h3>
                <p className="text-slate-500 font-bold mb-10">Diagnostic Result: <span className="text-indigo-600">{spellingScore} / {spellingQuestions.length}</span> Accuracy</p>
-               {/* Spelling reload logic is implicitly handled in main component via loadSpelling function reference if needed, or inline */}
+               <button onClick={loadSpelling} className="px-16 py-6 bg-indigo-700 text-white rounded-3xl font-black uppercase text-xs shadow-xl hover:scale-105 active:scale-95 transition-all">Next Cycle</button>
             </div>
           ) : spellingQuestions.length > 0 ? (
             <div className="bg-white p-12 rounded-[3.5rem] shadow-xl border border-slate-100 relative overflow-hidden">
@@ -1231,31 +1485,69 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
           )}
         </div>
       ) : activeTab === 'roots' ? (
-        // ... (Keep roots tab logic) ...
         <div className="space-y-12">
-            {/* Omitted for brevity: standard roots rendering */}
-             <div className="flex flex-col md:flex-row justify-center items-center gap-6">
+          <div className="flex flex-col md:flex-row justify-center items-center gap-6">
             <div className="flex gap-2 bg-slate-100 p-1.5 rounded-2xl w-fit">
               <button onClick={() => setRootsMode('list')} className={`px-8 py-3 rounded-xl font-black uppercase text-[10px] transition-all ${rootsMode === 'list' ? 'bg-white text-indigo-700 shadow-md' : 'text-slate-400'}`}>List View</button>
               <button onClick={() => setRootsMode('flashcards')} className={`px-8 py-3 rounded-xl font-black uppercase text-[10px] transition-all ${rootsMode === 'flashcards' ? 'bg-white text-indigo-700 shadow-md' : 'text-slate-400'}`}>Flashcards</button>
             </div>
-            {/* ... rest of roots UI ... */}
+            {rootsMode === 'list' && (
+              <div className="flex items-center gap-4 w-full md:w-auto">
+                <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">({filteredRoots.length}/{ROOT_DATA.length}) Results</div>
+                <div className="relative w-full md:w-64">
+                  <input type="text" placeholder="Search Roots..." className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-xs font-bold shadow-sm focus:ring-2 focus:ring-indigo-500 outline-none" value={rootsSearchQuery} onChange={(e) => setRootsSearchQuery(e.target.value)} />
+                  <svg className="absolute left-3 top-3 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+              </div>
+            )}
           </div>
-            {/* ... roots list/card logic ... */}
-             {rootsMode === 'list' ? (
+
+          {rootsMode === 'list' ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {/* Note: filteredRoots logic assumed from earlier context */}
+              {filteredRoots.map((root, i) => (
+                <div key={i} className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all group">
+                  <div className="text-4xl font-black text-indigo-600 mb-4 tracking-tighter group-hover:scale-110 origin-left transition-transform">{root.root}</div>
+                  <p className="text-xl font-bold text-slate-900 mb-8 border-b border-slate-50 pb-6">{root.meaning}</p>
+                  <div className="flex flex-wrap gap-2">
+                      {root.examples.map((ex, j) => (
+                        <span key={j} className="px-3 py-1 bg-slate-50 text-slate-500 rounded-lg text-xs font-bold border border-slate-100 uppercase">{ex}</span>
+                      ))}
+                  </div>
+                </div>
+              ))}
             </div>
           ) : (
-             <div className="flex flex-col items-center py-8">
-                {/* Roots flashcard UI */}
-             </div>
+            <div className="flex flex-col items-center py-8">
+               <div className="w-full max-w-lg h-96 relative perspective-1000 cursor-pointer" onClick={() => setRootIsFlipped(!rootIsFlipped)}>
+                  <div className={`relative w-full h-full transition-transform duration-1000 transform-style-3d ${rootIsFlipped ? 'rotate-y-180' : ''}`}>
+                     <div className="absolute w-full h-full backface-hidden bg-white border-2 border-indigo-600 rounded-[3rem] shadow-2xl flex flex-col items-center justify-center p-12 text-center">
+                        <span className="text-[10px] font-black text-indigo-400 uppercase mb-10 tracking-[0.3em]">Root/Prefix Term</span>
+                        <h2 className="text-7xl font-black text-indigo-950 tracking-tighter">{shuffledRoots[rootCardIndex]?.root}</h2>
+                        <div className="mt-20 text-slate-300 text-[10px] font-black uppercase animate-pulse">Flip for Definition</div>
+                     </div>
+                     <div className="absolute w-full h-full backface-hidden rotate-y-180 bg-indigo-900 border-2 border-indigo-50 rounded-[3rem] shadow-2xl flex flex-col items-center justify-center p-12 text-center text-white overflow-y-auto no-scrollbar">
+                        <h2 className="text-4xl font-black mb-8 leading-tight">{shuffledRoots[rootCardIndex]?.meaning}</h2>
+                        <div className="flex flex-wrap justify-center gap-2">
+                           {shuffledRoots[rootCardIndex]?.examples.map((ex, i) => (
+                             <span key={i} className="px-4 py-2 bg-white/10 rounded-xl text-sm font-bold border border-white/5 text-indigo-100 uppercase">{ex}</span>
+                           ))}
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div className="flex items-center space-x-12 mt-16">
+                  <button onClick={() => handleRootNav('prev')} className="p-6 bg-white border rounded-[2rem] shadow-lg hover:border-indigo-400 transition-all"><svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M15 19l-7-7 7-7"></path></svg></button>
+                  <button onClick={shuffleRoots} className="p-6 bg-white border rounded-[2rem] shadow-lg hover:border-indigo-400 transition-all"><svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg></button>
+                  <button onClick={() => handleRootNav('next')} className="p-6 bg-white border rounded-[2rem] shadow-lg hover:border-indigo-400 transition-all"><svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7"></path></svg></button>
+               </div>
+               <span className="mt-8 text-slate-400 font-black text-xs uppercase tracking-[0.2em]">{rootCardIndex + 1} / {shuffledRoots.length} Registry Terms</span>
+            </div>
           )}
         </div>
       ) : null}
 
-      {/* ... (Keep existing SelectedWord modal logic) ... */}
-       {selectedWord && (
+      {/* Word Expand Modal */}
+      {selectedWord && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-indigo-950/60 backdrop-blur-md animate-in fade-in duration-300">
            <div className="bg-white w-full max-w-2xl rounded-[3.5rem] shadow-2xl overflow-hidden relative animate-in zoom-in-95 duration-500 flex flex-col max-h-[90vh]">
               <div className="h-4 bg-indigo-600 shrink-0"></div>
@@ -1332,3 +1624,4 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
 };
 
 export default LearningCenter;
+
