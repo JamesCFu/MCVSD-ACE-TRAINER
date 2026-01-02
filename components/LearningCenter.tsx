@@ -1160,161 +1160,195 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
           )}
 
           {learnSubTab === 'session' && (
-            <div className="space-y-10 animate-in slide-in-from-bottom-4">
-               <div className="flex items-center justify-between bg-slate-100 p-1.5 rounded-[1.25rem]">
-                  <div className="flex space-x-2">
-                    {['flashcards', 'matching', 'racecar'].map((m) => (
-                      <button key={m} onClick={() => setSessionMode(m as any)} className={`px-10 py-3 rounded-2xl text-[10px] font-black uppercase transition-all ${sessionMode === m ? 'bg-indigo-700 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>{m}</button>
-                    ))}
-                  </div>
-                  <button onClick={() => pickNewSessionBatch(initialWords)} className="px-6 py-3 bg-white text-indigo-700 rounded-2xl text-[10px] font-black uppercase shadow-sm hover:bg-indigo-50 border border-slate-200">Reset Session (20 Random)</button>
-               </div>
-               
-               <div className="min-h-[500px]">
-                  {sessionMode === 'flashcards' && (
-                    <div className="flex flex-col items-center py-8">
-                       <div className="w-full max-w-lg h-80 relative perspective-1000 cursor-pointer" onClick={() => setIsFlipped(!isFlipped)}>
-                          <div className={`relative w-full h-full transition-transform duration-700 transform-style-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
-                             <div className="absolute w-full h-full backface-hidden bg-white border-2 border-indigo-600 rounded-[3rem] shadow-2xl flex items-center justify-center p-12 text-center">
-                               <div className="flex flex-col items-center">
-                                 <h2 className="text-4xl font-black text-slate-900 tracking-tighter uppercase">{activeSessionWords[cardIndex]?.word}</h2>
-                                 <span className="text-[10px] font-black uppercase mt-2 text-indigo-500">{activeSessionWords[cardIndex]?.partOfSpeech}</span>
-                               </div>
-                             </div>
-                             <div className="absolute w-full h-full backface-hidden rotate-y-180 bg-slate-900 border-2 border-indigo-50 rounded-[3rem] shadow-2xl flex flex-col items-center justify-center p-12 text-center text-white overflow-y-auto no-scrollbar"><p className="text-lg font-bold leading-relaxed">{activeSessionWords[cardIndex]?.definition}</p></div>
-                          </div>
-                       </div>
-                       <div className="flex items-center space-x-8 mt-12">
-                          <button onClick={() => handleFlashcardNav('prev')} className="p-4 bg-white border rounded-2xl shadow-sm hover:border-indigo-400 transition-all"><svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M15 19l-7-7 7-7"></path></svg></button>
-                          <button onClick={shuffleSessionFlashcards} className="p-4 bg-white border rounded-2xl shadow-sm hover:border-indigo-400 transition-all"><svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg></button>
-                          <button onClick={() => handleFlashcardNav('next')} className="p-4 bg-white border rounded-2xl shadow-sm hover:border-indigo-400 transition-all"><svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7"></path></svg></button>
-                       </div>
-                    </div>
-                  )}
-
-                  {sessionMode === 'matching' && (
-                    <div className="max-w-5xl mx-auto py-4">
-                      {isMatchingLoading ? (
-                        <div className="flex flex-col items-center justify-center min-h-[40vh]">
-                          <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-6"></div>
-                          <h3 className="text-xl font-black text-slate-800 tracking-tight uppercase">Calibrating Match Matrix...</h3>
-                        </div>
-                      ) : matches.size === SESSION_WORD_COUNT ? (
-                        <div className="col-span-full py-16 text-center bg-emerald-50 border-4 border-dashed border-emerald-200 rounded-[4rem]">
-                          <div className="text-8xl mb-6">🏆</div>
-                          <h4 className="text-4xl font-black text-emerald-900 tracking-tighter uppercase mb-4">Synchronize Set</h4>
-                          <button onClick={() => { onAwardXP(400); pickNewSessionBatch(initialWords); }} className="px-12 py-6 bg-emerald-600 text-white rounded-3xl font-black uppercase text-sm">Next Training Cycle</button>
-                        </div>
-                      ) : (
-                        <div className="grid grid-cols-2 gap-10">
-                            <div className="space-y-4">
-                               {matchingPairs.words.map((item) => (
-                                 <button key={`word-${item.id}`} disabled={matches.has(item.id)} onClick={() => handleMatch(item.id, 'word')} className={`w-full p-6 h-28 flex items-center justify-center rounded-3xl border-2 font-black text-sm uppercase transition-all ${matches.has(item.id) ? 'bg-emerald-50 border-emerald-200 text-emerald-600 opacity-20' : (selectedMatch?.id === item.id && selectedMatch.type === 'word' ? 'border-indigo-600 bg-indigo-50 shadow-xl scale-105' : 'bg-white border-slate-100 hover:border-indigo-300')} ${matchingError?.includes(item.id) ? 'border-rose-500 bg-rose-50 animate-shake' : ''}`}>{item.text}</button>
-                               ))}
-                            </div>
-                            <div className="space-y-4">
-                               {matchingPairs.defs.map((item) => (
-                                 <button key={`def-${item.id}`} disabled={matches.has(item.id)} onClick={() => handleMatch(item.id, 'def')} className={`w-full p-6 h-28 flex items-center justify-center text-center rounded-3xl border-2 font-black text-xs transition-all ${matches.has(item.id) ? 'bg-emerald-50 border-emerald-200 text-emerald-600 opacity-20' : (selectedMatch?.id === item.id && selectedMatch.type === 'def' ? 'border-indigo-600 bg-indigo-50 shadow-xl scale-105' : 'bg-white border-slate-100 hover:border-indigo-300')} ${matchingError?.includes(item.id) ? 'border-rose-500 bg-rose-50 animate-shake' : ''}`}>{item.text}</button>
-                               ))}
-                            </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {sessionMode === 'racecar' && (
-                    <div className="py-4">
-                       {!raceStarted ? (
-                         <div className="max-w-2xl mx-auto bg-slate-900 p-16 rounded-[4rem] text-center border-b-[12px] border-indigo-600 shadow-2xl relative overflow-hidden group">
-                            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
-                            <div className="relative z-10">
-                              <div className="text-9xl mb-10 text-emerald-400 group-hover:scale-110 transition-transform duration-500">🏎️</div>
-                              <h3 className="text-4xl font-black text-white mb-4 italic tracking-tighter uppercase">Circuit Mastery</h3>
-                              <p className="text-slate-400 mb-8 text-lg font-medium">Defeat the clock. Answer faster to gain distance velocity.</p>
-                              
-                              {fastestRaceTime && (
-                                <div className="inline-flex items-center gap-2 bg-emerald-500/20 px-6 py-2 rounded-full border border-emerald-500/30 mb-10">
-                                  <svg className="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" /></svg>
-                                  <span className="text-emerald-300 font-black uppercase text-xs tracking-widest">Personal Best: {formatTime(fastestRaceTime)}</span>
-                                </div>
-                              )}
-
-                              <button onClick={startRace} className="w-full py-8 bg-white text-indigo-900 rounded-[2.5rem] font-black uppercase tracking-[0.5em] shadow-[0_0_40px_rgba(255,255,255,0.3)] hover:scale-105 transition-all hover:bg-emerald-400 hover:text-emerald-950">Launch Sequence</button>
-                            </div>
-                         </div>
-                       ) : !raceFinished ? (
-                         <div className="max-w-3xl mx-auto bg-slate-900 p-12 rounded-[4rem] shadow-2xl border border-white/10 overflow-hidden relative">
-                            {/* Speed Lines Animation */}
-                            <div className="absolute inset-0 opacity-10 pointer-events-none overflow-hidden">
-                               <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.2)_50%,transparent_100%)] bg-[length:200%_100%] animate-speed-lines"></div>
-                            </div>
-
-                            <div className="relative z-10">
-                              <div className="flex justify-between items-start mb-10">
-                                 <div className="text-center bg-white/5 p-4 rounded-3xl border border-white/10 backdrop-blur-sm">
-                                    <div className="text-4xl font-black text-white font-mono tabular-nums tracking-widest">{formatTime(elapsedRaceTime)}</div>
-                                    <div className="text-[9px] font-black text-slate-500 uppercase tracking-[0.3em] mt-1">Total Time</div>
-                                 </div>
-                                 
-                                 {/* Progress Track */}
-                                 <div className="flex-1 px-8 pt-4">
-                                    <div className="relative h-6 bg-slate-800 rounded-full border border-slate-700">
-                                       <div 
-                                          className="absolute top-0 left-0 h-full bg-gradient-to-r from-indigo-600 to-emerald-400 rounded-full transition-all duration-300 ease-out shadow-[0_0_20px_rgba(52,211,153,0.5)]" 
-                                          style={{ width: `${raceProgress}%` }}
-                                       >
-                                          {/* Car Icon */}
-                                          <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 text-2xl filter drop-shadow-lg transform scale-x-[-1]">🏎️</div>
-                                       </div>
-                                       <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-white/30 rounded-full"></div>
-                                    </div>
-                                    <div className="flex justify-between mt-2 text-[9px] font-black text-slate-500 uppercase tracking-widest px-1">
-                                       <span>Start</span>
-                                       <span>Finish Line</span>
-                                    </div>
-                                 </div>
-                              </div>
-
-                              <div className="text-center mb-8 relative h-12">
-                                 {raceBoost === 'turbo' && (
-                                    <div className="absolute inset-x-0 top-0 text-emerald-400 font-black uppercase tracking-[0.5em] text-xl animate-bounce drop-shadow-[0_0_10px_rgba(52,211,153,0.8)]">Turbo Boost! +8%</div>
-                                 )}
-                                 {raceBoost === 'speed' && (
-                                    <div className="absolute inset-x-0 top-0 text-indigo-400 font-black uppercase tracking-[0.3em] text-lg animate-pulse">Speed Bonus! +6.5%</div>
-                                 )}
-                              </div>
-
-                              <h4 className="text-2xl font-black text-white mb-10 leading-tight text-center italic bg-white/5 p-6 rounded-3xl border border-white/5">"{raceQuestion}"</h4>
-                              
-                              <div className="grid grid-cols-2 gap-4">
-                                 {raceOptions.map((opt, i) => (
-                                   <button key={i} disabled={!!raceFeedback} onClick={() => handleRaceAnswer(opt)} className={`py-6 rounded-3xl font-black uppercase text-sm border-2 transition-all transform active:scale-95 ${raceFeedback === 'correct' && opt === activeSessionWords[raceIndex % activeSessionWords.length].word ? 'bg-emerald-500 border-emerald-400 text-white shadow-[0_0_30px_rgba(16,185,129,0.6)] scale-105' : opt === raceFeedback ? 'bg-rose-600 border-rose-500 text-white' : 'bg-slate-800 border-slate-700 text-slate-300 hover:border-indigo-500 hover:bg-slate-700 hover:text-white'}`}>{opt}</button>
-                                 ))}
-                              </div>
-                            </div>
-                         </div>
-                       ) : (
-                         <div className="max-w-2xl mx-auto text-center py-24 bg-slate-900 rounded-[5rem] shadow-2xl text-white border-b-[12px] border-emerald-600 relative overflow-hidden">
-                            <div className="absolute inset-0 bg-emerald-900/20"></div>
-                            <div className="relative z-10">
-                              <div className="text-9xl mb-8 animate-bounce">🏁</div>
-                              <h4 className="text-5xl font-black mb-4 tracking-tighter uppercase text-white">Race Complete!</h4>
-                              <div className="text-8xl font-mono font-black text-emerald-400 mb-12 tracking-tighter drop-shadow-2xl">{formatTime(elapsedRaceTime)}</div>
-                              
-                              {fastestRaceTime === elapsedRaceTime && (
-                                <div className="inline-block px-8 py-3 bg-yellow-500/20 border border-yellow-500 rounded-full text-yellow-300 font-black uppercase tracking-widest mb-10 animate-pulse">New Personal Record!</div>
-                              )}
-
-                              <button onClick={() => setRaceStarted(false)} className="px-20 py-8 bg-white text-emerald-900 rounded-[3rem] font-black uppercase text-sm tracking-widest shadow-xl hover:scale-105 transition-all">Return to Racing Center</button>
-                            </div>
-                          </div>
-                       )}
-                    </div>
-                  )}
-               </div>
-            </div>
-          )}
+  <div className="space-y-10 animate-in slide-in-from-bottom-4">
+    <div className="flex items-center justify-between bg-slate-100 p-1.5 rounded-[1.25rem]">
+      <div className="flex space-x-2">
+        {/* UPDATED: Added 'list' to the array below */}
+        {['flashcards', 'matching', 'racecar', 'list'].map((m) => (
+          <button 
+            key={m} 
+            onClick={() => setSessionMode(m as any)} 
+            className={`px-10 py-3 rounded-2xl text-[10px] font-black uppercase transition-all ${sessionMode === m ? 'bg-indigo-700 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}
+          >
+            {m}
+          </button>
+        ))}
+      </div>
+      <button onClick={() => pickNewSessionBatch(initialWords)} className="px-6 py-3 bg-white text-indigo-700 rounded-2xl text-[10px] font-black uppercase shadow-sm hover:bg-indigo-50 border border-slate-200">Reset Session (20 Random)</button>
+    </div>
+    
+    <div className="min-h-[500px]">
+      {sessionMode === 'flashcards' && (
+        // ... (Your existing flashcard code remains here)
+        <div className="flex flex-col items-center py-8">
+           {/* ... existing flashcard implementation ... */}
+           <div className="w-full max-w-lg h-80 relative perspective-1000 cursor-pointer" onClick={() => setIsFlipped(!isFlipped)}>
+              <div className={`relative w-full h-full transition-transform duration-700 transform-style-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
+                 <div className="absolute w-full h-full backface-hidden bg-white border-2 border-indigo-600 rounded-[3rem] shadow-2xl flex items-center justify-center p-12 text-center">
+                   <div className="flex flex-col items-center">
+                     <h2 className="text-4xl font-black text-slate-900 tracking-tighter uppercase">{activeSessionWords[cardIndex]?.word}</h2>
+                     <span className="text-[10px] font-black uppercase mt-2 text-indigo-500">{activeSessionWords[cardIndex]?.partOfSpeech}</span>
+                   </div>
+                 </div>
+                 <div className="absolute w-full h-full backface-hidden rotate-y-180 bg-slate-900 border-2 border-indigo-50 rounded-[3rem] shadow-2xl flex flex-col items-center justify-center p-12 text-center text-white overflow-y-auto no-scrollbar"><p className="text-lg font-bold leading-relaxed">{activeSessionWords[cardIndex]?.definition}</p></div>
+              </div>
+           </div>
+           <div className="flex items-center space-x-8 mt-12">
+              <button onClick={() => handleFlashcardNav('prev')} className="p-4 bg-white border rounded-2xl shadow-sm hover:border-indigo-400 transition-all"><svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M15 19l-7-7 7-7"></path></svg></button>
+              <button onClick={shuffleSessionFlashcards} className="p-4 bg-white border rounded-2xl shadow-sm hover:border-indigo-400 transition-all"><svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg></button>
+              <button onClick={() => handleFlashcardNav('next')} className="p-4 bg-white border rounded-2xl shadow-sm hover:border-indigo-400 transition-all"><svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7"></path></svg></button>
+           </div>
         </div>
+      )}
+
+      {sessionMode === 'matching' && (
+        // ... (Your existing matching code remains here)
+        <div className="max-w-5xl mx-auto py-4">
+            {isMatchingLoading ? (
+               <div className="flex flex-col items-center justify-center min-h-[40vh]">
+                 <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-6"></div>
+                 <h3 className="text-xl font-black text-slate-800 tracking-tight uppercase">Calibrating Match Matrix...</h3>
+               </div>
+            ) : matches.size === SESSION_WORD_COUNT ? (
+               <div className="col-span-full py-16 text-center bg-emerald-50 border-4 border-dashed border-emerald-200 rounded-[4rem]">
+                 <div className="text-8xl mb-6">🏆</div>
+                 <h4 className="text-4xl font-black text-emerald-900 tracking-tighter uppercase mb-4">Synchronize Set</h4>
+                 <button onClick={() => { onAwardXP(400); pickNewSessionBatch(initialWords); }} className="px-12 py-6 bg-emerald-600 text-white rounded-3xl font-black uppercase text-sm">Next Training Cycle</button>
+               </div>
+            ) : (
+               <div className="grid grid-cols-2 gap-10">
+                   <div className="space-y-4">
+                      {matchingPairs.words.map((item) => (
+                        <button key={`word-${item.id}`} disabled={matches.has(item.id)} onClick={() => handleMatch(item.id, 'word')} className={`w-full p-6 h-28 flex items-center justify-center rounded-3xl border-2 font-black text-sm uppercase transition-all ${matches.has(item.id) ? 'bg-emerald-50 border-emerald-200 text-emerald-600 opacity-20' : (selectedMatch?.id === item.id && selectedMatch.type === 'word' ? 'border-indigo-600 bg-indigo-50 shadow-xl scale-105' : 'bg-white border-slate-100 hover:border-indigo-300')} ${matchingError?.includes(item.id) ? 'border-rose-500 bg-rose-50 animate-shake' : ''}`}>{item.text}</button>
+                      ))}
+                   </div>
+                   <div className="space-y-4">
+                      {matchingPairs.defs.map((item) => (
+                        <button key={`def-${item.id}`} disabled={matches.has(item.id)} onClick={() => handleMatch(item.id, 'def')} className={`w-full p-6 h-28 flex items-center justify-center text-center rounded-3xl border-2 font-black text-xs transition-all ${matches.has(item.id) ? 'bg-emerald-50 border-emerald-200 text-emerald-600 opacity-20' : (selectedMatch?.id === item.id && selectedMatch.type === 'def' ? 'border-indigo-600 bg-indigo-50 shadow-xl scale-105' : 'bg-white border-slate-100 hover:border-indigo-300')} ${matchingError?.includes(item.id) ? 'border-rose-500 bg-rose-50 animate-shake' : ''}`}>{item.text}</button>
+                      ))}
+                   </div>
+               </div>
+            )}
+        </div>
+      )}
+
+      {sessionMode === 'racecar' && (
+         // ... (Your existing racecar code remains here)
+         <div className="py-4">
+            {!raceStarted ? (
+               <div className="max-w-2xl mx-auto bg-slate-900 p-16 rounded-[4rem] text-center border-b-[12px] border-indigo-600 shadow-2xl relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+                  <div className="relative z-10">
+                    <div className="text-9xl mb-10 text-emerald-400 group-hover:scale-110 transition-transform duration-500">🏎️</div>
+                    <h3 className="text-4xl font-black text-white mb-4 italic tracking-tighter uppercase">Circuit Mastery</h3>
+                    <p className="text-slate-400 mb-8 text-lg font-medium">Defeat the clock. Answer faster to gain distance velocity.</p>
+                    
+                    {fastestRaceTime && (
+                      <div className="inline-flex items-center gap-2 bg-emerald-500/20 px-6 py-2 rounded-full border border-emerald-500/30 mb-10">
+                        <svg className="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" /></svg>
+                        <span className="text-emerald-300 font-black uppercase text-xs tracking-widest">Personal Best: {formatTime(fastestRaceTime)}</span>
+                      </div>
+                    )}
+
+                    <button onClick={startRace} className="w-full py-8 bg-white text-indigo-900 rounded-[2.5rem] font-black uppercase tracking-[0.5em] shadow-[0_0_40px_rgba(255,255,255,0.3)] hover:scale-105 transition-all hover:bg-emerald-400 hover:text-emerald-950">Launch Sequence</button>
+                  </div>
+               </div>
+             ) : !raceFinished ? (
+               <div className="max-w-3xl mx-auto bg-slate-900 p-12 rounded-[4rem] shadow-2xl border border-white/10 overflow-hidden relative">
+                 <div className="absolute inset-0 opacity-10 pointer-events-none overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.2)_50%,transparent_100%)] bg-[length:200%_100%] animate-speed-lines"></div>
+                 </div>
+
+                 <div className="relative z-10">
+                   <div className="flex justify-between items-start mb-10">
+                      <div className="text-center bg-white/5 p-4 rounded-3xl border border-white/10 backdrop-blur-sm">
+                        <div className="text-4xl font-black text-white font-mono tabular-nums tracking-widest">{formatTime(elapsedRaceTime)}</div>
+                        <div className="text-[9px] font-black text-slate-500 uppercase tracking-[0.3em] mt-1">Total Time</div>
+                      </div>
+                      
+                      <div className="flex-1 px-8 pt-4">
+                         <div className="relative h-6 bg-slate-800 rounded-full border border-slate-700">
+                            <div 
+                               className="absolute top-0 left-0 h-full bg-gradient-to-r from-indigo-600 to-emerald-400 rounded-full transition-all duration-300 ease-out shadow-[0_0_20px_rgba(52,211,153,0.5)]" 
+                               style={{ width: `${raceProgress}%` }}
+                            >
+                               <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 text-2xl filter drop-shadow-lg transform scale-x-[-1]">🏎️</div>
+                            </div>
+                            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-white/30 rounded-full"></div>
+                         </div>
+                         <div className="flex justify-between mt-2 text-[9px] font-black text-slate-500 uppercase tracking-widest px-1">
+                            <span>Start</span>
+                            <span>Finish Line</span>
+                         </div>
+                      </div>
+                   </div>
+
+                   <div className="text-center mb-8 relative h-12">
+                      {raceBoost === 'turbo' && (
+                         <div className="absolute inset-x-0 top-0 text-emerald-400 font-black uppercase tracking-[0.5em] text-xl animate-bounce drop-shadow-[0_0_10px_rgba(52,211,153,0.8)]">Turbo Boost! +8%</div>
+                      )}
+                      {raceBoost === 'speed' && (
+                         <div className="absolute inset-x-0 top-0 text-indigo-400 font-black uppercase tracking-[0.3em] text-lg animate-pulse">Speed Bonus! +6.5%</div>
+                      )}
+                   </div>
+
+                   <h4 className="text-2xl font-black text-white mb-10 leading-tight text-center italic bg-white/5 p-6 rounded-3xl border border-white/5">"{raceQuestion}"</h4>
+                   
+                   <div className="grid grid-cols-2 gap-4">
+                      {raceOptions.map((opt, i) => (
+                        <button key={i} disabled={!!raceFeedback} onClick={() => handleRaceAnswer(opt)} className={`py-6 rounded-3xl font-black uppercase text-sm border-2 transition-all transform active:scale-95 ${raceFeedback === 'correct' && opt === activeSessionWords[raceIndex % activeSessionWords.length].word ? 'bg-emerald-500 border-emerald-400 text-white shadow-[0_0_30px_rgba(16,185,129,0.6)] scale-105' : opt === raceFeedback ? 'bg-rose-600 border-rose-500 text-white' : 'bg-slate-800 border-slate-700 text-slate-300 hover:border-indigo-500 hover:bg-slate-700 hover:text-white'}`}>{opt}</button>
+                      ))}
+                   </div>
+                 </div>
+               </div>
+             ) : (
+               <div className="max-w-2xl mx-auto text-center py-24 bg-slate-900 rounded-[5rem] shadow-2xl text-white border-b-[12px] border-emerald-600 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-emerald-900/20"></div>
+                  <div className="relative z-10">
+                    <div className="text-9xl mb-8 animate-bounce">🏁</div>
+                    <h4 className="text-5xl font-black mb-4 tracking-tighter uppercase text-white">Race Complete!</h4>
+                    <div className="text-8xl font-mono font-black text-emerald-400 mb-12 tracking-tighter drop-shadow-2xl">{formatTime(elapsedRaceTime)}</div>
+                    
+                    {fastestRaceTime === elapsedRaceTime && (
+                      <div className="inline-block px-8 py-3 bg-yellow-500/20 border border-yellow-500 rounded-full text-yellow-300 font-black uppercase tracking-widest mb-10 animate-pulse">New Personal Record!</div>
+                    )}
+
+                    <button onClick={() => setRaceStarted(false)} className="px-20 py-8 bg-white text-emerald-900 rounded-[3rem] font-black uppercase text-sm tracking-widest shadow-xl hover:scale-105 transition-all">Return to Racing Center</button>
+                  </div>
+               </div>
+             )}
+         </div>
+      )}
+
+      {/* NEW SECTION: Word List Tab */}
+      {sessionMode === 'list' && (
+        <div className="py-4">
+           <div className="text-center mb-8">
+              <h3 className="text-2xl font-black text-slate-800 uppercase tracking-tight">Active Session Words</h3>
+              <p className="text-slate-500 font-medium">{activeSessionWords.length} words currently in rotation</p>
+           </div>
+           
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {activeSessionWords.map((word, i) => (
+                 <div key={i} className="group bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm hover:shadow-xl hover:border-indigo-300 hover:-translate-y-1 transition-all duration-300">
+                    <div className="flex justify-between items-start mb-3">
+                       <div className="flex items-center gap-3">
+                          <span className="flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 text-slate-400 font-black text-[10px] group-hover:bg-indigo-600 group-hover:text-white transition-colors">{i + 1}</span>
+                          <h4 className="text-xl font-black text-slate-800 uppercase tracking-tight">{word.word}</h4>
+                       </div>
+                       <span className="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-[10px] font-black uppercase tracking-wider">{word.partOfSpeech}</span>
+                    </div>
+                    <div className="pl-11">
+                       <p className="text-slate-600 font-medium leading-relaxed">{word.definition}</p>
+                    </div>
+                 </div>
+              ))}
+           </div>
+        </div>
+      )}
+    </div>
+  </div>
+)}
       ) : activeTab === 'grammar' ? (
         <div className="space-y-12">
           {currentLesson ? (
