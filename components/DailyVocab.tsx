@@ -174,6 +174,20 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     fetchShortDefs();
   }, [mode, dailyWords]);
 
+  // Force stop all timers when race is finished
+  useEffect(() => {
+    if (raceFinished) {
+      if (stopwatchRef.current) {
+        clearInterval(stopwatchRef.current);
+        stopwatchRef.current = null;
+      }
+      if (raceTimerRef.current) {
+        clearInterval(raceTimerRef.current);
+        raceTimerRef.current = null;
+      }
+    }
+  }, [raceFinished]);
+
   // Clean up race timer on unmount
   useEffect(() => {
     return () => {
@@ -316,7 +330,10 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
 
         if (nextProgress >= 100) {
             const finalTime = Date.now() - raceStartTimeRef.current;
-            if (stopwatchRef.current) clearInterval(stopwatchRef.current);
+            if (stopwatchRef.current) {
+                clearInterval(stopwatchRef.current);
+                stopwatchRef.current = null;
+            }
             
             // Update Day-Specific Personal Best
             const currentBest = stats.dailyRaceRecords?.[viewingDay];
