@@ -658,6 +658,11 @@ const ROOT_DATA: RootWord[] = [
 const SESSION_WORD_COUNT = 20;
 const QUESTION_TIMER_SECONDS = 5;
 
+// New Helper for session hashing
+const getSessionHash = (words: VocabularyWord[]) => {
+  return words.map(w => w.word).sort().join('|');
+};
+
 interface LearningCenterProps {
   onAwardXP: (amount: number) => void;
   onUpdateMastery: (word: string, increment: number) => void;
@@ -668,8 +673,10 @@ interface LearningCenterProps {
   setActiveSessionWords: (words: VocabularyWord[]) => void;
   words: VocabularyWord[];
   isLoading: boolean;
-  fastestRaceTime?: number;
-  onUpdateFastestRaceTime?: (time: number) => void;
+  fastestRaceTime?: number; // Kept for backward compatibility but effectively replaced
+  onUpdateFastestRaceTime?: (time: number) => void; // Kept for backward compatibility
+  sessionRecords: Record<string, number>; // New prop for independent session records
+  onRecordSessionBest: (sessionHash: string, time: number) => void; // New prop for updating records
 }
 
 const LearningCenter: React.FC<LearningCenterProps> = ({ 
@@ -682,8 +689,8 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
   setActiveSessionWords,
   words: initialWords,
   isLoading,
-  fastestRaceTime,
-  onUpdateFastestRaceTime
+  sessionRecords,
+  onRecordSessionBest
 }) => {
   const [activeTab, setActiveTab] = useState<'learn' | 'grammar' | 'spelling' | 'roots'>('learn');
   const [learnSubTab, setLearnSubTab] = useState<'list' | 'flashcards' | 'session'>('list');
@@ -740,13 +747,16 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
   const [spellingFinished, setSpellingFinished] = useState(false);
   const [spellingScore, setSpellingScore] = useState(0);
 
+  // Calculate current session hash for personal best retrieval
+  const currentSessionHash = useMemo(() => getSessionHash(activeSessionWords), [activeSessionWords]);
+  const currentSessionBest = sessionRecords[currentSessionHash];
+
   // Preload Grammar Registry in background
   useEffect(() => {
     if (activeTab === 'grammar' && !registryInitiated.current) {
       registryInitiated.current = true;
       const bootAllLessons = async () => {
         for (const topic of GRAMMAR_TOPICS) {
-          // Optimization: Skip if already fetched in this session
           if (grammarRegistry[topic]) {
             setRegistryLoadingCount(prev => prev + 1);
             continue;
@@ -759,7 +769,6 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
                 [topic]: lesson || FALLBACK_GRAMMAR_DATA[topic] 
             }));
           } catch (e) {
-            // Silently fall back to base-level if AI fails
             setGrammarRegistry(prev => ({ 
                 ...prev, 
                 [topic]: FALLBACK_GRAMMAR_DATA[topic] 
@@ -779,7 +788,6 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
   }, [initialWords, currentWords.length]);
 
   const selectGrammarLesson = (topic: string) => {
-    // If not in registry (still loading), use base-level version immediately
     const lesson = grammarRegistry[topic] || FALLBACK_GRAMMAR_DATA[topic];
     if (lesson) {
       setQuizAnswer(null);
@@ -1016,7 +1024,9 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
         // Race Finished
         const finalTime = Date.now() - raceStartTimeRef.current;
         if (stopwatchRef.current) clearInterval(stopwatchRef.current);
-        if (onUpdateFastestRaceTime) onUpdateFastestRaceTime(finalTime);
+        
+        // Update session-specific best
+        onRecordSessionBest(currentSessionHash, finalTime);
         
         setTimeout(() => {
           setRaceFinished(true);
@@ -1070,6 +1080,7 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
     }
     return () => { if (raceTimerRef.current) clearInterval(raceTimerRef.current); };
   }, [raceStarted, raceFinished, raceFeedback, raceIndex, activeSessionWords]);
+  
   const formatTime = (ms: number) => {
     const minutes = Math.floor(ms / 60000);
     const seconds = Math.floor((ms % 60000) / 1000);
@@ -1232,10 +1243,10 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
                               <h3 className="text-4xl font-black text-white mb-4 italic tracking-tighter uppercase">Circuit Mastery</h3>
                               <p className="text-slate-400 mb-8 text-lg font-medium">Defeat the clock. Answer faster to gain distance velocity.</p>
                               
-                              {fastestRaceTime && (
+                              {currentSessionBest && (
                                 <div className="inline-flex items-center gap-2 bg-emerald-500/20 px-6 py-2 rounded-full border border-emerald-500/30 mb-10">
                                   <svg className="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" /></svg>
-                                  <span className="text-emerald-300 font-black uppercase text-xs tracking-widest">Personal Best: {formatTime(fastestRaceTime)}</span>
+                                  <span className="text-emerald-300 font-black uppercase text-xs tracking-widest">Session Best: {formatTime(currentSessionBest)}</span>
                                 </div>
                               )}
 
@@ -1301,8 +1312,8 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
                               <h4 className="text-5xl font-black mb-4 tracking-tighter uppercase text-white">Race Complete!</h4>
                               <div className="text-8xl font-mono font-black text-emerald-400 mb-12 tracking-tighter drop-shadow-2xl">{formatTime(elapsedRaceTime)}</div>
                               
-                              {fastestRaceTime === elapsedRaceTime && (
-                                <div className="inline-block px-8 py-3 bg-yellow-500/20 border border-yellow-500 rounded-full text-yellow-300 font-black uppercase tracking-widest mb-10 animate-pulse">New Personal Record!</div>
+                              {currentSessionBest === elapsedRaceTime && (
+                                <div className="inline-block px-8 py-3 bg-yellow-500/20 border border-yellow-500 rounded-full text-yellow-300 font-black uppercase tracking-widest mb-10 animate-pulse">New Session Record!</div>
                               )}
 
                               <button onClick={() => setRaceStarted(false)} className="px-20 py-8 bg-white text-emerald-900 rounded-[3rem] font-black uppercase text-sm tracking-widest shadow-xl hover:scale-105 transition-all">Return to Racing Center</button>
@@ -1649,4 +1660,3 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
 };
 
 export default LearningCenter;
-
