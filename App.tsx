@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Layout from './components/Layout';
 import Dashboard from './components/Dashboard';
@@ -47,7 +46,9 @@ const getInitialStats = (): UserStats => ({
   dailyVocabCompleted: false,
   lastDailyVocabDate: undefined,
   dailyVocabSeed: Math.floor(Math.random() * 1000000),
-  fastestRaceTime: undefined,
+  fastestRaceTime: undefined, // Global fallback (deprecated for new logic)
+  dailyRaceRecords: {}, // Day Number -> Time (ms)
+  sessionRaceRecords: {}, // Session Hash -> Time (ms)
 });
 
 const normalizeCategory = (catName: any): Category => {
@@ -110,6 +111,7 @@ const App: React.FC = () => {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
+        // Merge with initial stats to ensure new fields like dailyRaceRecords exist
         setStats({ ...getInitialStats(), ...parsed });
       } catch(e) {
         console.error("Failed to parse saved stats", e);
@@ -228,10 +230,16 @@ const App: React.FC = () => {
     });
   }, []);
 
-  const updateFastestRaceTime = useCallback((time: number) => {
+  // Updated to handle session-specific records
+  const updateSessionRecord = useCallback((sessionHash: string, time: number) => {
     setStats(prev => ({
       ...prev,
-      fastestRaceTime: prev.fastestRaceTime ? Math.min(prev.fastestRaceTime, time) : time
+      sessionRaceRecords: {
+        ...(prev.sessionRaceRecords || {}),
+        [sessionHash]: prev.sessionRaceRecords?.[sessionHash] 
+          ? Math.min(prev.sessionRaceRecords[sessionHash], time) 
+          : time
+      }
     }));
   }, []);
 
@@ -444,8 +452,8 @@ const App: React.FC = () => {
             setActiveSessionWords={(words) => setStats(prev => ({ ...prev, activeSessionWords: words }))}
             words={allWords}
             isLoading={isVocabLoading}
-            fastestRaceTime={stats.fastestRaceTime}
-            onUpdateFastestRaceTime={updateFastestRaceTime}
+            sessionRecords={stats.sessionRaceRecords || {}}
+            onRecordSessionBest={updateSessionRecord}
           />
         );
       case 'notes':
