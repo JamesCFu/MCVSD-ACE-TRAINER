@@ -303,7 +303,6 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
         setRaceProgress(nextProgress);
         onAwardXP(20);
         
-        // Manual Mastery Update since we don't have the prop passed down directly in this view context usually
         setStats(prev => {
             const currentMastery = Number(prev.wordMastery?.[answer]) || 0;
             return {
@@ -319,10 +318,16 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
             const finalTime = Date.now() - raceStartTimeRef.current;
             if (stopwatchRef.current) clearInterval(stopwatchRef.current);
             
-            // Update Personal Best if beat
-            if (!stats.fastestRaceTime || finalTime < stats.fastestRaceTime) {
-                setStats(prev => ({ ...prev, fastestRaceTime: finalTime }));
-            }
+            // Update Day-Specific Personal Best
+            const currentBest = stats.dailyRaceRecords?.[viewingDay];
+            
+            setStats(prev => ({
+                ...prev,
+                dailyRaceRecords: {
+                    ...(prev.dailyRaceRecords || {}),
+                    [viewingDay]: currentBest ? Math.min(currentBest, finalTime) : finalTime
+                }
+            }));
 
             setTimeout(() => setRaceFinished(true), 1000);
         } else {
@@ -369,8 +374,6 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     return () => { if (raceTimerRef.current) clearInterval(raceTimerRef.current); };
   }, [raceStarted, raceFinished, raceFeedback, raceIndex, raceWords]);
 
-
-
   const handleMarkAsDone = () => {
     if (stats.dailyVocabCompleted) return;
     onAwardXP(450);
@@ -395,7 +398,6 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
   const handlePrevDay = () => {
     if (viewingDay > 1) {
       setViewingDay(prev => prev - 1);
-      // Reset games or states if necessary when switching days
       setCardIndex(0);
       setRaceStarted(false);
     }
@@ -419,6 +421,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
   }
 
   const isCurrentMaxDay = viewingDay === maxDay;
+  const currentDailyBest = stats.dailyRaceRecords?.[viewingDay];
 
   return (
     <div className="max-w-6xl mx-auto animate-in fade-in duration-500 pb-20">
@@ -439,8 +442,6 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
             {/* Navigation Controls */}
             <div className="flex items-center gap-4 w-full md:w-auto">
-              
-              {/* Back Button */}
               {viewingDay > 1 && (
                 <button 
                   onClick={handlePrevDay}
@@ -451,9 +452,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
                 </button>
               )}
 
-              {/* Action Buttons OR Forward Button */}
               {isCurrentMaxDay ? (
-                // Current Day - Show Mastery/Advance Buttons
                 <div className="flex gap-4">
                   <button 
                     onClick={handleMarkAsDone}
@@ -473,7 +472,6 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
                   )}
                 </div>
               ) : (
-                // Past Day - Show Forward Arrow Only
                 <button 
                   onClick={handleNextDay}
                   className="flex-1 md:flex-none w-full md:w-auto px-8 py-3 bg-white border border-slate-200 text-indigo-600 rounded-2xl font-black uppercase text-xs tracking-widest transition-all shadow-sm hover:bg-indigo-50 hover:border-indigo-200 active:scale-95 h-12 flex items-center justify-center gap-2"
@@ -484,7 +482,6 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
               )}
             </div>
             
-            {/* Day Indicator */}
             <div className="text-right flex-shrink-0 bg-white px-6 py-3.5 rounded-2xl shadow-sm border border-slate-100 min-w-[100px] w-full md:w-auto h-16 flex items-center justify-center">
                 <div className="text-2xl font-black text-slate-800 text-center uppercase tracking-tighter">Day {viewingDay}</div>
             </div>
@@ -506,7 +503,6 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
               onClick={() => setSelectedWord(word)}
               className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-md animate-in fade-in slide-in-from-bottom-2 group hover:border-indigo-300 transition-all cursor-pointer hover:shadow-xl transform hover:-translate-y-1 relative"
             >
-               {/* Star Button for List View */}
                <button 
                   onClick={(e) => toggleStar(e, word.word)}
                   className="absolute top-8 right-8 p-2 rounded-full hover:bg-slate-100 transition-colors z-10"
@@ -530,7 +526,6 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
 
       {mode === 'flashcards' && (
         <div className="flex flex-col items-center py-12">
-           {/* Deck Info Indicator */}
            <div className="mb-6 bg-slate-100 px-4 py-1.5 rounded-full text-xs font-black uppercase text-slate-500 tracking-widest flex items-center gap-2">
               {dailyWords.some(w => starredSet.has(w.word)) ? (
                   <>
@@ -544,12 +539,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
 
            <div className="w-full max-w-2xl h-[28rem] relative perspective-1000 cursor-pointer" onClick={() => setIsFlipped(!isFlipped)}>
               <div className={`relative w-full h-full transition-transform duration-700 transform-style-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
-                 {/* FIX: Removed 'relative' from the class below. 
-                    It must be purely absolute to stack correctly with the back face.
-                 */}
                  <div className="absolute w-full h-full backface-hidden bg-white border-2 border-indigo-600 rounded-[3rem] shadow-2xl flex flex-col items-center justify-center p-12 text-center group">
-                   
-                   {/* Star Button for Flashcard Front (Absolute positioning works relative to the absolute parent) */}
                    <button 
                       onClick={(e) => flashcardDeck[cardIndex] && toggleStar(e, flashcardDeck[cardIndex].word)}
                       className="absolute top-10 right-10 p-3 rounded-full hover:bg-slate-50 transition-colors z-20"
@@ -563,12 +553,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
                    <div className="mt-16 text-slate-300 text-[10px] font-black uppercase animate-pulse tracking-[0.3em]">Flip for Definition</div>
                  </div>
 
-                 {/* FIX: Removed 'relative' from the class below as well. 
-                    This ensures the back face is overlaid exactly on the front face before rotation.
-                 */}
                  <div className="absolute w-full h-full backface-hidden rotate-y-180 bg-slate-900 border-2 border-indigo-50 rounded-[3rem] shadow-2xl flex flex-col items-center justify-center p-12 text-center text-white overflow-y-auto no-scrollbar">
-                   
-                    {/* Star Button for Flashcard Back */}
                     <button 
                       onClick={(e) => flashcardDeck[cardIndex] && toggleStar(e, flashcardDeck[cardIndex].word)}
                       className="absolute top-10 right-10 p-3 rounded-full hover:bg-white/10 transition-colors z-20"
@@ -625,10 +610,10 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
                   <h3 className="text-4xl font-black text-white mb-4 italic tracking-tighter uppercase">Daily Circuit</h3>
                   <p className="text-slate-400 mb-8 text-lg font-medium">Test your daily word mastery against the clock.</p>
                   
-                  {stats.fastestRaceTime && (
+                  {currentDailyBest && (
                     <div className="inline-flex items-center gap-2 bg-emerald-500/20 px-6 py-2 rounded-full border border-emerald-500/30 mb-10">
                       <svg className="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" /></svg>
-                      <span className="text-emerald-300 font-black uppercase text-xs tracking-widest">Personal Best: {formatTime(stats.fastestRaceTime)}</span>
+                      <span className="text-emerald-300 font-black uppercase text-xs tracking-widest">Day {viewingDay} Best: {formatTime(currentDailyBest)}</span>
                     </div>
                   )}
 
@@ -694,8 +679,8 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
                   <h4 className="text-5xl font-black mb-4 tracking-tighter uppercase text-white">Race Complete</h4>
                   <div className="text-8xl font-mono font-black text-emerald-400 mb-12 tracking-tighter drop-shadow-2xl">{formatTime(elapsedRaceTime)}</div>
                   
-                  {stats.fastestRaceTime === elapsedRaceTime && (
-                    <div className="inline-block px-8 py-3 bg-yellow-500/20 border border-yellow-500 rounded-full text-yellow-300 font-black uppercase tracking-widest mb-10 animate-pulse">New Personal Record!</div>
+                  {currentDailyBest === elapsedRaceTime && (
+                    <div className="inline-block px-8 py-3 bg-yellow-500/20 border border-yellow-500 rounded-full text-yellow-300 font-black uppercase tracking-widest mb-10 animate-pulse">New Record for Day {viewingDay}!</div>
                   )}
 
                   <button onClick={() => setRaceStarted(false)} className="px-20 py-8 bg-white text-emerald-900 rounded-[3rem] font-black uppercase text-sm tracking-widest shadow-xl hover:scale-105 transition-all">Return to Hub</button>
@@ -811,4 +796,3 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
 };
 
 export default DailyVocab;
-
