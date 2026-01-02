@@ -1311,6 +1311,31 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
                        )}
                     </div>
                   )}
+                 {sessionMode === 'list' && (
+          <div className="py-4">
+           <div className="text-center mb-8">
+              <h3 className="text-2xl font-black text-slate-800 uppercase tracking-tight">Active Session Words</h3>
+              <p className="text-slate-500 font-medium">{activeSessionWords.length} words currently in rotation</p>
+           </div>
+           
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {activeSessionWords.map((word, i) => (
+                 <div key={i} className="group bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm hover:shadow-xl hover:border-indigo-300 hover:-translate-y-1 transition-all duration-300">
+                    <div className="flex justify-between items-start mb-3">
+                       <div className="flex items-center gap-3">
+                          <span className="flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 text-slate-400 font-black text-[10px] group-hover:bg-indigo-600 group-hover:text-white transition-colors">{i + 1}</span>
+                          <h4 className="text-xl font-black text-slate-800 uppercase tracking-tight">{word.word}</h4>
+                       </div>
+                       <span className="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-[10px] font-black uppercase tracking-wider">{word.partOfSpeech}</span>
+                    </div>
+                    <div className="pl-11">
+                       <p className="text-slate-600 font-medium leading-relaxed">{word.definition}</p>
+                    </div>
+                 </div>
+              ))}
+           </div>
+        </div>
+      )}
                </div>
             </div>
           )}
