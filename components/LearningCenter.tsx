@@ -1163,7 +1163,7 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
             <div className="space-y-10 animate-in slide-in-from-bottom-4">
                <div className="flex items-center justify-between bg-slate-100 p-1.5 rounded-[1.25rem]">
                   <div className="flex space-x-2">
-                    {['flashcards', 'matching', 'racecar'].map((m) => (
+                    {['list','flashcards', 'matching', 'racecar'].map((m) => (
                       <button key={m} onClick={() => setSessionMode(m as any)} className={`px-10 py-3 rounded-2xl text-[10px] font-black uppercase transition-all ${sessionMode === m ? 'bg-indigo-700 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>{m}</button>
                     ))}
                   </div>
