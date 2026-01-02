@@ -23,8 +23,7 @@ const hashString = (str: string) => {
 };
 
 const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoading, onAwardXP, onRecordAnswer, onLogMistake }) => {
-  // Added 'wordbank' to the mode state type
-  const [mode, setMode] = useState<'list' | 'flashcards' | 'matching' | 'racecar' | 'wordbank'>('list');
+  const [mode, setMode] = useState<'list' | 'flashcards' | 'matching' | 'racecar'>('list');
   const [showAdvanceConfirm, setShowAdvanceConfirm] = useState(false);
   const [selectedWord, setSelectedWord] = useState<VocabularyWord | null>(null);
 
@@ -198,11 +197,12 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
   };
 
   const handleShuffleDeck = () => {
-    const shuffled = [...flashcardDeck].sort(() => Math.random() - 0.5);
-    setFlashcardDeck(shuffled);
-    setCardIndex(0);
-    setIsFlipped(false);
-  };
+  // Create a shuffled copy of the current deck
+  const shuffled = [...flashcardDeck].sort(() => Math.random() - 0.5);
+  setFlashcardDeck(shuffled);
+  setCardIndex(0);
+  setIsFlipped(false);
+};
 
   const handleMatch = (id: string, type: 'word' | 'def') => {
     if (matches.has(id) || matchingError) return;
@@ -303,7 +303,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
         setRaceProgress(nextProgress);
         onAwardXP(20);
         
-        // Manual Mastery Update
+        // Manual Mastery Update since we don't have the prop passed down directly in this view context usually
         setStats(prev => {
             const currentMastery = Number(prev.wordMastery?.[answer]) || 0;
             return {
@@ -369,6 +369,8 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     return () => { if (raceTimerRef.current) clearInterval(raceTimerRef.current); };
   }, [raceStarted, raceFinished, raceFeedback, raceIndex, raceWords]);
 
+
+
   const handleMarkAsDone = () => {
     if (stats.dailyVocabCompleted) return;
     onAwardXP(450);
@@ -393,6 +395,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
   const handlePrevDay = () => {
     if (viewingDay > 1) {
       setViewingDay(prev => prev - 1);
+      // Reset games or states if necessary when switching days
       setCardIndex(0);
       setRaceStarted(false);
     }
@@ -436,6 +439,8 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
             {/* Navigation Controls */}
             <div className="flex items-center gap-4 w-full md:w-auto">
+              
+              {/* Back Button */}
               {viewingDay > 1 && (
                 <button 
                   onClick={handlePrevDay}
@@ -446,7 +451,9 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
                 </button>
               )}
 
+              {/* Action Buttons OR Forward Button */}
               {isCurrentMaxDay ? (
+                // Current Day - Show Mastery/Advance Buttons
                 <div className="flex gap-4">
                   <button 
                     onClick={handleMarkAsDone}
@@ -466,6 +473,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
                   )}
                 </div>
               ) : (
+                // Past Day - Show Forward Arrow Only
                 <button 
                   onClick={handleNextDay}
                   className="flex-1 md:flex-none w-full md:w-auto px-8 py-3 bg-white border border-slate-200 text-indigo-600 rounded-2xl font-black uppercase text-xs tracking-widest transition-all shadow-sm hover:bg-indigo-50 hover:border-indigo-200 active:scale-95 h-12 flex items-center justify-center gap-2"
@@ -476,16 +484,15 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
               )}
             </div>
             
+            {/* Day Indicator */}
             <div className="text-right flex-shrink-0 bg-white px-6 py-3.5 rounded-2xl shadow-sm border border-slate-100 min-w-[100px] w-full md:w-auto h-16 flex items-center justify-center">
                 <div className="text-2xl font-black text-slate-800 text-center uppercase tracking-tighter">Day {viewingDay}</div>
             </div>
         </div>
       </header>
       
-      {/* Navigation Tabs */}
       <div className="flex flex-wrap gap-2 bg-slate-200 p-1.5 rounded-[1.5rem] w-fit mb-12 shadow-inner border border-slate-300">
-        <button onClick={() => setMode('list')} className={`px-8 py-3.5 rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest transition-all ${mode === 'list' ? 'bg-white text-indigo-700 shadow-md' : 'text-slate-600 hover:text-slate-800'}`}>Study View</button>
-        <button onClick={() => setMode('wordbank')} className={`px-8 py-3.5 rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest transition-all ${mode === 'wordbank' ? 'bg-white text-indigo-700 shadow-md' : 'text-slate-600 hover:text-slate-800'}`}>Word Bank</button>
+        <button onClick={() => setMode('list')} className={`px-8 py-3.5 rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest transition-all ${mode === 'list' ? 'bg-white text-indigo-700 shadow-md' : 'text-slate-600 hover:text-slate-800'}`}>Word List</button>
         <button onClick={() => setMode('flashcards')} className={`px-8 py-3.5 rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest transition-all ${mode === 'flashcards' ? 'bg-white text-indigo-700 shadow-md' : 'text-slate-600 hover:text-slate-800'}`}>Flashcards</button>
         <button onClick={() => setMode('matching')} className={`px-8 py-3.5 rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest transition-all ${mode === 'matching' ? 'bg-white text-indigo-700 shadow-md' : 'text-slate-600 hover:text-slate-800'}`}>Match Grid</button>
         <button onClick={() => setMode('racecar')} className={`px-8 py-3.5 rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest transition-all ${mode === 'racecar' ? 'bg-white text-indigo-700 shadow-md' : 'text-slate-600 hover:text-slate-800'}`}>Speed Circuit</button>
@@ -499,6 +506,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
               onClick={() => setSelectedWord(word)}
               className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-md animate-in fade-in slide-in-from-bottom-2 group hover:border-indigo-300 transition-all cursor-pointer hover:shadow-xl transform hover:-translate-y-1 relative"
             >
+               {/* Star Button for List View */}
                <button 
                   onClick={(e) => toggleStar(e, word.word)}
                   className="absolute top-8 right-8 p-2 rounded-full hover:bg-slate-100 transition-colors z-10"
@@ -520,44 +528,9 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
         </div>
       )}
 
-      {/* New Word Bank Mode */}
-      {mode === 'wordbank' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            {dailyWords.map((wordObj) => (
-            <div 
-                key={wordObj.word}
-                onClick={() => setSelectedWord(wordObj)}
-                className="group bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:border-indigo-100 transition-all cursor-pointer relative overflow-hidden"
-            >
-                <div className="flex justify-between items-start mb-3">
-                <h3 className="text-xl font-black text-slate-900 tracking-tight">{wordObj.word}</h3>
-                <button 
-                    onClick={(e) => toggleStar(e, wordObj.word)}
-                    className={`text-xl transition-transform active:scale-125 ${starredSet.has(wordObj.word) ? 'text-amber-400' : 'text-slate-200 hover:text-amber-200'}`}
-                >
-                    {starredSet.has(wordObj.word) ? '★' : '☆'}
-                </button>
-                </div>
-                <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-2">{wordObj.partOfSpeech}</p>
-                <p className="text-slate-600 text-sm leading-relaxed line-clamp-2 font-medium">{wordObj.definition}</p>
-                
-                {/* Progress Bar for Word Mastery */}
-                <div className="mt-4 flex items-center gap-2">
-                    <div className="flex-1 h-1 bg-slate-100 rounded-full overflow-hidden">
-                        <div 
-                        className="h-full bg-indigo-500 transition-all duration-1000" 
-                        style={{ width: `${stats.wordMastery?.[wordObj.word] || 0}%` }}
-                        />
-                    </div>
-                    <span className="text-[9px] font-bold text-slate-400">{stats.wordMastery?.[wordObj.word] || 0}%</span>
-                </div>
-            </div>
-            ))}
-        </div>
-      )}
-
       {mode === 'flashcards' && (
         <div className="flex flex-col items-center py-12">
+           {/* Deck Info Indicator */}
            <div className="mb-6 bg-slate-100 px-4 py-1.5 rounded-full text-xs font-black uppercase text-slate-500 tracking-widest flex items-center gap-2">
               {dailyWords.some(w => starredSet.has(w.word)) ? (
                   <>
@@ -571,7 +544,12 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
 
            <div className="w-full max-w-2xl h-[28rem] relative perspective-1000 cursor-pointer" onClick={() => setIsFlipped(!isFlipped)}>
               <div className={`relative w-full h-full transition-transform duration-700 transform-style-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
+                 {/* FIX: Removed 'relative' from the class below. 
+                    It must be purely absolute to stack correctly with the back face.
+                 */}
                  <div className="absolute w-full h-full backface-hidden bg-white border-2 border-indigo-600 rounded-[3rem] shadow-2xl flex flex-col items-center justify-center p-12 text-center group">
+                   
+                   {/* Star Button for Flashcard Front (Absolute positioning works relative to the absolute parent) */}
                    <button 
                       onClick={(e) => flashcardDeck[cardIndex] && toggleStar(e, flashcardDeck[cardIndex].word)}
                       className="absolute top-10 right-10 p-3 rounded-full hover:bg-slate-50 transition-colors z-20"
@@ -580,11 +558,17 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                       </svg>
                    </button>
+
                    <h2 className="text-6xl font-black text-slate-900 tracking-tighter uppercase">{flashcardDeck[cardIndex]?.word}</h2>
                    <div className="mt-16 text-slate-300 text-[10px] font-black uppercase animate-pulse tracking-[0.3em]">Flip for Definition</div>
                  </div>
 
+                 {/* FIX: Removed 'relative' from the class below as well. 
+                    This ensures the back face is overlaid exactly on the front face before rotation.
+                 */}
                  <div className="absolute w-full h-full backface-hidden rotate-y-180 bg-slate-900 border-2 border-indigo-50 rounded-[3rem] shadow-2xl flex flex-col items-center justify-center p-12 text-center text-white overflow-y-auto no-scrollbar">
+                   
+                    {/* Star Button for Flashcard Back */}
                     <button 
                       onClick={(e) => flashcardDeck[cardIndex] && toggleStar(e, flashcardDeck[cardIndex].word)}
                       className="absolute top-10 right-10 p-3 rounded-full hover:bg-white/10 transition-colors z-20"
@@ -593,6 +577,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                       </svg>
                    </button>
+
                    <p className="text-2xl font-bold leading-relaxed px-4">{flashcardDeck[cardIndex]?.definition}</p>
                    <div className="mt-8 pt-8 border-t border-white/10 w-full text-xs italic text-indigo-200">"{flashcardDeck[cardIndex]?.exampleSentence}"</div>
                  </div>
@@ -652,6 +637,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
              </div>
            ) : !raceFinished ? (
              <div className="max-w-3xl mx-auto bg-slate-900 p-12 rounded-[4rem] shadow-2xl border border-white/10 overflow-hidden relative">
+                {/* Speed Lines Animation */}
                 <div className="absolute inset-0 opacity-10 pointer-events-none overflow-hidden">
                    <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.2)_50%,transparent_100%)] bg-[length:200%_100%] animate-speed-lines"></div>
                 </div>
@@ -663,12 +649,14 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
                         <div className="text-[9px] font-black text-slate-500 uppercase tracking-[0.3em] mt-1">Total Time</div>
                      </div>
                      
+                     {/* Progress Track */}
                      <div className="flex-1 px-8 pt-4">
                         <div className="relative h-6 bg-slate-800 rounded-full border border-slate-700">
                            <div 
                               className="absolute top-0 left-0 h-full bg-gradient-to-r from-indigo-600 to-emerald-400 rounded-full transition-all duration-300 ease-out shadow-[0_0_20px_rgba(52,211,153,0.5)]" 
                               style={{ width: `${raceProgress}%` }}
                            >
+                              {/* Car Icon */}
                               <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 text-2xl filter drop-shadow-lg transform scale-x-[-1]">🏎️</div>
                            </div>
                            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-white/30 rounded-full"></div>
@@ -718,6 +706,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
         </div>
       )}
 
+      {/* Word Expand Modal */}
       {selectedWord && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-indigo-950/60 backdrop-blur-md animate-in fade-in duration-300">
            <div className="bg-white w-full max-w-2xl rounded-[3.5rem] shadow-2xl overflow-hidden relative animate-in zoom-in-95 duration-500 flex flex-col max-h-[90vh]">
@@ -771,6 +760,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
         </div>
       )}
 
+      {/* Advance Day Confirmation Modal */}
       {showAdvanceConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm animate-in fade-in">
           <div className="bg-white max-w-lg w-full rounded-[3rem] p-10 shadow-2xl border-4 border-indigo-500 animate-in zoom-in-95">
@@ -821,3 +811,4 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
 };
 
 export default DailyVocab;
+
