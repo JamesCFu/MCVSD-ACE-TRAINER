@@ -786,34 +786,24 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
       setCurrentWords(initialWords);
     }
   }, [initialWords, currentWords.length]);
-  
-  const isValidLesson = (lesson: any): boolean => {
-  return (
-    lesson &&
-    typeof lesson.topic === 'string' &&
-    typeof lesson.explanation === 'string' &&
-    Array.isArray(lesson.examples) &&
-    lesson.examples.length > 0 &&
-    lesson.quickCheck &&
-    Array.isArray(lesson.quickCheck.options)
-  );
-};
 
-  // Replace the existing selectGrammarLesson function
-const selectGrammarLesson = (topic: string) => {
-  const registryLesson = grammarRegistry[topic];
-  
-  // Use registry lesson ONLY if it passes validation; otherwise force fallback
-  const lesson = isValidLesson(registryLesson) 
-    ? registryLesson 
-    : FALLBACK_GRAMMAR_DATA[topic];
+  const selectGrammarLesson = (topic: string) => {
+    // Try registry first
+    let lesson = grammarRegistry[topic];
+    
+    // Fix: Ensure the lesson topic actually matches the requested topic. 
+    // This prevents issues where the AI service might return a default/stubbed lesson 
+    // (like the first one) for every request, poisoning the registry.
+    if (!lesson || lesson.topic !== topic) {
+      lesson = FALLBACK_GRAMMAR_DATA[topic];
+    }
 
-  if (lesson) {
-    setQuizAnswer(null);
-    setShowQuizResult(false);
-    setCurrentLesson(lesson);
-  }
-};
+    if (lesson) {
+      setQuizAnswer(null);
+      setShowQuizResult(false);
+      setCurrentLesson(lesson);
+    }
+  };
 
   const loadSpelling = async () => {
     try {
@@ -854,51 +844,6 @@ const selectGrammarLesson = (topic: string) => {
       if (stopwatchRef.current) clearInterval(stopwatchRef.current);
     }
   }, [sessionMode]);
-
-  // Replace the existing useEffect for grammar loading
-useEffect(() => {
-  if (activeTab === 'grammar' && !registryInitiated.current) {
-    registryInitiated.current = true;
-    
-    const bootAllLessons = async () => {
-      for (const topic of GRAMMAR_TOPICS) {
-        // Skip if we already have a valid lesson in registry
-        // Note: accessing state inside effect uses closure value, so this check 
-        // is mostly for hot-reloads or re-mounts where state might persist.
-        if (grammarRegistry[topic]) {
-          setRegistryLoadingCount(prev => prev + 1);
-          continue;
-        }
-
-        try {
-          const generatedLesson = await generateGrammarLesson(topic);
-          
-          // Validate before saving to state
-          if (isValidLesson(generatedLesson)) {
-            setGrammarRegistry(prev => ({ 
-              ...prev, 
-              [topic]: generatedLesson 
-            }));
-          } else {
-            // If invalid, explicitly save fallback to prevent re-fetching
-            setGrammarRegistry(prev => ({ 
-              ...prev, 
-              [topic]: FALLBACK_GRAMMAR_DATA[topic] 
-            }));
-          }
-        } catch (e) {
-          console.error(`Failed to load grammar topic: ${topic}`, e);
-          setGrammarRegistry(prev => ({ 
-            ...prev, 
-            [topic]: FALLBACK_GRAMMAR_DATA[topic] 
-          }));
-        }
-        setRegistryLoadingCount(prev => prev + 1);
-      }
-    };
-    bootAllLessons();
-  }
-}, [activeTab]); // Removed grammarRegistry from dependency to prevent infinite loops
 
   const pickNewSessionBatch = (source: VocabularyWord[]) => {
     const subset = [...source].sort(() => Math.random() - 0.5).slice(0, SESSION_WORD_COUNT);
