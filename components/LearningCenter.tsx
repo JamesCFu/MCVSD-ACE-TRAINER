@@ -26,6 +26,23 @@ const GRAMMAR_TOPICS = [
   "Commonly Confused Words (Academic)",
   "Capitalization and Punctuation Nuance"
 ];
+const ESSAY_TOPICS = [
+  "Thesis Statement Construction",
+  "Argumentative Structure",
+  "Rhetorical Analysis",
+  "Narrative Flow & Pacing",
+  "Evidence Integration",
+  "Conclusions & Impact"
+];
+
+const READING_TOPICS = [
+  "Identifying Main Idea",
+  "Inference & Implication",
+  "Tone & Author's Purpose",
+  "Context Clues in Complex Texts",
+  "Analyzing Text Structure",
+  "Evaluating Arguments"
+];
 
 const FALLBACK_GRAMMAR_DATA: Record<string, GrammarLesson> = {
   "Comma Mastery: Essential vs Non-Essential": {
@@ -236,6 +253,116 @@ const FALLBACK_GRAMMAR_DATA: Record<string, GrammarLesson> = {
       ],
       correctAnswer: 1,
       explanation: "For a plural noun ending in 's' (boys), the apostrophe goes after the 's' to show possession."
+    }
+  }
+};
+const FALLBACK_ESSAY_DATA: Record<string, GrammarLesson> = {
+  "Thesis Statement Construction": {
+    topic: "Thesis Statement Construction",
+    explanation: "A strong thesis is a single sentence that presents your argument to the reader. It must be specific, debatable, and provide a roadmap for the essay. Avoid vague statements like 'This essay will discuss...'",
+    examples: [
+      "Weak: Pollution is bad for the environment.",
+      "Strong: The government must implement stricter carbon taxes to combat climate change because voluntary corporate measures have failed."
+    ],
+    quickCheck: {
+      question: "Which of the following is the strongest thesis statement?",
+      options: [
+        "In this essay, I will talk about the Great Gatsby.",
+        "The Great Gatsby is a book about the American Dream.",
+        "Fitzgerald uses the symbol of the green light to critique the corruption of the American Dream in the 1920s.",
+        "The American Dream is a complicated topic with many sides."
+      ],
+      correctAnswer: 2,
+      explanation: "Option C is specific, debatable, and analyzes a literary device (symbolism) rather than just stating a fact."
+    }
+  },
+  "Argumentative Structure": {
+    topic: "Argumentative Structure",
+    explanation: "Standard argumentation often follows the 'Claim-Evidence-Warrant' model. You must make a claim, support it with data/quotes, and then explain (warrant) how that evidence proves the claim.",
+    examples: [
+      "Claim: Schools should start later.",
+      "Evidence: Studies show teens have different circadian rhythms.",
+      "Warrant: Therefore, aligning schedules with biology improves academic performance."
+    ],
+    quickCheck: {
+      question: "What is the primary function of the 'Warrant' or 'Analysis' in a paragraph?",
+      options: [
+        "To repeat the claim in different words.",
+        "To list as many facts as possible.",
+        "To explain the connection between the evidence and the claim.",
+        "To transition to the next paragraph."
+      ],
+      correctAnswer: 2,
+      explanation: "The warrant bridges the gap, showing the reader exactly *why* your evidence supports your argument."
+    }
+  },
+  "Rhetorical Analysis": {
+    topic: "Rhetorical Analysis",
+    explanation: "Rhetorical analysis doesn't ask *what* the author says, but *how* they say it. Look for Ethos (credibility), Pathos (emotion), and Logos (logic), as well as diction and syntax.",
+    examples: [
+      "Observation: The author uses short, choppy sentences.",
+      "Analysis: This syntax creates a sense of urgency and anxiety in the reader."
+    ],
+    quickCheck: {
+      question: "If an author cites their PhD and years of experience, which appeal are they using?",
+      options: ["Logos", "Pathos", "Ethos", "Kairos"],
+      correctAnswer: 2,
+      explanation: "Ethos is an appeal to ethics, credibility, and authority."
+    }
+  }
+};
+
+const FALLBACK_READING_DATA: Record<string, GrammarLesson> = {
+  "Identifying Main Idea": {
+    topic: "Identifying Main Idea",
+    explanation: "The main idea is the primary point the author is making about the topic. It is often found in the first or last sentence of a paragraph, but can be implied. Distinguish it from supporting details.",
+    examples: [
+      "Passage: 'Bees are vital. They pollinate crops. Without them, food would be scarce.'",
+      "Main Idea: Bees are essential for food production."
+    ],
+    quickCheck: {
+      question: "Read: 'While many believe technology isolates us, studies show it can actually enhance connection for marginalized groups.' What is the main idea?",
+      options: [
+        "Technology isolates people.",
+        "Marginalized groups use technology.",
+        "Technology has a nuanced, potentially positive impact on connection.",
+        "Everyone should use more technology."
+      ],
+      correctAnswer: 2,
+      explanation: "The sentence contrasts a common belief with a specific finding, arguing for a positive aspect of technology."
+    }
+  },
+  "Inference & Implication": {
+    topic: "Inference & Implication",
+    explanation: "Inference involves reading 'between the lines.' You must use evidence from the text + your own logic to draw a conclusion that isn't explicitly stated.",
+    examples: [
+      "Text: 'Her face turned red and she clenched her fists.'",
+      "Inference: She is angry (even though the text didn't say 'angry')."
+    ],
+    quickCheck: {
+      question: "Text: 'The sky turned green and the sirens began to wail.' What can you infer?",
+      options: [
+        "Aliens are landing.",
+        "A tornado or severe storm is approaching.",
+        "It is a sunny day.",
+        "The sirens are broken."
+      ],
+      correctAnswer: 1,
+      explanation: "Green skies and sirens are standard indicators of severe weather like tornadoes."
+    }
+  },
+  "Tone & Author's Purpose": {
+    topic: "Tone & Author's Purpose",
+    explanation: "Tone is the author's attitude toward the subject (e.g., sarcastic, objective, nostalgic). Purpose is why they wrote it (to inform, persuade, entertain).",
+    examples: [
+      "Phrase: 'That politician's brilliant plan cost us millions.'",
+      "Tone: Sarcastic/Critical."
+    ],
+    quickCheck: {
+      question: "Text: 'The intricate dance of the honeybee is a marvel of evolutionary biology.' What is the tone?",
+      options: ["Critical", "Apathetic", "Appreciative/Admiring", "Humorous"],
+      correctAnswer: 2,
+      explanation: "Words like 'intricate', 'dance', and 'marvel' suggest admiration and appreciation."
     }
   }
 };
@@ -673,10 +800,8 @@ interface LearningCenterProps {
   setActiveSessionWords: (words: VocabularyWord[]) => void;
   words: VocabularyWord[];
   isLoading: boolean;
-  fastestRaceTime?: number; // Kept for backward compatibility but effectively replaced
-  onUpdateFastestRaceTime?: (time: number) => void; // Kept for backward compatibility
-  sessionRecords: Record<string, number>; // New prop for independent session records
-  onRecordSessionBest: (sessionHash: string, time: number) => void; // New prop for updating records
+  sessionRecords: Record<string, number>; 
+  onRecordSessionBest: (sessionHash: string, time: number) => void;
 }
 
 const LearningCenter: React.FC<LearningCenterProps> = ({ 
@@ -692,37 +817,34 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
   sessionRecords,
   onRecordSessionBest
 }) => {
-  const [activeTab, setActiveTab] = useState<'learn' | 'grammar' | 'spelling' | 'roots'>('learn');
+  // Navigation State
+  const [activeTab, setActiveTab] = useState<'learn' | 'ela' | 'spelling'>('learn');
+  const [elaSubTab, setElaSubTab] = useState<'grammar' | 'writing' | 'reading'>('grammar');
   const [learnSubTab, setLearnSubTab] = useState<'list' | 'flashcards' | 'session'>('list');
   const [sessionMode, setSessionMode] = useState<'flashcards' | 'matching' | 'racecar'>('flashcards');
   
+  // Data State
   const [currentWords, setCurrentWords] = useState<VocabularyWord[]>([]);
   const [spellingQuestions, setSpellingQuestions] = useState<Question[]>([]);
   
-  // Grammar Registry Logic
-  const [grammarRegistry, setGrammarRegistry] = useState<Record<string, GrammarLesson>>({});
+  // ELA Registry Logic (Unified for Grammar, Writing, Reading)
+  const [elaRegistry, setElaRegistry] = useState<Record<string, GrammarLesson>>({});
   const [registryLoadingCount, setRegistryLoadingCount] = useState(0);
-  const registryInitiated = useRef(false);
 
+  // Search & Selection
   const [searchQuery, setSearchQuery] = useState('');
-  const [rootsSearchQuery, setRootsSearchQuery] = useState('');
   const [selectedWord, setSelectedWord] = useState<VocabularyWord | null>(null);
-
   const [cardIndex, setCardIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
-  const [rootCardIndex, setRootCardIndex] = useState(0);
-  const [rootIsFlipped, setRootIsFlipped] = useState(false);
-  const [rootsMode, setRootsMode] = useState<'list' | 'flashcards'>('list');
-  const [shuffledRoots, setShuffledRoots] = useState<RootWord[]>(ROOT_DATA);
 
-  // Match State
+  // Match Game State
   const [selectedMatch, setSelectedMatch] = useState<{ id: string, type: 'word' | 'def' } | null>(null);
   const [matches, setMatches] = useState<Set<string>>(new Set());
   const [matchingError, setMatchingError] = useState<string | null>(null);
   const [matchingGameWords, setMatchingGameWords] = useState<{ word: string, shortDef: string }[]>([]);
   const [isMatchingLoading, setIsMatchingLoading] = useState(false);
 
-  // Race State
+  // Race Game State
   const [raceStarted, setRaceStarted] = useState(false);
   const [raceIndex, setRaceIndex] = useState(0);
   const [raceProgress, setRaceProgress] = useState(0);
@@ -737,49 +859,20 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
   const raceStartTimeRef = useRef<number>(0);
   const stopwatchRef = useRef<number | null>(null);
 
+  // Lesson & Quiz State (Generic for all ELA modules)
   const [currentLesson, setCurrentLesson] = useState<GrammarLesson | null>(null);
   const [quizAnswer, setQuizAnswer] = useState<number | null>(null);
   const [showQuizResult, setShowQuizResult] = useState(false);
 
+  // Spelling State
   const [spellingIndex, setSpellingIndex] = useState(0);
   const [spellingAnswer, setSpellingAnswer] = useState<number | null>(null);
   const [showSpellingResult, setShowSpellingResult] = useState(false);
   const [spellingFinished, setSpellingFinished] = useState(false);
   const [spellingScore, setSpellingScore] = useState(0);
 
-  // Calculate current session hash for personal best retrieval
   const currentSessionHash = useMemo(() => getSessionHash(activeSessionWords), [activeSessionWords]);
   const currentSessionBest = sessionRecords[currentSessionHash];
-
-  // Preload Grammar Registry in background
-  useEffect(() => {
-    if (activeTab === 'grammar' && !registryInitiated.current) {
-      registryInitiated.current = true;
-      const bootAllLessons = async () => {
-        for (const topic of GRAMMAR_TOPICS) {
-          if (grammarRegistry[topic]) {
-            setRegistryLoadingCount(prev => prev + 1);
-            continue;
-          }
-
-          try {
-            const lesson = await generateGrammarLesson(topic);
-            setGrammarRegistry(prev => ({ 
-                ...prev, 
-                [topic]: lesson || FALLBACK_GRAMMAR_DATA[topic] 
-            }));
-          } catch (e) {
-            setGrammarRegistry(prev => ({ 
-                ...prev, 
-                [topic]: FALLBACK_GRAMMAR_DATA[topic] 
-            }));
-          }
-          setRegistryLoadingCount(prev => prev + 1);
-        }
-      };
-      bootAllLessons();
-    }
-  }, [activeTab]);
 
   useEffect(() => {
     if (initialWords.length > 0 && currentWords.length === 0) {
@@ -787,23 +880,33 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
     }
   }, [initialWords, currentWords.length]);
 
-  const selectGrammarLesson = (topic: string) => {
-    // Try registry first
-    let lesson = grammarRegistry[topic];
-    
-    // Fix: Ensure the lesson topic actually matches the requested topic. 
-    // This prevents issues where the AI service might return a default/stubbed lesson 
-    // (like the first one) for every request, poisoning the registry.
-    if (!lesson || lesson.topic !== topic) {
-      lesson = FALLBACK_GRAMMAR_DATA[topic];
-    }
-
-    if (lesson) {
+  // Combined ELA Lesson Loader
+  const selectElaLesson = useCallback(async (topic: string, type: 'grammar' | 'writing' | 'reading') => {
+    // 1. Check Registry
+    if (elaRegistry[topic]) {
       setQuizAnswer(null);
       setShowQuizResult(false);
-      setCurrentLesson(lesson);
+      setCurrentLesson(elaRegistry[topic]);
+      return;
     }
-  };
+
+    // 2. Check Fallbacks
+    let fallback: GrammarLesson | undefined;
+    if (type === 'grammar') fallback = FALLBACK_GRAMMAR_DATA[topic];
+    else if (type === 'writing') fallback = FALLBACK_ESSAY_DATA[topic];
+    else if (type === 'reading') fallback = FALLBACK_READING_DATA[topic];
+
+    if (fallback) {
+      setQuizAnswer(null);
+      setShowQuizResult(false);
+      setCurrentLesson(fallback);
+      return;
+    }
+
+    // 3. (Optional) Generate via AI if not found (Mocked here to just use fallback or placeholder)
+    // For now, if no data, we do nothing or show an alert. 
+    // In a real app, we'd call generateGrammarLesson(topic)
+  }, [elaRegistry]);
 
   const loadSpelling = async () => {
     try {
@@ -867,25 +970,12 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
     setActiveSessionWords([...activeSessionWords].sort(() => Math.random() - 0.5));
   };
 
-  const shuffleRoots = () => {
-    setRootCardIndex(0);
-    setRootIsFlipped(false);
-    setShuffledRoots([...ROOT_DATA].sort(() => Math.random() - 0.5));
-  };
-
   const filteredWords = useMemo(() => {
     return initialWords.filter(w => 
       w.word.toLowerCase().includes(searchQuery.toLowerCase()) ||
       w.definition.toLowerCase().includes(searchQuery.toLowerCase())
     ).sort((a, b) => a.word.localeCompare(b.word));
   }, [initialWords, searchQuery]);
-
-  const filteredRoots = useMemo(() => {
-    return ROOT_DATA.filter(r => 
-      r.root.toLowerCase().includes(rootsSearchQuery.toLowerCase()) ||
-      r.meaning.toLowerCase().includes(rootsSearchQuery.toLowerCase())
-    );
-  }, [rootsSearchQuery]);
 
   const matchingPairs = useMemo(() => {
     if (matchingGameWords.length === 0) return { words: [], defs: [] };
@@ -920,12 +1010,6 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
     if (direction === 'next') setCardIndex((cardIndex + 1) % list.length);
     else setCardIndex((cardIndex - 1 + list.length) % list.length);
     setIsFlipped(false); 
-  };
-
-  const handleRootNav = (direction: 'next' | 'prev') => {
-    if (direction === 'next') setRootCardIndex((rootCardIndex + 1) % shuffledRoots.length);
-    else setRootCardIndex((rootCardIndex - 1 + shuffledRoots.length) % shuffledRoots.length);
-    setRootIsFlipped(false);
   };
 
   const handleMatch = (id: string, type: 'word' | 'def') => {
@@ -968,7 +1052,6 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
 
   const generateRaceStep = useCallback((idx: number, set: VocabularyWord[]) => {
     if (set.length === 0) return;
-    // Modulo ensures we loop forever until finish line is reached
     const safeIndex = idx % set.length;
     const current = set[safeIndex];
     setRaceQuestion(current.definition);
@@ -988,7 +1071,6 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
     setRaceFeedback(null);
     setRaceBoost('none');
     
-    // Timer Logic
     raceStartTimeRef.current = Date.now();
     setElapsedRaceTime(0);
     stopwatchRef.current = window.setInterval(() => {
@@ -1000,7 +1082,6 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
 
   const handleRaceAnswer = (answer: string) => {
     if (raceFeedback || raceFinished) return;
-   // Safe index with modulo
     const safeIndex = raceIndex % activeSessionWords.length;
     const correctWord = activeSessionWords[safeIndex];
     const isCorrect = answer === correctWord.word;
@@ -1010,15 +1091,14 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
     onRecordAnswer(isCorrect, Category.VOCABULARY);
 
     if (isCorrect) {
-      // Distance Calculation Logic
-      let distanceGain = 5; // Base gain (5% means ~20 words to finish)
+      let distanceGain = 5; 
       let boostType: 'none' | 'speed' | 'turbo' = 'none';
 
       if (timeTakenSeconds < 1.5) {
-        distanceGain += 3; // Turbo: +3% (Total 8%)
+        distanceGain += 3; 
         boostType = 'turbo';
       } else if (timeTakenSeconds < 3) {
-        distanceGain += 1.5; // Speed: +1.5% (Total 6.5%)
+        distanceGain += 1.5; 
         boostType = 'speed';
       }
 
@@ -1030,18 +1110,13 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
       onAwardXP(50);
       onUpdateMastery(answer, 5);
       if (nextProgress >= 100) {
-        // Race Finished
         const finalTime = Date.now() - raceStartTimeRef.current;
         if (stopwatchRef.current) clearInterval(stopwatchRef.current);
-        
-        // Update session-specific best
         onRecordSessionBest(currentSessionHash, finalTime);
-        
         setTimeout(() => {
           setRaceFinished(true);
         }, 1000);
       } else {
-        // Continue Race
         setTimeout(() => {
           setRaceFeedback(null);
           setRaceBoost('none');
@@ -1051,10 +1126,8 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
       }
 
     } else {
-      // Wrong Answer
       setRaceFeedback(answer === "" ? 'timeout' : answer);
       setRaceBoost('none');
-
       onLogMistake({
           id: `race-err-${Date.now()}-${correctWord.word}`,
           category: Category.VOCABULARY,
@@ -1063,14 +1136,10 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
           correctAnswer: raceOptions.indexOf(correctWord.word),
           explanation: `Missed in Raceway. Word: ${correctWord.word}. Definition: ${correctWord.definition}`
       });
-    
-
       setTimeout(() => {
         setRaceFeedback(null);
-        
         setRaceIndex(i => i + 1);
         generateRaceStep(raceIndex + 1, activeSessionWords);
-        
       }, 1000);
     }
   };
@@ -1079,7 +1148,7 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
     if (raceStarted && !raceFinished && !raceFeedback) {
       raceTimerRef.current = window.setInterval(() => {
         setRaceTimeLeft(prev => {
-          if (prev <= 0.1) { // Floating point tolerance
+          if (prev <= 0.1) { 
             handleRaceAnswer("");
             return 0;
           }
@@ -1093,9 +1162,28 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
   const formatTime = (ms: number) => {
     const minutes = Math.floor(ms / 60000);
     const seconds = Math.floor((ms % 60000) / 1000);
-    const milliseconds = Math.floor((ms % 1000) / 10); // Hundredths
+    const milliseconds = Math.floor((ms % 1000) / 10);
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(2, '0')}`;
   };
+
+  // Helper to render ELA Module Grid
+  const renderElaModules = (topics: string[], type: 'grammar' | 'writing' | 'reading') => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {topics.map((topic, i) => (
+        <div key={topic} onClick={() => selectElaLesson(topic, type)} className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:border-indigo-300 transition-all cursor-pointer group flex flex-col justify-between relative overflow-hidden">
+          <div>
+            <span className="text-[10px] font-black text-indigo-200 uppercase tracking-widest mb-4 block">Module {i + 1}</span>
+            <h4 className="text-xl font-black text-slate-800 leading-tight group-hover:text-indigo-700 transition-colors">{topic}</h4>
+          </div>
+          <div className="mt-8 flex justify-end">
+            <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-inner">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 
   return (
     <div className="max-w-6xl mx-auto animate-in fade-in duration-500 pb-20">
@@ -1103,14 +1191,12 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
         <h2 className="text-4xl font-black text-slate-900 tracking-tight uppercase">Academy Laboratory</h2>
         <p className="text-slate-500 mt-2 font-medium italic">High-performance training sequence initiated.</p>
       </header>
-      {/* ... (Tab Buttons remain same) ... */}
 
-
+      {/* Main Tab Navigation */}
       <div className="flex flex-wrap gap-2 bg-slate-200 p-1.5 rounded-[1.5rem] w-fit mb-12 shadow-inner border border-slate-300">
         <button onClick={() => setActiveTab('learn')} className={`px-8 py-3.5 rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest transition-all ${activeTab === 'learn' ? 'bg-white text-indigo-700 shadow-md' : 'text-slate-600 hover:text-slate-800'}`}>Vocabulary</button>
-        <button onClick={() => setActiveTab('grammar')} className={`px-8 py-3.5 rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest transition-all ${activeTab === 'grammar' ? 'bg-white text-indigo-700 shadow-md' : 'text-slate-600 hover:text-slate-800'}`}>Grammar</button>
+        <button onClick={() => setActiveTab('ela')} className={`px-8 py-3.5 rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest transition-all ${activeTab === 'ela' ? 'bg-white text-indigo-700 shadow-md' : 'text-slate-600 hover:text-slate-800'}`}>English / ELA</button>
         <button onClick={() => setActiveTab('spelling')} className={`px-8 py-3.5 rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest transition-all ${activeTab === 'spelling' ? 'bg-white text-indigo-700 shadow-md' : 'text-slate-600 hover:text-slate-800'}`}>Spelling</button>
-        <button onClick={() => setActiveTab('roots')} className={`px-8 py-3.5 rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest transition-all ${activeTab === 'roots' ? 'bg-white text-indigo-700 shadow-md' : 'text-slate-600 hover:text-slate-800'}`}>Roots & Prefixes</button>
       </div>
 
       {isLoading ? (
@@ -1119,6 +1205,7 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
           <p className="text-indigo-900 font-black tracking-[0.4em] uppercase text-[10px]">Processing Academic Core...</p>
         </div>
       ) : activeTab === 'learn' ? (
+        /* --- VOCABULARY TAB CONTENT --- */
         <div className="space-y-10">
           <div className="flex items-center justify-between border-b border-slate-200 pb-4">
             <div className="flex space-x-10">
@@ -1332,37 +1419,50 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
                     </div>
                   )}
                  {sessionMode === 'list' && (
-          <div className="py-4">
-           <div className="text-center mb-8">
-              <h3 className="text-2xl font-black text-slate-800 uppercase tracking-tight">Active Session Words</h3>
-              <p className="text-slate-500 font-medium">{activeSessionWords.length} words currently in rotation</p>
-           </div>
-           
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {activeSessionWords.map((word, i) => (
-                 <div key={i} className="group bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm hover:shadow-xl hover:border-indigo-300 hover:-translate-y-1 transition-all duration-300">
-                    <div className="flex justify-between items-start mb-3">
-                       <div className="flex items-center gap-3">
-                          <span className="flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 text-slate-400 font-black text-[10px] group-hover:bg-indigo-600 group-hover:text-white transition-colors">{i + 1}</span>
-                          <h4 className="text-xl font-black text-slate-800 uppercase tracking-tight">{word.word}</h4>
-                       </div>
-                       <span className="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-[10px] font-black uppercase tracking-wider">{word.partOfSpeech}</span>
-                    </div>
-                    <div className="pl-11">
-                       <p className="text-slate-600 font-medium leading-relaxed">{word.definition}</p>
-                    </div>
-                 </div>
-              ))}
-           </div>
-        </div>
-      )}
+                  <div className="py-4">
+                   <div className="text-center mb-8">
+                      <h3 className="text-2xl font-black text-slate-800 uppercase tracking-tight">Active Session Words</h3>
+                      <p className="text-slate-500 font-medium">{activeSessionWords.length} words currently in rotation</p>
+                   </div>
+                   
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {activeSessionWords.map((word, i) => (
+                         <div key={i} className="group bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm hover:shadow-xl hover:border-indigo-300 hover:-translate-y-1 transition-all duration-300">
+                            <div className="flex justify-between items-start mb-3">
+                               <div className="flex items-center gap-3">
+                                  <span className="flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 text-slate-400 font-black text-[10px] group-hover:bg-indigo-600 group-hover:text-white transition-colors">{i + 1}</span>
+                                  <h4 className="text-xl font-black text-slate-800 uppercase tracking-tight">{word.word}</h4>
+                               </div>
+                               <span className="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-[10px] font-black uppercase tracking-wider">{word.partOfSpeech}</span>
+                            </div>
+                            <div className="pl-11">
+                               <p className="text-slate-600 font-medium leading-relaxed">{word.definition}</p>
+                            </div>
+                         </div>
+                      ))}
+                   </div>
+                </div>
+              )}
                </div>
             </div>
           )}
         </div>
-      ) : activeTab === 'grammar' ? (
+      ) : activeTab === 'ela' ? (
+        /* --- ENGLISH / ELA TAB CONTENT --- */
         <div className="space-y-12">
+          {/* ELA Sub Navigation */}
+          {!currentLesson && (
+            <div className="flex justify-center border-b border-slate-200 pb-2 mb-8">
+               <div className="flex space-x-8">
+                 <button onClick={() => setElaSubTab('grammar')} className={`pb-4 text-[10px] md:text-xs font-black uppercase tracking-widest border-b-2 transition-all ${elaSubTab === 'grammar' ? 'border-indigo-600 text-indigo-700' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>Grammar Protocols</button>
+                 <button onClick={() => setElaSubTab('writing')} className={`pb-4 text-[10px] md:text-xs font-black uppercase tracking-widest border-b-2 transition-all ${elaSubTab === 'writing' ? 'border-indigo-600 text-indigo-700' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>Essay Architect</button>
+                 <button onClick={() => setElaSubTab('reading')} className={`pb-4 text-[10px] md:text-xs font-black uppercase tracking-widest border-b-2 transition-all ${elaSubTab === 'reading' ? 'border-indigo-600 text-indigo-700' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>Reading Analytics</button>
+               </div>
+            </div>
+          )}
+
           {currentLesson ? (
+            /* --- SHARED LESSON VIEW --- */
             <div className="max-w-4xl mx-auto animate-in slide-in-from-bottom-6">
                <button onClick={() => setCurrentLesson(null)} className="mb-8 text-slate-400 hover:text-slate-700 flex items-center font-black uppercase text-[10px] tracking-widest transition group">
                  <svg className="w-5 h-5 mr-1 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
@@ -1370,7 +1470,7 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
                </button>
                
                <div className="bg-white p-12 rounded-[3.5rem] shadow-xl border border-slate-100">
-                  <span className="text-[10px] font-black uppercase text-indigo-500 tracking-[0.4em] mb-4 block">Preparation Logic</span>
+                  <span className="text-[10px] font-black uppercase text-indigo-500 tracking-[0.4em] mb-4 block">Core Concept</span>
                   <h3 className="text-4xl font-black text-slate-900 mb-8 tracking-tighter">{currentLesson.topic}</h3>
                   
                   <div className="prose prose-indigo max-w-none mb-12">
@@ -1380,7 +1480,7 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
                   </div>
 
                   <div className="space-y-6 mb-12">
-                    <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Case Studies</p>
+                    <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Applied Examples</p>
                     <div className="grid grid-cols-1 gap-4">
                       {currentLesson.examples.map((ex, i) => (
                         <div key={i} className="bg-indigo-50 p-6 rounded-2xl border border-indigo-100 text-indigo-900 font-bold italic">
@@ -1392,7 +1492,7 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
 
                   <div className="border-t border-slate-100 pt-12">
                     <div className="bg-slate-900 p-10 rounded-[2.5rem] text-white">
-                       <p className="text-[9px] font-black uppercase text-indigo-400 tracking-[0.3em] mb-6">Neural Verification</p>
+                       <p className="text-[9px] font-black uppercase text-indigo-400 tracking-[0.3em] mb-6">Skill Verification</p>
                        <h4 className="text-xl font-bold mb-8 leading-tight">{currentLesson.quickCheck.question}</h4>
                        
                        <div className="grid grid-cols-1 gap-3">
@@ -1409,7 +1509,7 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
                                   onAwardXP(40);
                                 } else {
                                   onLogMistake({
-                                    id: `grammar-lesson-${currentLesson.topic}-${Date.now()}`,
+                                    id: `ela-lesson-${currentLesson.topic}-${Date.now()}`,
                                     category: Category.GRAMMAR,
                                     questionText: currentLesson.quickCheck.question,
                                     options: currentLesson.quickCheck.options,
@@ -1427,7 +1527,7 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
 
                        {showQuizResult && (
                          <div className="mt-8 p-6 bg-white/5 rounded-2xl animate-in fade-in slide-in-from-top-2 border border-white/5">
-                            <p className="text-xs font-black uppercase text-indigo-400 mb-2">Diagnostic Data</p>
+                            <p className="text-xs font-black uppercase text-indigo-400 mb-2">Analysis</p>
                             <p className="text-sm font-medium leading-relaxed italic text-slate-300">{currentLesson.quickCheck.explanation}</p>
                          </div>
                        )}
@@ -1437,34 +1537,15 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
             </div>
           ) : (
             <div className="space-y-10">
-               <div className="flex items-center gap-4">
-                  <div className={`px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-widest border transition-all ${registryLoadingCount === GRAMMAR_TOPICS.length ? 'bg-emerald-50 border-emerald-100 text-emerald-600' : 'bg-indigo-50 border-indigo-100 text-indigo-600'}`}>
-                    {registryLoadingCount === GRAMMAR_TOPICS.length ? 'System Optimized' : `Syncing Core Content... (${registryLoadingCount}/${GRAMMAR_TOPICS.length})`}
-                  </div>
-               </div>
-               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {GRAMMAR_TOPICS.map((topic, i) => {
-                  const isPremium = !!grammarRegistry[topic];
-                  return (
-                    <div key={topic} onClick={() => selectGrammarLesson(topic)} className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:border-indigo-300 transition-all cursor-pointer group flex flex-col justify-between relative overflow-hidden">
-                      {isPremium && <div className="absolute top-0 right-0 w-12 h-12 bg-indigo-50 rounded-bl-[2rem] flex items-center justify-center"><svg className="w-4 h-4 text-indigo-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg></div>}
-                      <div>
-                        <span className="text-[10px] font-black text-indigo-200 uppercase tracking-widest mb-4 block">Module {i + 1}</span>
-                        <h4 className="text-xl font-black text-slate-800 leading-tight group-hover:text-indigo-700 transition-colors">{topic}</h4>
-                      </div>
-                      <div className="mt-8 flex justify-end">
-                        <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-inner">
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+               {/* Render Modules Based on SubTab */}
+               {elaSubTab === 'grammar' && renderElaModules(GRAMMAR_TOPICS, 'grammar')}
+               {elaSubTab === 'writing' && renderElaModules(ESSAY_TOPICS, 'writing')}
+               {elaSubTab === 'reading' && renderElaModules(READING_TOPICS, 'reading')}
             </div>
           )}
         </div>
       ) : activeTab === 'spelling' ? (
+        /* --- SPELLING TAB CONTENT --- */
         <div className="max-w-3xl mx-auto space-y-12">
           {spellingFinished ? (
             <div className="text-center py-24 bg-white rounded-[4rem] shadow-xl border border-slate-100 animate-in zoom-in">
@@ -1526,66 +1607,6 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
             <div className="flex flex-col items-center justify-center py-20">
                <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-6"></div>
                <p className="text-indigo-900 font-black uppercase tracking-widest text-[10px]">Booting Word List Engine...</p>
-            </div>
-          )}
-        </div>
-      ) : activeTab === 'roots' ? (
-        <div className="space-y-12">
-          <div className="flex flex-col md:flex-row justify-center items-center gap-6">
-            <div className="flex gap-2 bg-slate-100 p-1.5 rounded-2xl w-fit">
-              <button onClick={() => setRootsMode('list')} className={`px-8 py-3 rounded-xl font-black uppercase text-[10px] transition-all ${rootsMode === 'list' ? 'bg-white text-indigo-700 shadow-md' : 'text-slate-400'}`}>List View</button>
-              <button onClick={() => setRootsMode('flashcards')} className={`px-8 py-3 rounded-xl font-black uppercase text-[10px] transition-all ${rootsMode === 'flashcards' ? 'bg-white text-indigo-700 shadow-md' : 'text-slate-400'}`}>Flashcards</button>
-            </div>
-            {rootsMode === 'list' && (
-              <div className="flex items-center gap-4 w-full md:w-auto">
-                <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">({filteredRoots.length}/{ROOT_DATA.length}) Results</div>
-                <div className="relative w-full md:w-64">
-                  <input type="text" placeholder="Search Roots..." className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-xs font-bold shadow-sm focus:ring-2 focus:ring-indigo-500 outline-none" value={rootsSearchQuery} onChange={(e) => setRootsSearchQuery(e.target.value)} />
-                  <svg className="absolute left-3 top-3 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {rootsMode === 'list' ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredRoots.map((root, i) => (
-                <div key={i} className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all group">
-                  <div className="text-4xl font-black text-indigo-600 mb-4 tracking-tighter group-hover:scale-110 origin-left transition-transform">{root.root}</div>
-                  <p className="text-xl font-bold text-slate-900 mb-8 border-b border-slate-50 pb-6">{root.meaning}</p>
-                  <div className="flex flex-wrap gap-2">
-                      {root.examples.map((ex, j) => (
-                        <span key={j} className="px-3 py-1 bg-slate-50 text-slate-500 rounded-lg text-xs font-bold border border-slate-100 uppercase">{ex}</span>
-                      ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="flex flex-col items-center py-8">
-               <div className="w-full max-w-lg h-96 relative perspective-1000 cursor-pointer" onClick={() => setRootIsFlipped(!rootIsFlipped)}>
-                  <div className={`relative w-full h-full transition-transform duration-1000 transform-style-3d ${rootIsFlipped ? 'rotate-y-180' : ''}`}>
-                     <div className="absolute w-full h-full backface-hidden bg-white border-2 border-indigo-600 rounded-[3rem] shadow-2xl flex flex-col items-center justify-center p-12 text-center">
-                        <span className="text-[10px] font-black text-indigo-400 uppercase mb-10 tracking-[0.3em]">Root/Prefix Term</span>
-                        <h2 className="text-7xl font-black text-indigo-950 tracking-tighter">{shuffledRoots[rootCardIndex]?.root}</h2>
-                        <div className="mt-20 text-slate-300 text-[10px] font-black uppercase animate-pulse">Flip for Definition</div>
-                     </div>
-                     <div className="absolute w-full h-full backface-hidden rotate-y-180 bg-indigo-900 border-2 border-indigo-50 rounded-[3rem] shadow-2xl flex flex-col items-center justify-center p-12 text-center text-white overflow-y-auto no-scrollbar">
-                        <h2 className="text-4xl font-black mb-8 leading-tight">{shuffledRoots[rootCardIndex]?.meaning}</h2>
-                        <div className="flex flex-wrap justify-center gap-2">
-                           {shuffledRoots[rootCardIndex]?.examples.map((ex, i) => (
-                             <span key={i} className="px-4 py-2 bg-white/10 rounded-xl text-sm font-bold border border-white/5 text-indigo-100 uppercase">{ex}</span>
-                           ))}
-                        </div>
-                     </div>
-                  </div>
-               </div>
-               <div className="flex items-center space-x-12 mt-16">
-                  <button onClick={() => handleRootNav('prev')} className="p-6 bg-white border rounded-[2rem] shadow-lg hover:border-indigo-400 transition-all"><svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M15 19l-7-7 7-7"></path></svg></button>
-                  <button onClick={shuffleRoots} className="p-6 bg-white border rounded-[2rem] shadow-lg hover:border-indigo-400 transition-all"><svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg></button>
-                  <button onClick={() => handleRootNav('next')} className="p-6 bg-white border rounded-[2rem] shadow-lg hover:border-indigo-400 transition-all"><svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7"></path></svg></button>
-               </div>
-               <span className="mt-8 text-slate-400 font-black text-xs uppercase tracking-[0.2em]">{rootCardIndex + 1} / {shuffledRoots.length} Registry Terms</span>
             </div>
           )}
         </div>
