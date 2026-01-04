@@ -16,6 +16,14 @@ const Profile: React.FC<ProfileProps> = ({ stats, onReset }) => {
 
   const level = Math.floor(stats.xp / 1000) + 1;
 
+  // Determine Rank Name based on Level
+  let rank = "Junior Applicant";
+  if (level >= 3) rank = "Honor Student";
+  if (level >= 7) rank = "Ace Candidate";
+  if (level >= 12) rank = "Vocational Master";
+  if (level >= 20) rank = "Academy Legend";
+  if (level >= 30) rank = "Professional Learner";
+
   return (
     <div className="max-w-4xl mx-auto animate-in fade-in duration-500 pb-20 px-4">
       <header className="mb-12">
@@ -30,7 +38,8 @@ const Profile: React.FC<ProfileProps> = ({ stats, onReset }) => {
                 {level}
               </div>
               <div>
-                <h3 className="text-2xl font-black text-slate-900 tracking-tight">Candidate Level</h3>
+                {/* Changed from "Candidate Level" to {rank} */}
+                <h3 className="text-2xl font-black text-slate-900 tracking-tight">{rank}</h3>
                 <p className="text-indigo-600 font-bold uppercase text-xs tracking-widest">{stats.xp} Total XP</p>
               </div>
            </div>
