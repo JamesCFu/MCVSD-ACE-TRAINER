@@ -1,5 +1,6 @@
+:Practice.tsx
 import React, { useState, useEffect } from 'react';
-import { Category, Question } from '../types';
+import { Category, Question, PracticeSession } from '../types';
 import { 
   generateQuestions, 
   generateReadingTest 
@@ -7,64 +8,80 @@ import {
 
 interface PracticeProps {
   category: Category;
+  session: PracticeSession | null;
+  onStartSession: (category: Category, questions: Question[], passage?: string | null) => void;
+  onUpdateSession: (category: Category, userAnswers: Record<string, number>) => void;
+  onClearSession: (category: Category) => void;
   onFinish: () => void;
   onRecordOnly: (category: Category, score: number, total: number, mistakes: Question[], questions: Question[]) => void;
   onLogMistake: (question: Question) => void;
   onExit: () => void;
 }
 
-const Practice: React.FC<PracticeProps> = ({ category, onFinish, onRecordOnly, onLogMistake, onExit }) => {
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [passage, setPassage] = useState<string | null>(null);
-  const [userAnswers, setUserAnswers] = useState<Record<string, number>>({});
+const Practice: React.FC<PracticeProps> = ({ 
+  category, 
+  session, 
+  onStartSession, 
+  onUpdateSession, 
+  onClearSession,
+  onFinish, 
+  onRecordOnly, 
+  onLogMistake, 
+  onExit 
+}) => {
+  const [loading, setLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [score, setScore] = useState(0);
 
+  // Sync internal submitted state with session if needed, or manage locally for final screen
+  // Actually, we keep isSubmitted local to show results, but we can also store it in session if we want resumption of results.
+  // For now, let's reset submitted state when category changes or session is null.
   useEffect(() => {
-    const loadQuestions = async () => {
-      setLoading(true);
-      try {
-        let data: Question[] = [];
-        
-        if (category === Category.READING) {
-           const readingResponse = await generateReadingTest();
-           // Handle both array and single object responses safely
-           const activePassage = Array.isArray(readingResponse) ? readingResponse[0] : readingResponse;
-           
-           if (activePassage) {
-             setPassage(activePassage.passage); 
-             data = activePassage.questions || [];
-           }
-        } else {
-           setPassage(null);
-           data = await generateQuestions(category, 10);
-        }
-        
-        setQuestions(data || []);
-      } catch (err) {
-        console.error("Critical Lab Error:", err);
-      } finally {
-        setLoading(false);
+    if (!session) {
+      setIsSubmitted(false);
+      setScore(0);
+    }
+  }, [session, category]);
+
+  const handleStart = async () => {
+    setLoading(true);
+    try {
+      let data: Question[] = [];
+      let passage: string | null = null;
+      
+      if (category === Category.READING) {
+         const readingResponse = await generateReadingTest();
+         const activePassage = Array.isArray(readingResponse) ? readingResponse[0] : readingResponse;
+         
+         if (activePassage) {
+           passage = activePassage.passage; 
+           data = activePassage.questions || [];
+         }
+      } else {
+         data = await generateQuestions(category, 10);
       }
-    };
-    loadQuestions();
-  }, [category]);
+      
+      onStartSession(category, data, passage);
+    } catch (err) {
+      console.error("Critical Lab Error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleOptionSelect = (questionId: string, optionIndex: number) => {
-    if (isSubmitted) return;
-    setUserAnswers(prev => ({
-      ...prev,
-      [questionId]: optionIndex
-    }));
+    if (isSubmitted || !session) return;
+    const newAnswers = { ...session.userAnswers, [questionId]: optionIndex };
+    onUpdateSession(category, newAnswers);
   };
 
   const handleSubmit = () => {
+    if (!session) return;
     let calculatedScore = 0;
     const mistakes: Question[] = [];
 
-    questions.forEach(q => {
-      if (userAnswers[q.id] === q.correctAnswer) {
+    session.questions.forEach(q => {
+      if (session.userAnswers[q.id] === q.correctAnswer) {
         calculatedScore++;
       } else {
         mistakes.push(q);
@@ -76,7 +93,13 @@ const Practice: React.FC<PracticeProps> = ({ category, onFinish, onRecordOnly, o
     setIsSubmitted(true);
     
     // Save stats to parent App
-    onRecordOnly(category, calculatedScore, questions.length, mistakes, questions);
+    onRecordOnly(category, calculatedScore, session.questions.length, mistakes, session.questions);
+  };
+
+  const handleEndSession = () => {
+    onClearSession(category);
+    setIsSubmitted(false);
+    setScore(0);
   };
 
   if (loading) {
@@ -88,14 +111,30 @@ const Practice: React.FC<PracticeProps> = ({ category, onFinish, onRecordOnly, o
     );
   }
 
-  if (!questions || questions.length === 0) {
+  // If no active session, show Start Screen
+  if (!session) {
     return (
-      <div className="p-10 text-center">
-        <h3 className="text-xl font-bold text-slate-700">No questions available for this module.</h3>
-        <button onClick={onExit} className="mt-6 px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold">Return to Dashboard</button>
+      <div className="max-w-4xl mx-auto py-20 px-6 text-center">
+        <div className="bg-white rounded-[3rem] p-16 shadow-xl border border-slate-100">
+          <div className="w-24 h-24 bg-indigo-50 rounded-3xl flex items-center justify-center mx-auto mb-8 text-6xl shadow-inner">
+            🚀
+          </div>
+          <h2 className="text-4xl font-black text-slate-900 tracking-tight mb-4 uppercase">{category} Lab</h2>
+          <p className="text-slate-500 font-medium mb-12 text-lg max-w-xl mx-auto">
+            Ready to initiate a new diagnostic sequence? Progress will be saved automatically until you submit.
+          </p>
+          <button 
+            onClick={handleStart}
+            className="px-12 py-5 bg-indigo-600 text-white rounded-2xl font-black uppercase text-sm tracking-[0.2em] shadow-xl hover:bg-indigo-700 hover:scale-105 transition-all active:scale-95"
+          >
+            Initialize Test
+          </button>
+        </div>
       </div>
     );
   }
+
+  const { questions, passage, userAnswers } = session;
 
   return (
     <div className="max-w-4xl mx-auto py-10 px-6 animate-in fade-in duration-500 pb-20">
@@ -204,12 +243,20 @@ const Practice: React.FC<PracticeProps> = ({ category, onFinish, onRecordOnly, o
                   {score} / {questions.length} <span className="text-sm text-slate-500 ml-1">({Math.round((score/questions.length)*100)}%)</span>
                 </p>
               </div>
-              <button 
-                onClick={onExit}
-                className="px-10 py-4 bg-indigo-600 text-white rounded-2xl font-black uppercase text-xs tracking-[0.2em] transition-all shadow-lg hover:bg-indigo-500 hover:scale-105 active:scale-95"
-              >
-                Return to Base
-              </button>
+              <div className="flex gap-4">
+                <button 
+                  onClick={onExit}
+                  className="px-6 py-4 text-slate-300 font-black uppercase text-xs tracking-widest hover:text-white transition-colors"
+                >
+                  Close
+                </button>
+                <button 
+                  onClick={handleEndSession}
+                  className="px-8 py-4 bg-indigo-600 text-white rounded-2xl font-black uppercase text-xs tracking-[0.2em] transition-all shadow-lg hover:bg-indigo-500 hover:scale-105 active:scale-95"
+                >
+                  Start New Test
+                </button>
+              </div>
             </>
           )}
         </div>
