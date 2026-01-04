@@ -26,6 +26,9 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
   const [mode, setMode] = useState<'list' | 'flashcards' | 'matching' | 'racecar'>('list');
   const [showAdvanceConfirm, setShowAdvanceConfirm] = useState(false);
   const [selectedWord, setSelectedWord] = useState<VocabularyWord | null>(null);
+  
+  // Search State
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Stats / Progression State
   const maxDay = stats.dailyVocabDay || 1;
@@ -114,16 +117,20 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     return [...mainBatch, ...reviewBatch].sort((a, b) => a.word.localeCompare(b.word));
   }, [words, viewingDay, currentSeed]);
 
+  // Filtered List for Search
+  const filteredDailyWords = useMemo(() => {
+    return dailyWords.filter(w => 
+      w.word.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      w.definition.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [dailyWords, searchQuery]);
+
   // Determine Flashcard Deck (Starred vs All)
   useEffect(() => {
     const starredInDaily = dailyWords.filter(w => starredSet.has(w.word));
-    
-    // If we have starred words in this daily set, use only them. Otherwise use all.
     const newDeck = starredInDaily.length > 0 ? starredInDaily : dailyWords;
-    
     setFlashcardDeck(newDeck);
     
-    // Ensure index is valid when deck shrinks/changes
     setCardIndex(prev => {
         if (prev >= newDeck.length) return 0;
         return prev;
@@ -152,6 +159,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     setMatchingError(null);
     setRaceStarted(false);
     setRaceFinished(false);
+    setSearchQuery(''); // Reset search when mode changes
 
     const fetchShortDefs = async () => {
       if (dailyWords.length > 0 && mode === 'matching') {
@@ -174,7 +182,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     fetchShortDefs();
   }, [mode, dailyWords]);
 
-  // Force stop all timers when race is finished
+  // ... (Race timer cleanups same as before) ...
   useEffect(() => {
     if (raceFinished) {
       if (stopwatchRef.current) {
@@ -188,7 +196,6 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     }
   }, [raceFinished]);
 
-  // Clean up race timer on unmount
   useEffect(() => {
     return () => {
       if (raceTimerRef.current) clearInterval(raceTimerRef.current);
@@ -211,12 +218,11 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
   };
 
   const handleShuffleDeck = () => {
-  // Create a shuffled copy of the current deck
-  const shuffled = [...flashcardDeck].sort(() => Math.random() - 0.5);
-  setFlashcardDeck(shuffled);
-  setCardIndex(0);
-  setIsFlipped(false);
-};
+    const shuffled = [...flashcardDeck].sort(() => Math.random() - 0.5);
+    setFlashcardDeck(shuffled);
+    setCardIndex(0);
+    setIsFlipped(false);
+  };
 
   const handleMatch = (id: string, type: 'word' | 'def') => {
     if (matches.has(id) || matchingError) return;
@@ -299,14 +305,14 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     onRecordAnswer(isCorrect, Category.VOCABULARY);
 
     if (isCorrect) {
-        let distanceGain = 5; // Base gain (5% means ~20 words to finish)
+        let distanceGain = 5; 
         let boostType: 'none' | 'speed' | 'turbo' = 'none';
 
         if (timeTakenSeconds < 1.5) {
-            distanceGain += 3; // Turbo: +3% (Total 8%)
+            distanceGain += 3;
             boostType = 'turbo';
         } else if (timeTakenSeconds < 3) {
-            distanceGain += 1.5; // Speed: +1.5% (Total 6.5%)
+            distanceGain += 1.5;
             boostType = 'speed';
         }
 
@@ -335,7 +341,6 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
                 stopwatchRef.current = null;
             }
             
-            // Update Day-Specific Personal Best
             const currentBest = stats.dailyRaceRecords?.[viewingDay];
             
             setStats(prev => ({
@@ -513,31 +518,50 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
       </div>
 
       {mode === 'list' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {dailyWords.map((word, index) => (
-            <div 
-              key={index} 
-              onClick={() => setSelectedWord(word)}
-              className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-md animate-in fade-in slide-in-from-bottom-2 group hover:border-indigo-300 transition-all cursor-pointer hover:shadow-xl transform hover:-translate-y-1 relative"
-            >
-               <button 
-                  onClick={(e) => toggleStar(e, word.word)}
-                  className="absolute top-8 right-8 p-2 rounded-full hover:bg-slate-100 transition-colors z-10"
-                  title={starredSet.has(word.word) ? "Unstar Word" : "Star Word"}
-               >
-                  <svg className={`w-6 h-6 transition-colors ${starredSet.has(word.word) ? 'text-yellow-400 fill-yellow-400' : 'text-slate-300 hover:text-slate-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                  </svg>
-               </button>
+        <div className="space-y-6">
+          {/* SEARCH BAR & COUNT */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-slate-100 p-2 rounded-2xl border border-slate-200">
+             <div className="px-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                Showing {filteredDailyWords.length} of {dailyWords.length} Active Terms
+             </div>
+             <div className="relative w-full md:w-72">
+               <input 
+                 type="text" 
+                 placeholder="Search current set..." 
+                 className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-xs font-bold shadow-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all" 
+                 value={searchQuery} 
+                 onChange={(e) => setSearchQuery(e.target.value)} 
+               />
+               <svg className="absolute left-3 top-3 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+             </div>
+          </div>
 
-              <h3 className="text-2xl font-black text-indigo-800 tracking-tight mb-3 flex justify-between items-center uppercase pr-12">
-                {word.word}
-                <span className="text-[10px] font-black bg-indigo-50 text-indigo-400 px-2 py-0.5 rounded-lg">{word.partOfSpeech}</span>
-              </h3>
-              <p className="text-slate-700 font-bold text-sm leading-relaxed mb-4">{word.definition}</p>
-              <div className="bg-slate-50 p-4 rounded-xl italic border border-slate-100 text-slate-500 text-xs">"{word.exampleSentence}"</div>
-            </div>
-          ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {filteredDailyWords.map((word, index) => (
+              <div 
+                key={index} 
+                onClick={() => setSelectedWord(word)}
+                className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-md animate-in fade-in slide-in-from-bottom-2 group hover:border-indigo-300 transition-all cursor-pointer hover:shadow-xl transform hover:-translate-y-1 relative"
+              >
+                 <button 
+                    onClick={(e) => toggleStar(e, word.word)}
+                    className="absolute top-8 right-8 p-2 rounded-full hover:bg-slate-100 transition-colors z-10"
+                    title={starredSet.has(word.word) ? "Unstar Word" : "Star Word"}
+                 >
+                    <svg className={`w-6 h-6 transition-colors ${starredSet.has(word.word) ? 'text-yellow-400 fill-yellow-400' : 'text-slate-300 hover:text-slate-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                    </svg>
+                 </button>
+
+                <h3 className="text-2xl font-black text-indigo-800 tracking-tight mb-3 flex justify-between items-center uppercase pr-12">
+                  {word.word}
+                  <span className="text-[10px] font-black bg-indigo-50 text-indigo-400 px-2 py-0.5 rounded-lg">{word.partOfSpeech}</span>
+                </h3>
+                <p className="text-slate-700 font-bold text-sm leading-relaxed mb-4">{word.definition}</p>
+                <div className="bg-slate-50 p-4 rounded-xl italic border border-slate-100 text-slate-500 text-xs">"{word.exampleSentence}"</div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
