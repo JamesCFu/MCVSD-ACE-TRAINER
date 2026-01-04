@@ -1,4 +1,3 @@
-:types.ts
 export enum Category {
   READING = 'Reading Comprehension',
   VOCABULARY = 'Vocabulary',
