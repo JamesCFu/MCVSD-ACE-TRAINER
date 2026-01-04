@@ -32,24 +32,26 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
 
   // Stats / Progression State
 // Stats / Progression State
+  const lastProgressRef = useRef(stats.dailyVocabDay || 1);
   const maxDay = stats.dailyVocabDay || 1;
 // Instead of const [viewingDay, setViewingDay] = useState(maxDay);
 // Use a ref to track if this is the first load
   const isFirstRender = useRef(true);
   const [viewingDay, setViewingDay] = useState(maxDay);
+  
   // Sync viewing day if user levels up
-useEffect(() => {
-  if (isFirstRender.current) {
-    isFirstRender.current = false;
-    return; // Don't do anything on the very first mount
+  useEffect(() => {
+  const currentProgress = stats.dailyVocabDay || 1;
+  
+  // Only force a view jump if the user actually unlocked a HIGHER stage
+  if (currentProgress > lastProgressRef.current) {
+    setViewingDay(currentProgress);
   }
-
-  // Only force the view to change if the user just unlocked a NEW day
-  // that is higher than the one they are currently viewing.
-  if (stats.dailyVocabDay && stats.dailyVocabDay > viewingDay) {
-    setViewingDay(stats.dailyVocabDay);
-  }
+  
+  // Update the ref so we track the new maximum
+  lastProgressRef.current = currentProgress;
 }, [stats.dailyVocabDay]);
+
   // Flashcard State
   const [cardIndex, setCardIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
