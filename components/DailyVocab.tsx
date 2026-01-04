@@ -32,12 +32,12 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
 
   // Stats / Progression State
 // Stats / Progression State
-  const lastProgressRef = useRef(stats.dailyVocabDay || 1);
   const maxDay = stats.dailyVocabDay || 1;
-// Instead of const [viewingDay, setViewingDay] = useState(maxDay);
-// Use a ref to track if this is the first load
-  const isFirstRender = useRef(true);
-  const [viewingDay, setViewingDay] = useState(maxDay);
+
+// 1. Initialize from stats.lastViewedDay if it exists, otherwise use maxDay
+const [viewingDay, setViewingDay] = useState(stats.lastViewedDay || maxDay);
+
+const lastProgressRef = useRef(maxDay);
   
   // Sync viewing day if user levels up
   useEffect(() => {
@@ -507,13 +507,29 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
                   )}
                 </div>
               ) : (
-                <button 
-                  onClick={handleNextDay}
-                  className="flex-1 md:flex-none w-full md:w-auto px-8 py-3 bg-white border border-slate-200 text-indigo-600 rounded-2xl font-black uppercase text-xs tracking-widest transition-all shadow-sm hover:bg-indigo-50 hover:border-indigo-200 active:scale-95 h-12 flex items-center justify-center gap-2"
-                >
-                  <span>Next Stage</span>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7"></path></svg>
-                </button>
+               <button 
+  onClick={() => {
+    const newDay = viewingDay - 1;
+    setViewingDay(newDay);
+    // SAVE to global stats
+    setStats(prev => ({ ...prev, lastViewedDay: newDay }));
+  }}
+  disabled={viewingDay <= 1}
+>
+  Previous
+</button>
+
+<button 
+  onClick={() => {
+    const newDay = viewingDay + 1;
+    setViewingDay(newDay);
+    // SAVE to global stats
+    setStats(prev => ({ ...prev, lastViewedDay: newDay }));
+  }}
+  disabled={viewingDay >= maxDay}
+>
+  Next
+</button>
               )}
             </div>
             
