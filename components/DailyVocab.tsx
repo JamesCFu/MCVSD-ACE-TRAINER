@@ -119,11 +119,15 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
 
   // Filtered List for Search
   const filteredDailyWords = useMemo(() => {
-    return dailyWords.filter(w => 
-      w.word.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      w.definition.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [dailyWords, searchQuery]);
+  const dayWords = words.slice((viewingDay - 1) * 10, viewingDay * 10);
+  if (!searchQuery) return dayWords;
+  
+  const query = searchQuery.toLowerCase();
+  return dayWords.filter(w => 
+    w.word.toLowerCase().includes(query) || 
+    w.definition.toLowerCase().includes(query) // Added search in definition
+  );
+}, [words, viewingDay, searchQuery]);
 
   // Determine Flashcard Deck (Starred vs All)
   useEffect(() => {
