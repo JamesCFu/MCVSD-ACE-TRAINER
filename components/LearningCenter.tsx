@@ -818,7 +818,7 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
   onRecordSessionBest
 }) => {
   // Navigation State
-  const [activeTab, setActiveTab] = useState<'learn' | 'ela' | 'spelling'>('learn');
+  const [activeTab, setActiveTab] = useState<'learn' | 'ela' | 'spelling'|'roots'>('learn');
   const [elaSubTab, setElaSubTab] = useState<'grammar' | 'writing' | 'reading'>('grammar');
   const [learnSubTab, setLearnSubTab] = useState<'list' | 'flashcards' | 'session'>('list');
   const [sessionMode, setSessionMode] = useState<'flashcards' | 'matching' | 'racecar'>('flashcards');
@@ -1664,7 +1664,122 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
               </div>
            </div>
         </div>
+      ): activeTab === 'roots' ? (
+        <div className="space-y-12">
+          <div className="flex flex-col md:flex-row justify-center items-center gap-6">
+            <div className="flex gap-2 bg-slate-100 p-1.5 rounded-2xl w-fit">
+              <button onClick={() => setRootsMode('list')} className={`px-8 py-3 rounded-xl font-black uppercase text-[10px] transition-all ${rootsMode === 'list' ? 'bg-white text-indigo-700 shadow-md' : 'text-slate-400'}`}>List View</button>
+              <button onClick={() => setRootsMode('flashcards')} className={`px-8 py-3 rounded-xl font-black uppercase text-[10px] transition-all ${rootsMode === 'flashcards' ? 'bg-white text-indigo-700 shadow-md' : 'text-slate-400'}`}>Flashcards</button>
+            </div>
+            {rootsMode === 'list' && (
+              <div className="flex items-center gap-4 w-full md:w-auto">
+                <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">({filteredRoots.length}/{ROOT_DATA.length}) Results</div>
+                <div className="relative w-full md:w-64">
+                  <input type="text" placeholder="Search Roots..." className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-xs font-bold shadow-sm focus:ring-2 focus:ring-indigo-500 outline-none" value={rootsSearchQuery} onChange={(e) => setRootsSearchQuery(e.target.value)} />
+                  <svg className="absolute left-3 top-3 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {rootsMode === 'list' ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredRoots.map((root, i) => (
+                <div key={i} className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all group">
+                  <div className="text-4xl font-black text-indigo-600 mb-4 tracking-tighter group-hover:scale-110 origin-left transition-transform">{root.root}</div>
+                  <p className="text-xl font-bold text-slate-900 mb-8 border-b border-slate-50 pb-6">{root.meaning}</p>
+                  <div className="flex flex-wrap gap-2">
+                      {root.examples.map((ex, j) => (
+                        <span key={j} className="px-3 py-1 bg-slate-50 text-slate-500 rounded-lg text-xs font-bold border border-slate-100 uppercase">{ex}</span>
+                      ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center py-8">
+               <div className="w-full max-w-lg h-96 relative perspective-1000 cursor-pointer" onClick={() => setRootIsFlipped(!rootIsFlipped)}>
+                  <div className={`relative w-full h-full transition-transform duration-1000 transform-style-3d ${rootIsFlipped ? 'rotate-y-180' : ''}`}>
+                     <div className="absolute w-full h-full backface-hidden bg-white border-2 border-indigo-600 rounded-[3rem] shadow-2xl flex flex-col items-center justify-center p-12 text-center">
+                        <span className="text-[10px] font-black text-indigo-400 uppercase mb-10 tracking-[0.3em]">Root/Prefix Term</span>
+                        <h2 className="text-7xl font-black text-indigo-950 tracking-tighter">{shuffledRoots[rootCardIndex]?.root}</h2>
+                        <div className="mt-20 text-slate-300 text-[10px] font-black uppercase animate-pulse">Flip for Definition</div>
+                     </div>
+                     <div className="absolute w-full h-full backface-hidden rotate-y-180 bg-indigo-900 border-2 border-indigo-50 rounded-[3rem] shadow-2xl flex flex-col items-center justify-center p-12 text-center text-white overflow-y-auto no-scrollbar">
+                        <h2 className="text-4xl font-black mb-8 leading-tight">{shuffledRoots[rootCardIndex]?.meaning}</h2>
+                        <div className="flex flex-wrap justify-center gap-2">
+                           {shuffledRoots[rootCardIndex]?.examples.map((ex, i) => (
+                             <span key={i} className="px-4 py-2 bg-white/10 rounded-xl text-sm font-bold border border-white/5 text-indigo-100 uppercase">{ex}</span>
+                           ))}
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div className="flex items-center space-x-12 mt-16">
+                  <button onClick={() => handleRootNav('prev')} className="p-6 bg-white border rounded-[2rem] shadow-lg hover:border-indigo-400 transition-all"><svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M15 19l-7-7 7-7"></path></svg></button>
+                  <button onClick={shuffleRoots} className="p-6 bg-white border rounded-[2rem] shadow-lg hover:border-indigo-400 transition-all"><svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg></button>
+                  <button onClick={() => handleRootNav('next')} className="p-6 bg-white border rounded-[2rem] shadow-lg hover:border-indigo-400 transition-all"><svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7"></path></svg></button>
+               </div>
+               <span className="mt-8 text-slate-400 font-black text-xs uppercase tracking-[0.2em]">{rootCardIndex + 1} / {shuffledRoots.length} Registry Terms</span>
+            </div>
+          )}
+        </div>
+      ) : null}
+
+      {/* Word Expand Modal */}
+      {selectedWord && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-indigo-950/60 backdrop-blur-md animate-in fade-in duration-300">
+           <div className="bg-white w-full max-w-2xl rounded-[3.5rem] shadow-2xl overflow-hidden relative animate-in zoom-in-95 duration-500 flex flex-col max-h-[90vh]">
+              <div className="h-4 bg-indigo-600 shrink-0"></div>
+              <button onClick={() => setSelectedWord(null)} className="absolute top-10 right-10 p-3 bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-full transition-all">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12"></path></svg>
+              </button>
+
+              <div className="flex-1 overflow-y-auto p-12 md:p-16 no-scrollbar">
+                <div className="flex items-center justify-between mb-8 border-b border-slate-100 pb-8">
+                  <h3 className="text-5xl font-black text-indigo-950 tracking-tighter uppercase">{selectedWord.word}</h3>
+                  <div className="bg-indigo-50 px-4 py-2 rounded-2xl border border-indigo-100 text-indigo-700 font-black uppercase text-sm">{selectedWord.partOfSpeech}</div>
+                </div>
+
+                <div className="space-y-10">
+                   <div>
+                      <p className="text-[10px] font-black uppercase text-indigo-400 tracking-[0.3em] mb-4">Registry Definition</p>
+                      <p className="text-3xl font-bold text-slate-800 leading-tight italic">"{selectedWord.definition}"</p>
+                   </div>
+
+                   <div>
+                      <p className="text-[10px] font-black uppercase text-slate-400 tracking-[0.3em] mb-4">Contextual Application</p>
+                      <p className="text-xl font-medium leading-relaxed text-slate-600 bg-slate-50 p-8 rounded-3xl border border-slate-100">"{selectedWord.exampleSentence}"</p>
+                   </div>
+
+                   <div className="grid grid-cols-2 gap-8">
+                      <div>
+                        <p className="text-[10px] font-black uppercase text-emerald-500 tracking-[0.3em] mb-4">Synonyms</p>
+                        <div className="flex flex-wrap gap-2">
+                           {selectedWord.synonyms.map((s, i) => (
+                             <span key={i} className="px-4 py-2 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-xl text-xs font-black uppercase">{s}</span>
+                           ))}
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-black uppercase text-rose-500 tracking-[0.3em] mb-4">Antonyms</p>
+                        <div className="flex flex-wrap gap-2">
+                           {selectedWord.antonyms.map((a, i) => (
+                             <span key={i} className="px-4 py-2 bg-rose-50 text-rose-700 border border-rose-100 rounded-xl text-xs font-black uppercase">{a}</span>
+                           ))}
+                        </div>
+                      </div>
+                   </div>
+                </div>
+              </div>
+
+              <div className="p-10 bg-slate-50 border-t border-slate-100 flex justify-center">
+                 <button onClick={() => setSelectedWord(null)} className="px-16 py-6 bg-indigo-950 text-white rounded-[2rem] font-black uppercase tracking-widest text-xs shadow-xl transition-all hover:scale-105 active:scale-95">Commit to Memory</button>
+              </div>
+           </div>
+        </div>
       )}
+
 
       <style>{`
         @keyframes shake {
