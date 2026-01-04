@@ -1,4 +1,4 @@
-
+:types.ts
 export enum Category {
   READING = 'Reading Comprehension',
   VOCABULARY = 'Vocabulary',
@@ -14,7 +14,6 @@ export interface VocabularyWord {
   definition: string;
   synonyms: string[];
   antonyms: string[];
-  // Fix: Removed redundant example_sentence as the app uses exampleSentence
   exampleSentence: string;
 }
 
@@ -46,6 +45,15 @@ export interface Question {
   explanation: string;
 }
 
+export interface PracticeSession {
+  questions: Question[];
+  userAnswers: Record<string, number>;
+  isSubmitted: boolean;
+  score: number;
+  passage?: string | null;
+  startTime: number;
+}
+
 export interface UserStats {
   completedQuizzes: number;
   averageScore: number;
@@ -63,4 +71,8 @@ export interface UserStats {
   lastDailyVocabDate?: string;
   dailyVocabSeed?: number;
   fastestRaceTime?: number; // milliseconds
+  starredWords?: string[];
+  dailyRaceRecords?: Record<number, number>;
+  sessionRaceRecords?: Record<string, number>;
+  activeSessions?: Record<string, PracticeSession>; // Keyed by Category string
 }
