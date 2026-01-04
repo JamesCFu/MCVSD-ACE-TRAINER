@@ -1,4 +1,3 @@
-:App.tsx
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Layout from './components/Layout';
 import Dashboard from './components/Dashboard';
