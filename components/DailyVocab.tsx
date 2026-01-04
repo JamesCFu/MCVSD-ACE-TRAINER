@@ -31,13 +31,21 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
   const [searchQuery, setSearchQuery] = useState('');
 
   // Stats / Progression State
+// Stats / Progression State
   const maxDay = stats.dailyVocabDay || 1;
- const [viewingDay, setViewingDay] = useState(stats.lastViewedDay || maxDay);
-
+// Instead of const [viewingDay, setViewingDay] = useState(maxDay);
+// Use a ref to track if this is the first load
+  const isFirstRender = useRef(true);
+  const [viewingDay, setViewingDay] = useState(maxDay);
   // Sync viewing day if user levels up
 useEffect(() => {
-  // Only auto-update the view if the user has unlocked a day 
-  // that is higher than what they are currently viewing.
+  if (isFirstRender.current) {
+    isFirstRender.current = false;
+    return; // Don't do anything on the very first mount
+  }
+
+  // Only force the view to change if the user just unlocked a NEW day
+  // that is higher than the one they are currently viewing.
   if (stats.dailyVocabDay && stats.dailyVocabDay > viewingDay) {
     setViewingDay(stats.dailyVocabDay);
   }
