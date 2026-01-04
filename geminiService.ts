@@ -1290,14 +1290,20 @@ export const generateMathTest = async (count: number): Promise<Question[]> => {
 };
 
 export const generateMockTest = async (): Promise<Question[]> => {
-  const vocab = await generateVocabTest(15);
-  const grammar = await generateGrammarTest(15);
-  const math = await generateMathTest(15);
-
-  // Create a mapping of reading questions to ensure they have the standard 'Question' structure
-  // This specifically fixes the issue where reading questions might not show options 
-  // if they use a different key (like 'choices') in the raw data, or if the UI needs 'options'.
-  
+  try {
+    const vocab = await generateVocabTest(15);
+    const grammar = await generateGrammarTest(15);
+    const math = await generateMathTest(15);
+    
+    // Combine all questions
+    const combined = [...vocab, ...grammar, ...math];
+    
+    // Shuffle the combined array so subjects are mixed (simulation style)
+    return shuffleArray(combined);
+  } catch (e) {
+    console.error("Error generating mock test", e);
+    return [];
+  }
 };
 
 export const generateQuestions = async (category: Category, count: number): Promise<Question[]> => {
