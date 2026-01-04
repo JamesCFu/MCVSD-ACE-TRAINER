@@ -32,12 +32,15 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
 
   // Stats / Progression State
   const maxDay = stats.dailyVocabDay || 1;
-  const [viewingDay, setViewingDay] = useState(maxDay);
+ const [viewingDay, setViewingDay] = useState(stats.lastViewedDay || maxDay);
 
   // Sync viewing day if user levels up
-  useEffect(() => {
-    setViewingDay(stats.dailyVocabDay || 1);
-  }, [stats.dailyVocabDay]);
+useEffect(() => {
+  // Only auto-advance the view if the user just unlocked a brand new day
+  if (stats.dailyVocabDay > viewingDay) {
+    setViewingDay(stats.dailyVocabDay);
+  }
+}, [stats.dailyVocabDay]);
 
   // Flashcard State
   const [cardIndex, setCardIndex] = useState(0);
