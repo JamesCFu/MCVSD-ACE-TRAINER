@@ -1015,18 +1015,22 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
   };
 
   const filteredRoots = useMemo(() => {
-    return ROOT_DATA.filter(r => 
-      r.root.toLowerCase().includes(rootsSearchQuery.toLowerCase()) || 
-      r.meaning.toLowerCase().includes(rootsSearchQuery.toLowerCase())
-    );
-  }, [rootsSearchQuery]);
+  if (!rootSearch) return rootsData;
+  const query = rootSearch.toLowerCase();
+  return rootsData.filter(r => 
+    r.root.toLowerCase().includes(query) || 
+    r.meaning.toLowerCase().includes(query) // Added search in meaning
+  );
+}, [rootsData, rootSearch]);
 
-  const filteredWords = useMemo(() => {
-    return initialWords.filter(w => 
-      w.word.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      w.definition.toLowerCase().includes(searchQuery.toLowerCase())
-    ).sort((a, b) => a.word.localeCompare(b.word));
-  }, [initialWords, searchQuery]);
+ const filteredWords = useMemo(() => {
+  if (!vocabSearch) return vocabList;
+  const query = vocabSearch.toLowerCase();
+  return vocabList.filter(w => 
+    w.word.toLowerCase().includes(query) || 
+    w.definition.toLowerCase().includes(query) // Added search in definition
+  );
+}, [vocabList, vocabSearch]);
 
   const matchingPairs = useMemo(() => {
     if (matchingGameWords.length === 0) return { words: [], defs: [] };
