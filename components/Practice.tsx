@@ -1,4 +1,3 @@
-:Practice.tsx
 import React, { useState, useEffect } from 'react';
 import { Category, Question, PracticeSession } from '../types';
 import { 
