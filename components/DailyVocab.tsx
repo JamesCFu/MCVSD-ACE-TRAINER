@@ -41,15 +41,15 @@ const lastProgressRef = useRef(maxDay);
   
   // Sync viewing day if user levels up
   useEffect(() => {
-  const currentProgress = stats.dailyVocabDay || 1;
+  const currentMax = stats.dailyVocabDay || 1;
   
-  // Only force a view jump if the user actually unlocked a HIGHER stage
-  if (currentProgress > lastProgressRef.current) {
-    setViewingDay(currentProgress);
+  if (currentMax > lastProgressRef.current) {
+    setViewingDay(currentMax);
+    // Save this new max as the last viewed day
+    setStats(prev => ({ ...prev, lastViewedDay: currentMax }));
   }
   
-  // Update the ref so we track the new maximum
-  lastProgressRef.current = currentProgress;
+  lastProgressRef.current = currentMax;
 }, [stats.dailyVocabDay]);
 
   // Flashcard State
