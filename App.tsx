@@ -1,3 +1,4 @@
+:App.tsx
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Layout from './components/Layout';
 import Dashboard from './components/Dashboard';
@@ -6,7 +7,7 @@ import LearningCenter from './components/LearningCenter';
 import ShortNotes from './components/ShortNotes';
 import DailyVocab from './components/DailyVocab';
 import Profile from './components/Profile';
-import { Category, UserStats, VocabularyWord, Question, GrammarLesson } from './types';
+import { Category, UserStats, VocabularyWord, Question, GrammarLesson, PracticeSession } from './types';
 import { generateVocabulary, generateGrammarLesson, GRAMMAR_TOPICS, FALLBACK_GRAMMAR_DATA } from './geminiService';
 
 const getInitialStats = (): UserStats => ({
@@ -46,9 +47,10 @@ const getInitialStats = (): UserStats => ({
   dailyVocabCompleted: false,
   lastDailyVocabDate: undefined,
   dailyVocabSeed: Math.floor(Math.random() * 1000000),
-  fastestRaceTime: undefined, // Global fallback (deprecated for new logic)
-  dailyRaceRecords: {}, // Day Number -> Time (ms)
-  sessionRaceRecords: {}, // Session Hash -> Time (ms)
+  fastestRaceTime: undefined,
+  dailyRaceRecords: {},
+  sessionRaceRecords: {},
+  activeSessions: {}, 
 });
 
 const normalizeCategory = (catName: any): Category => {
@@ -99,7 +101,6 @@ const App: React.FC = () => {
 
   // Registry State
   const [grammarRegistry, setGrammarRegistry] = useState<Record<string, GrammarLesson>>({});
-  const [registryLoadingCount, setRegistryLoadingCount] = useState(0);
   
   const isInitialized = useRef(false);
   const syncInitiated = useRef(false);
@@ -111,7 +112,6 @@ const App: React.FC = () => {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        // Merge with initial stats to ensure new fields like dailyRaceRecords exist
         setStats({ ...getInitialStats(), ...parsed });
       } catch(e) {
         console.error("Failed to parse saved stats", e);
@@ -122,7 +122,6 @@ const App: React.FC = () => {
       try {
         const parsedReg = JSON.parse(savedRegistry);
         setGrammarRegistry(parsedReg);
-        setRegistryLoadingCount(Object.keys(parsedReg).length);
       } catch(e) {
         console.error("Failed to parse registry", e);
       }
@@ -157,7 +156,6 @@ const App: React.FC = () => {
               setGrammarRegistry(prev => {
                 const next = { ...prev, [topic]: lesson };
                 localStorage.setItem('mcvsd-grammar-registry', JSON.stringify(next));
-                setRegistryLoadingCount(Object.keys(next).length);
                 return next;
               });
             }
@@ -230,7 +228,6 @@ const App: React.FC = () => {
     });
   }, []);
 
-  // Updated to handle session-specific records
   const updateSessionRecord = useCallback((sessionHash: string, time: number) => {
     setStats(prev => ({
       ...prev,
@@ -241,6 +238,53 @@ const App: React.FC = () => {
           : time
       }
     }));
+  }, []);
+
+  // --- Session Management Functions ---
+
+  const handleStartSession = useCallback((category: Category, questions: Question[], passage?: string | null) => {
+    setStats(prev => ({
+      ...prev,
+      activeSessions: {
+        ...(prev.activeSessions || {}),
+        [category]: {
+          questions,
+          userAnswers: {},
+          isSubmitted: false,
+          score: 0,
+          passage: passage || null,
+          startTime: Date.now()
+        }
+      }
+    }));
+  }, []);
+
+  const handleUpdateSession = useCallback((category: Category, userAnswers: Record<string, number>) => {
+    setStats(prev => {
+      const currentSession = prev.activeSessions?.[category];
+      if (!currentSession) return prev;
+      return {
+        ...prev,
+        activeSessions: {
+          ...prev.activeSessions,
+          [category]: {
+            ...currentSession,
+            userAnswers
+          }
+        }
+      };
+    });
+  }, []);
+
+  const handleClearSession = useCallback((category: Category) => {
+    setStats(prev => {
+      const newSessions = { ...prev.activeSessions };
+      delete newSessions[category];
+      return {
+        ...prev,
+        activeSessions: newSessions
+      };
+    });
   }, []);
 
   const resetStats = useCallback(() => {
@@ -481,6 +525,10 @@ const App: React.FC = () => {
         return (
           <Practice 
             category={category} 
+            session={stats.activeSessions?.[category] || null}
+            onStartSession={handleStartSession}
+            onUpdateSession={handleUpdateSession}
+            onClearSession={handleClearSession}
             onFinish={() => setActiveView('dashboard')}
             onRecordOnly={handleRecordPracticeResults}
             onLogMistake={logMistake}
