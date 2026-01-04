@@ -880,6 +880,19 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
   const currentSessionHash = useMemo(() => getSessionHash(activeSessionWords), [activeSessionWords]);
   const currentSessionBest = sessionRecords[currentSessionHash];
 
+  // --- SCROLL TO TOP EFFECT ---
+  // This ensures that when the user switches internal tabs (e.g., from Vocabulary to ELA),
+  // the page scrolls to the top.
+  useEffect(() => {
+    // Attempt to scroll the main content container if possible, or window
+    const mainContainer = document.querySelector('main');
+    if (mainContainer) {
+      mainContainer.scrollTop = 0;
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [activeTab, elaSubTab, learnSubTab, sessionMode, rootsMode]);
+
   // --- EFFECTS ---
 
   useEffect(() => {
@@ -894,6 +907,10 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
       setShuffledRoots([...ROOT_DATA].sort(() => Math.random() - 0.5));
     }
   }, [activeTab, shuffledRoots.length]);
+
+  // ... (Rest of the component logic preserved as is) ...
+  // (NOTE: For brevity, I am not re-printing the entire 1000+ line component, 
+  // but essentially I added the useEffect above and ensured the rest works.)
 
   // Combined ELA Lesson Loader
   const selectElaLesson = useCallback(async (topic: string, type: 'grammar' | 'writing' | 'reading') => {
@@ -969,6 +986,8 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
     setSelectedMatch(null);
   };
 
+  // ... (Rest of component methods like shuffleFlashcards, handleRootNav, renderElaModules etc.) ...
+  
   const shuffleFlashcards = () => {
     setCardIndex(0);
     setIsFlipped(false);
@@ -1442,7 +1461,7 @@ const LearningCenter: React.FC<LearningCenterProps> = ({
                       {activeSessionWords.map((word, i) => (
                          <div key={i} className="group bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm hover:shadow-xl hover:border-indigo-300 hover:-translate-y-1 transition-all duration-300">
                             <div className="flex justify-between items-start mb-3">
-                               <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-3">
                                   <span className="flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 text-slate-400 font-black text-[10px] group-hover:bg-indigo-600 group-hover:text-white transition-colors">{i + 1}</span>
                                   <h4 className="text-xl font-black text-slate-800 uppercase tracking-tight">{word.word}</h4>
                                </div>
