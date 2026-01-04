@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -8,12 +8,22 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children, activeView, setActiveView, mistakeCount }) => {
+  // Ref for the main content area to control scrolling
+  const mainContentRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to top whenever the active view changes
+  useEffect(() => {
+    if (mainContentRef.current) {
+      mainContentRef.current.scrollTop = 0;
+    }
+  }, [activeView]);
+
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       {/* Sidebar */}
       <aside className="w-full md:w-64 bg-indigo-950 text-white flex flex-col p-6 sticky top-0 h-auto md:h-screen shadow-2xl z-20">
         <div className="mb-10 flex items-center space-x-3 px-2">
-          <div className="w-10 h-10 bg-indigo-500 rounded-xl flex items-center justify-center font-black text-xl shadow-lg ring-4 ring-indigo-500/20">🚀</div>
+          <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center font-black text-xl shadow-lg ring-4 ring-indigo-500/20">🚀</div>
           <h1 className="text-xl font-black tracking-tighter">Academic <span className="text-indigo-400">Trainer</span></h1>
         </div>
         
@@ -85,7 +95,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activeView, setActiveView, mi
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-4 md:p-12 bg-slate-50 overflow-y-auto no-scrollbar">
+      <main ref={mainContentRef} className="flex-1 p-4 md:p-12 bg-slate-50 overflow-y-auto no-scrollbar">
         {children}
       </main>
 
