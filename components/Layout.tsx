@@ -13,9 +13,12 @@ const Layout: React.FC<LayoutProps> = ({ children, activeView, setActiveView, mi
 
   // Scroll to top whenever the active view changes
   useEffect(() => {
+    // Reset scroll on the main container
     if (mainContentRef.current) {
       mainContentRef.current.scrollTop = 0;
     }
+    // Also reset window scroll just in case
+    window.scrollTo(0, 0);
   }, [activeView]);
 
   return (
