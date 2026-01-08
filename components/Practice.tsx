@@ -10,6 +10,7 @@ interface PracticeProps {
   session: PracticeSession | null;
   onStartSession: (category: Category, questions: Question[], passage?: string | null) => void;
   onUpdateSession: (category: Category, userAnswers: Record<string, number>) => void;
+  onCompleteSession: (category: Category, score: number) => void;
   onClearSession: (category: Category) => void;
   onFinish: () => void;
   onRecordOnly: (category: Category, score: number, total: number, mistakes: Question[], questions: Question[]) => void;
@@ -22,6 +23,7 @@ const Practice: React.FC<PracticeProps> = ({
   session, 
   onStartSession, 
   onUpdateSession, 
+  onCompleteSession,
   onClearSession,
   onFinish, 
   onRecordOnly, 
@@ -36,6 +38,9 @@ const Practice: React.FC<PracticeProps> = ({
     if (!session) {
       setIsSubmitted(false);
       setScore(0);
+    } else if (session.isSubmitted) {
+      setIsSubmitted(true);
+      setScore(session.score);
     }
   }, [session, category]);
 
@@ -98,6 +103,7 @@ const Practice: React.FC<PracticeProps> = ({
     setIsSubmitted(true);
     
     onRecordOnly(category, calculatedScore, session.questions.length, mistakes, session.questions);
+    onCompleteSession(category, calculatedScore);
     
     // Scroll to top to see score
     const mainEl = document.querySelector('main');
