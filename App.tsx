@@ -275,6 +275,24 @@ const App: React.FC = () => {
     });
   }, []);
 
+  const handleCompleteSession = useCallback((category: Category, score: number) => {
+    setStats(prev => {
+      const currentSession = prev.activeSessions?.[category];
+      if (!currentSession) return prev;
+      return {
+        ...prev,
+        activeSessions: {
+          ...prev.activeSessions,
+          [category]: {
+            ...currentSession,
+            isSubmitted: true,
+            score
+          }
+        }
+      };
+    });
+  }, []);
+
   const handleClearSession = useCallback((category: Category) => {
     setStats(prev => {
       const newSessions = { ...prev.activeSessions };
@@ -527,6 +545,7 @@ const App: React.FC = () => {
             session={stats.activeSessions?.[category] || null}
             onStartSession={handleStartSession}
             onUpdateSession={handleUpdateSession}
+            onCompleteSession={handleCompleteSession}
             onClearSession={handleClearSession}
             onFinish={() => setActiveView('dashboard')}
             onRecordOnly={handleRecordPracticeResults}
