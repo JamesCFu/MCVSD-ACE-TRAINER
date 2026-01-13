@@ -67,7 +67,6 @@ const Practice: React.FC<PracticeProps> = ({
            data = activePassage.questions || [];
          }
       } else {
-         // Generate 10 questions for regular labs, Mock uses its own internal count (45) inside service
          data = await generateQuestions(category, 10);
       }
       
@@ -111,12 +110,6 @@ const Practice: React.FC<PracticeProps> = ({
     window.scrollTo(0,0);
   };
 
-  const handleEndSession = () => {
-    onClearSession(category);
-    setIsSubmitted(false);
-    setScore(0);
-  };
-
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh]">
@@ -153,6 +146,121 @@ const Practice: React.FC<PracticeProps> = ({
 
   const { questions, passage, userAnswers } = session;
 
+  // --- SPLIT SCREEN LAYOUT FOR READING ---
+  if (category === Category.READING && passage) {
+    return (
+      <div className="h-[calc(100vh-6rem)] flex flex-col animate-in fade-in duration-500">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-6 px-2 shrink-0">
+           <div>
+              <h2 className="text-2xl font-black text-slate-900 tracking-tight uppercase">Reading Lab</h2>
+              <p className="text-slate-500 text-xs font-medium">Analyze text source and query database.</p>
+           </div>
+           <div className="flex items-center gap-3">
+              {!isSubmitted && (
+                  <div className="bg-indigo-50 text-indigo-700 px-4 py-2 rounded-xl font-black text-xs uppercase tracking-widest border border-indigo-100">
+                  {Object.keys(userAnswers).length} / {questions.length} Answered
+                  </div>
+              )}
+              {isSubmitted && (
+                 <div className={`px-4 py-2 rounded-xl font-black text-xs uppercase tracking-widest border ${score >= questions.length * 0.7 ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 'bg-rose-50 text-rose-600 border-rose-200'}`}>
+                    Score: {score} / {questions.length}
+                 </div>
+              )}
+              <button 
+                onClick={handleStart}
+                className="bg-white border-2 border-slate-200 text-slate-500 px-4 py-2 rounded-xl font-black text-xs uppercase tracking-widest hover:border-indigo-400 hover:text-indigo-600 transition-colors"
+              >
+                Reset
+              </button>
+              <button onClick={onExit} className="px-4 py-2 text-slate-400 hover:text-slate-600 font-bold uppercase text-xs transition-colors">Exit</button>
+           </div>
+        </div>
+  
+        <div className="flex-1 flex flex-col lg:flex-row gap-6 overflow-hidden pb-4">
+          {/* Left Side: Passage */}
+          <div className="lg:w-1/2 bg-white rounded-[2rem] border-2 border-indigo-50 shadow-xl overflow-y-auto no-scrollbar relative flex flex-col">
+              <div className="sticky top-0 bg-white/95 backdrop-blur py-4 px-8 z-10 border-b border-indigo-50">
+                 <span className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-500">Source Material</span>
+              </div>
+              <div className="p-8 pt-4 md:p-10 md:pt-4">
+                <div className="prose prose-slate max-w-none prose-lg">
+                    <p className="leading-relaxed text-slate-800 font-medium whitespace-pre-wrap font-serif">
+                        {passage}
+                    </p>
+                </div>
+              </div>
+          </div>
+  
+          {/* Right Side: Questions */}
+          <div className="lg:w-1/2 flex flex-col gap-6 overflow-y-auto no-scrollbar pr-2 pb-20">
+              {questions.map((q, idx) => {
+                  const isCorrect = userAnswers[q.id] === q.correctAnswer;
+                  const isWrong = isSubmitted && !isCorrect;
+                  
+                  return (
+                    <div key={q.id} className={`bg-white p-6 rounded-[2rem] border-2 shadow-sm transition-all ${isWrong ? 'border-rose-100 ring-4 ring-rose-50' : isSubmitted && isCorrect ? 'border-emerald-100 ring-4 ring-emerald-50' : 'border-slate-100'}`}>
+                      <div className="flex items-start gap-4 mb-4">
+                        <span className="flex-shrink-0 w-8 h-8 bg-slate-900 text-white rounded-lg flex items-center justify-center font-black text-sm">{idx + 1}</span>
+                        <p className="text-lg font-bold text-slate-900 leading-snug pt-1">{q.questionText}</p>
+                      </div>
+        
+                      <div className="grid grid-cols-1 gap-2 pl-0 md:pl-12">
+                        {q.options && q.options.map((opt, optIdx) => {
+                          const isSelected = userAnswers[q.id] === optIdx;
+                          const isActualCorrect = optIdx === q.correctAnswer;
+                          let buttonStyle = "border-slate-200 hover:border-indigo-400 hover:bg-slate-50 text-slate-600";
+                          if (isSubmitted) {
+                            if (isActualCorrect) buttonStyle = "bg-emerald-500 border-emerald-500 text-white";
+                            else if (isSelected && !isActualCorrect) buttonStyle = "bg-rose-500 border-rose-500 text-white opacity-60";
+                            else buttonStyle = "border-slate-100 text-slate-300 opacity-50";
+                          } else if (isSelected) {
+                            buttonStyle = "bg-indigo-600 border-indigo-600 text-white shadow-lg";
+                          }
+                          return (
+                            <button
+                              key={optIdx}
+                              onClick={() => handleOptionSelect(q.id, optIdx)}
+                              disabled={isSubmitted}
+                              className={`w-full text-left p-3 rounded-xl border-2 font-bold transition-all text-sm flex items-center gap-3 ${buttonStyle}`}
+                            >
+                              <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 text-[10px] ${isSubmitted && isActualCorrect ? 'border-white text-white' : isSelected ? 'border-white text-white' : 'border-slate-300 text-slate-400'}`}>
+                                {String.fromCharCode(65 + optIdx)}
+                              </div>
+                              <span>{opt}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                      
+                      {isSubmitted && !isCorrect && (
+                        <div className="mt-4 ml-0 md:ml-12 p-4 bg-slate-50 rounded-xl border border-slate-200">
+                          <p className="text-[10px] font-black uppercase text-indigo-500 tracking-widest mb-1">Correction Insight</p>
+                          <p className="text-slate-700 font-medium italic text-xs">{q.explanation}</p>
+                        </div>
+                      )}
+                    </div>
+                  );
+              })}
+              
+              {!isSubmitted && (
+                 <div className="bg-slate-900 p-6 rounded-[2rem] shadow-xl text-center mt-4">
+                    <button 
+                        onClick={handleSubmit}
+                        disabled={Object.keys(userAnswers).length < questions.length}
+                        className={`w-full py-4 rounded-xl font-black uppercase text-xs tracking-[0.2em] transition-all ${Object.keys(userAnswers).length < questions.length ? 'bg-slate-800 text-slate-500 cursor-not-allowed' : 'bg-white text-indigo-900 hover:bg-indigo-50 shadow-lg hover:scale-[1.02]'}`}
+                    >
+                        Submit Diagnostics
+                    </button>
+                 </div>
+              )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // --- STANDARD LAYOUT (Vocab, Grammar, Math, Mock, etc.) ---
   return (
     <div className="max-w-4xl mx-auto py-10 px-6 animate-in fade-in duration-500 pb-20">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4">
@@ -166,7 +274,6 @@ const Practice: React.FC<PracticeProps> = ({
                 {Object.keys(userAnswers).length} / {questions.length} Answered
               </div>
             )}
-            {/* New Button to Restart/New Lab while active */}
             <button 
                 onClick={handleStart}
                 className="bg-white border-2 border-slate-200 text-slate-500 px-4 py-2 rounded-xl font-black text-xs uppercase tracking-widest hover:border-indigo-400 hover:text-indigo-600 transition-colors"
@@ -175,18 +282,6 @@ const Practice: React.FC<PracticeProps> = ({
             </button>
         </div>
       </div>
-
-      {/* READING PASSAGE DISPLAY */}
-      {category === Category.READING && passage && (
-        <div className="mb-12 bg-white p-8 md:p-12 rounded-[2.5rem] border-2 border-indigo-50 shadow-xl">
-          <div className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-500 mb-6">Source Material</div>
-          <div className="prose prose-slate max-w-none">
-            <p className="text-lg leading-relaxed text-slate-800 font-medium whitespace-pre-wrap font-serif">
-              {passage}
-            </p>
-          </div>
-        </div>
-      )}
 
       <div className="space-y-8">
         {questions.map((q, idx) => {
