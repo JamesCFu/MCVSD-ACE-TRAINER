@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Category, Question, PracticeSession } from '../types';
 import { 
   generateQuestions, 
@@ -36,7 +36,13 @@ const Practice: React.FC<PracticeProps> = ({
   
   // Highlighting State
   const [passageHtml, setPassageHtml] = useState<string>("");
+  const [isHighlightMode, setIsHighlightMode] = useState(false);
   const passageRef = useRef<HTMLDivElement>(null);
+
+  // Splitter State
+  const [leftPanelWidth, setLeftPanelWidth] = useState(50); // Percentage
+  const [isDragging, setIsDragging] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!session) {
@@ -48,11 +54,127 @@ const Practice: React.FC<PracticeProps> = ({
       setScore(session.score);
     }
     
-    // Initialize passage HTML if it exists and hasn't been set yet
     if (session?.passage && !passageHtml) {
       setPassageHtml(session.passage);
     }
   }, [session, category]);
+
+  // --- SPLITTER LOGIC ---
+  const startResizing = useCallback(() => {
+    setIsDragging(true);
+  }, []);
+
+  const stopResizing = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+
+  const resize = useCallback((e: MouseEvent) => {
+    if (isDragging && containerRef.current) {
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const newLeftWidth = ((e.clientX - containerRect.left) / containerRect.width) * 100;
+      // Enforce minimum width of 20% and maximum of 80%
+      if (newLeftWidth > 20 && newLeftWidth < 80) {
+        setLeftPanelWidth(newLeftWidth);
+      }
+    }
+  }, [isDragging]);
+
+  useEffect(() => {
+    if (isDragging) {
+      window.addEventListener('mousemove', resize);
+      window.addEventListener('mouseup', stopResizing);
+    } else {
+      window.removeEventListener('mousemove', resize);
+      window.removeEventListener('mouseup', stopResizing);
+    }
+    return () => {
+      window.removeEventListener('mousemove', resize);
+      window.removeEventListener('mouseup', stopResizing);
+    };
+  }, [isDragging, resize, stopResizing]);
+
+  // --- HIGHLIGHT LOGIC ---
+
+  const snapToWordBoundary = (range: Range) => {
+    // Expand start
+    while (range.startOffset > 0) {
+      const char = range.startContainer.textContent?.charAt(range.startOffset - 1);
+      if (char && /\s/.test(char)) break;
+      range.setStart(range.startContainer, range.startOffset - 1);
+    }
+    // Expand end
+    const len = range.endContainer.textContent?.length || 0;
+    while (range.endOffset < len) {
+      const char = range.endContainer.textContent?.charAt(range.endOffset);
+      if (char && /\s/.test(char)) break;
+      range.setEnd(range.endContainer, range.endOffset + 1);
+    }
+    return range;
+  };
+
+  const handleApplyHighlight = () => {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0 || selection.isCollapsed) return;
+
+    const range = selection.getRangeAt(0);
+    
+    // Verify selection is inside the passage container
+    if (passageRef.current && passageRef.current.contains(range.commonAncestorContainer)) {
+      try {
+        // Expand to word boundaries to avoid partial word highlights
+        snapToWordBoundary(range);
+
+        const span = document.createElement('span');
+        // px-0 ensures no extra spacing is added. box-decoration-clone handles line breaks gracefully.
+        span.className = "bg-yellow-300/50 text-slate-900 rounded-none px-0 box-decoration-clone border-b-2 border-yellow-500 cursor-pointer hover:bg-yellow-300/70 transition-colors highlight-span";
+        span.dataset.highlight = "true";
+        
+        range.surroundContents(span);
+        selection.removeAllRanges();
+        
+        // Update state to persist highlights
+        setPassageHtml(passageRef.current.innerHTML);
+      } catch (e) {
+        console.warn("Cannot highlight across complex existing elements. Try selecting smaller chunks.", e);
+      }
+    }
+  };
+
+  const handleUnhighlight = () => {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return;
+
+    // Check if we are inside a highlight
+    let node = selection.anchorNode;
+    // Traverse up to find if we are inside a highlight span
+    while (node && node !== passageRef.current) {
+        if (node.nodeType === 1 && (node as HTMLElement).dataset.highlight === "true") {
+             // We found a highlight span. Unwrap it.
+             const parent = node.parentNode;
+             if(parent) {
+                 while(node.firstChild) {
+                     parent.insertBefore(node.firstChild, node);
+                 }
+                 parent.removeChild(node);
+                 setPassageHtml(passageRef.current?.innerHTML || "");
+             }
+             selection.removeAllRanges();
+             return;
+        }
+        node = node.parentNode;
+    }
+
+    // Fallback: If strict selection unhighlight is needed (complex), 
+    // simply removing the wrapping span is usually sufficient for this use case.
+  };
+
+  const handleTextMouseUp = () => {
+      if (isHighlightMode) {
+          handleApplyHighlight();
+      }
+  };
+
+  // --- CORE LOGIC ---
 
   const handleStart = async () => {
     setLoading(true);
@@ -60,7 +182,6 @@ const Practice: React.FC<PracticeProps> = ({
     setScore(0);
     setPassageHtml("");
     
-    // Ensure any previous session is cleared before starting fresh
     if (session) {
         onClearSession(category);
     }
@@ -76,10 +197,9 @@ const Practice: React.FC<PracticeProps> = ({
          if (activePassage) {
            passage = activePassage.passage; 
            data = activePassage.questions || [];
-           setPassageHtml(passage); // Initialize HTML state
+           setPassageHtml(passage); 
          }
       } else {
-         // Generate 10 questions for regular labs
          data = await generateQuestions(category, 10);
       }
       
@@ -117,38 +237,9 @@ const Practice: React.FC<PracticeProps> = ({
     onRecordOnly(category, calculatedScore, session.questions.length, mistakes, session.questions);
     onCompleteSession(category, calculatedScore);
     
-    // Scroll to top
     const mainEl = document.querySelector('main');
     if (mainEl) mainEl.scrollTop = 0;
     window.scrollTo(0,0);
-  };
-
-  const handleHighlight = () => {
-    const selection = window.getSelection();
-    if (!selection || selection.rangeCount === 0) return;
-
-    const range = selection.getRangeAt(0);
-    
-    // Verify selection is inside the passage container
-    if (passageRef.current && passageRef.current.contains(range.commonAncestorContainer)) {
-      try {
-        const span = document.createElement('span');
-        span.className = "bg-yellow-300/60 text-slate-900 rounded-sm px-0.5 box-decoration-clone border-b-2 border-yellow-400";
-        range.surroundContents(span);
-        selection.removeAllRanges();
-        
-        // Update state to persist highlights
-        setPassageHtml(passageRef.current.innerHTML);
-      } catch (e) {
-        console.warn("Cannot highlight across existing elements", e);
-      }
-    }
-  };
-
-  const handleClearHighlights = () => {
-    if (session?.passage) {
-      setPassageHtml(session.passage);
-    }
   };
 
   if (loading) {
@@ -160,7 +251,6 @@ const Practice: React.FC<PracticeProps> = ({
     );
   }
 
-  // If no active session, show Start Screen
   if (!session) {
     return (
       <div className="max-w-4xl mx-auto py-20 px-6 text-center">
@@ -218,42 +308,67 @@ const Practice: React.FC<PracticeProps> = ({
            </div>
         </div>
   
-        <div className="flex-1 flex flex-col lg:flex-row gap-6 overflow-hidden pb-4">
-          {/* Left Side: Passage with Highlight Tool */}
-          <div className="lg:w-1/2 bg-white rounded-[2rem] border-2 border-indigo-50 shadow-xl overflow-hidden relative flex flex-col">
+        {/* Resizable Container */}
+        <div ref={containerRef} className="flex-1 flex overflow-hidden pb-4 relative select-text">
+          
+          {/* Left Side: Passage */}
+          <div 
+            style={{ width: `${leftPanelWidth}%` }} 
+            className="bg-white rounded-[2rem] border-2 border-indigo-50 shadow-xl overflow-hidden relative flex flex-col transition-width duration-75 ease-linear"
+          >
               <div className="sticky top-0 bg-white/95 backdrop-blur py-3 px-6 z-10 border-b border-indigo-50 flex items-center justify-between">
                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-500">Source Material</span>
+                 
+                 {/* Highlight Controls */}
                  <div className="flex items-center gap-2">
                     <button 
-                      onClick={handleHighlight}
-                      className="flex items-center gap-2 px-3 py-1.5 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 rounded-lg text-[10px] font-black uppercase tracking-wider transition-colors"
-                      title="Select text and click here"
+                      onClick={() => setIsHighlightMode(!isHighlightMode)}
+                      className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all shadow-sm ${isHighlightMode ? 'bg-yellow-300 text-yellow-900 ring-2 ring-yellow-400 ring-offset-1' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
+                      title={isHighlightMode ? "Highlight Mode ON: Select text to highlight" : "Click to enable highlight mode"}
                     >
                       <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                      Highlight
+                      {isHighlightMode ? 'Mode: ON' : 'Mode: OFF'}
                     </button>
+                    
                     <button 
-                      onClick={handleClearHighlights}
-                      className="px-3 py-1.5 text-slate-400 hover:text-slate-600 text-[10px] font-black uppercase tracking-wider"
+                      onClick={handleUnhighlight}
+                      className="px-3 py-1.5 bg-white border border-slate-200 text-slate-400 hover:text-rose-500 hover:border-rose-200 rounded-lg text-[10px] font-black uppercase tracking-wider transition-colors"
+                      title="Select highlighted text and click to remove"
                     >
-                      Clear
+                       Remove
+                    </button>
+
+                    <button 
+                      onClick={() => setPassageHtml(session.passage || "")}
+                      className="px-3 py-1.5 text-slate-300 hover:text-slate-500 text-[10px] font-black uppercase tracking-wider"
+                    >
+                      Clear All
                     </button>
                  </div>
               </div>
-              <div className="flex-1 overflow-y-auto no-scrollbar p-8 pt-4 md:p-10 md:pt-4">
+
+              <div className="flex-1 overflow-y-auto no-scrollbar p-8 pt-4 md:p-10 md:pt-4 cursor-text" onMouseUp={handleTextMouseUp}>
                 <div className="prose prose-slate max-w-none prose-lg">
                     {/* Render Passage with Highlights */}
                     <div 
                       ref={passageRef}
-                      className="leading-relaxed text-slate-800 font-medium whitespace-pre-wrap font-serif selection:bg-indigo-100"
+                      className="leading-relaxed text-slate-800 font-medium whitespace-pre-wrap font-serif"
                       dangerouslySetInnerHTML={{ __html: passageHtml }}
                     />
                 </div>
               </div>
           </div>
   
+          {/* Draggable Handle */}
+          <div 
+            className="w-4 flex items-center justify-center cursor-col-resize hover:bg-indigo-100/50 group z-20"
+            onMouseDown={startResizing}
+          >
+             <div className={`w-1 h-12 rounded-full transition-colors ${isDragging ? 'bg-indigo-400' : 'bg-slate-200 group-hover:bg-indigo-300'}`}></div>
+          </div>
+
           {/* Right Side: Questions */}
-          <div className="lg:w-1/2 flex flex-col gap-6 overflow-y-auto no-scrollbar pr-2 pb-20">
+          <div style={{ width: `${100 - leftPanelWidth}%` }} className="flex flex-col gap-6 overflow-y-auto no-scrollbar pr-2 pb-20 pl-2">
               {questions.map((q, idx) => {
                   const isCorrect = userAnswers[q.id] === q.correctAnswer;
                   const isWrong = isSubmitted && !isCorrect;
