@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Category, Question, PracticeSession } from '../types';
 import { 
   generateQuestions, 
@@ -33,14 +33,24 @@ const Practice: React.FC<PracticeProps> = ({
   const [loading, setLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [score, setScore] = useState(0);
+  
+  // Highlighting State
+  const [passageHtml, setPassageHtml] = useState<string>("");
+  const passageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!session) {
       setIsSubmitted(false);
       setScore(0);
+      setPassageHtml("");
     } else if (session.isSubmitted) {
       setIsSubmitted(true);
       setScore(session.score);
+    }
+    
+    // Initialize passage HTML if it exists and hasn't been set yet
+    if (session?.passage && !passageHtml) {
+      setPassageHtml(session.passage);
     }
   }, [session, category]);
 
@@ -48,6 +58,7 @@ const Practice: React.FC<PracticeProps> = ({
     setLoading(true);
     setIsSubmitted(false);
     setScore(0);
+    setPassageHtml("");
     
     // Ensure any previous session is cleared before starting fresh
     if (session) {
@@ -65,8 +76,10 @@ const Practice: React.FC<PracticeProps> = ({
          if (activePassage) {
            passage = activePassage.passage; 
            data = activePassage.questions || [];
+           setPassageHtml(passage); // Initialize HTML state
          }
       } else {
+         // Generate 10 questions for regular labs
          data = await generateQuestions(category, 10);
       }
       
@@ -104,10 +117,38 @@ const Practice: React.FC<PracticeProps> = ({
     onRecordOnly(category, calculatedScore, session.questions.length, mistakes, session.questions);
     onCompleteSession(category, calculatedScore);
     
-    // Scroll to top to see score
+    // Scroll to top
     const mainEl = document.querySelector('main');
     if (mainEl) mainEl.scrollTop = 0;
     window.scrollTo(0,0);
+  };
+
+  const handleHighlight = () => {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return;
+
+    const range = selection.getRangeAt(0);
+    
+    // Verify selection is inside the passage container
+    if (passageRef.current && passageRef.current.contains(range.commonAncestorContainer)) {
+      try {
+        const span = document.createElement('span');
+        span.className = "bg-yellow-300/60 text-slate-900 rounded-sm px-0.5 box-decoration-clone border-b-2 border-yellow-400";
+        range.surroundContents(span);
+        selection.removeAllRanges();
+        
+        // Update state to persist highlights
+        setPassageHtml(passageRef.current.innerHTML);
+      } catch (e) {
+        console.warn("Cannot highlight across existing elements", e);
+      }
+    }
+  };
+
+  const handleClearHighlights = () => {
+    if (session?.passage) {
+      setPassageHtml(session.passage);
+    }
   };
 
   if (loading) {
@@ -144,10 +185,10 @@ const Practice: React.FC<PracticeProps> = ({
     );
   }
 
-  const { questions, passage, userAnswers } = session;
+  const { questions, userAnswers } = session;
 
   // --- SPLIT SCREEN LAYOUT FOR READING ---
-  if (category === Category.READING && passage) {
+  if (category === Category.READING && session.passage) {
     return (
       <div className="h-[calc(100vh-6rem)] flex flex-col animate-in fade-in duration-500">
         {/* Header */}
@@ -178,16 +219,35 @@ const Practice: React.FC<PracticeProps> = ({
         </div>
   
         <div className="flex-1 flex flex-col lg:flex-row gap-6 overflow-hidden pb-4">
-          {/* Left Side: Passage */}
-          <div className="lg:w-1/2 bg-white rounded-[2rem] border-2 border-indigo-50 shadow-xl overflow-y-auto no-scrollbar relative flex flex-col">
-              <div className="sticky top-0 bg-white/95 backdrop-blur py-4 px-8 z-10 border-b border-indigo-50">
+          {/* Left Side: Passage with Highlight Tool */}
+          <div className="lg:w-1/2 bg-white rounded-[2rem] border-2 border-indigo-50 shadow-xl overflow-hidden relative flex flex-col">
+              <div className="sticky top-0 bg-white/95 backdrop-blur py-3 px-6 z-10 border-b border-indigo-50 flex items-center justify-between">
                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-500">Source Material</span>
+                 <div className="flex items-center gap-2">
+                    <button 
+                      onClick={handleHighlight}
+                      className="flex items-center gap-2 px-3 py-1.5 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 rounded-lg text-[10px] font-black uppercase tracking-wider transition-colors"
+                      title="Select text and click here"
+                    >
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                      Highlight
+                    </button>
+                    <button 
+                      onClick={handleClearHighlights}
+                      className="px-3 py-1.5 text-slate-400 hover:text-slate-600 text-[10px] font-black uppercase tracking-wider"
+                    >
+                      Clear
+                    </button>
+                 </div>
               </div>
-              <div className="p-8 pt-4 md:p-10 md:pt-4">
+              <div className="flex-1 overflow-y-auto no-scrollbar p-8 pt-4 md:p-10 md:pt-4">
                 <div className="prose prose-slate max-w-none prose-lg">
-                    <p className="leading-relaxed text-slate-800 font-medium whitespace-pre-wrap font-serif">
-                        {passage}
-                    </p>
+                    {/* Render Passage with Highlights */}
+                    <div 
+                      ref={passageRef}
+                      className="leading-relaxed text-slate-800 font-medium whitespace-pre-wrap font-serif selection:bg-indigo-100"
+                      dangerouslySetInnerHTML={{ __html: passageHtml }}
+                    />
                 </div>
               </div>
           </div>
