@@ -31,6 +31,8 @@ const Practice: React.FC<PracticeProps> = ({
   onSaveTimer,
   startMockMath
 }) => {
+  // Find this line in App.tsx
+  const [activeView, setActiveView] = useState('dashboard'); // Make sure this says 'dashboard'
   const [loading, setLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [score, setScore] = useState(0);
