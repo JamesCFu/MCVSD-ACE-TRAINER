@@ -1234,10 +1234,8 @@ export const generateVocabulary = async (): Promise<VocabularyWord[]> => {
 };
 
 export const generateReadingTest = async (): Promise<any[]> => {
-  // Fix: Handle case where fullReadingData might be empty or undefined to prevent crash
   if (!fullReadingData || fullReadingData.length === 0) return [];
   const shuffled = shuffleArray(fullReadingData);
-  // Return the raw passage objects
   return shuffled.length > 0 ? [shuffled[0]] : [];
 };
 
@@ -1289,21 +1287,45 @@ export const generateMathTest = async (count: number): Promise<Question[]> => {
     return shuffleArray(LOCAL_MATH_POOL).slice(0, count);
 };
 
-export const generateMockTest = async (): Promise<Question[]> => {
-  try {
-    const vocab = await generateVocabTest(15);
+// --- MOCK GENERATORS ---
+
+export const generateMockELA = async (): Promise<Question[]> => {
+    // 10 Vocab
+    const vocab = await generateVocabTest(10);
+    // 5 Spelling
+    const spelling = await generateSpellingTest(5);
+    // 15 Grammar
     const grammar = await generateGrammarTest(15);
-    const math = await generateMathTest(15);
     
-    // Combine all questions
-    const combined = [...vocab, ...grammar, ...math];
+    // 6 Reading Passages (Using fullReadingData + MOCK_READING_PASSAGES to get enough content)
+    // We flatten the structure: Each passage might have multiple questions.
+    // We need to attach the passage text to the questions so they can be rendered in the standard view.
     
-    // Shuffle the combined array so subjects are mixed (simulation style)
-    return shuffleArray(combined);
-  } catch (e) {
-    console.error("Error generating mock test", e);
-    return [];
-  }
+    let readingQuestions: Question[] = [];
+    const allPassageSources = [...fullReadingData, ...MOCK_READING_PASSAGES];
+    // Shuffle and pick 6 passages
+    const selectedPassages = shuffleArray(allPassageSources).slice(0, 6);
+
+    selectedPassages.forEach((p, pIdx) => {
+        const passageQs = p.questions.map((q: any, qIdx: number) => ({
+            id: `mock-reading-${pIdx}-${qIdx}-${Date.now()}`,
+            category: Category.READING,
+            passage: p.passage, // Attach passage here
+            questionText: q.questionText || q.question,
+            options: q.options || q.choices || [],
+            correctAnswer: q.correctAnswer,
+            explanation: q.explanation || "Refer to the passage."
+        }));
+        readingQuestions = [...readingQuestions, ...passageQs];
+    });
+
+    // Combine all ELA parts
+    return [...vocab, ...spelling, ...grammar, ...readingQuestions];
+};
+
+export const generateMockMath = async (): Promise<Question[]> => {
+    // 40 Math Questions
+    return await generateMathTest(40);
 };
 
 export const generateQuestions = async (category: Category, count: number): Promise<Question[]> => {
@@ -1312,11 +1334,10 @@ export const generateQuestions = async (category: Category, count: number): Prom
         case Category.GRAMMAR: return generateGrammarTest(count);
         case Category.SPELLING: return generateSpellingTest(count);
         case Category.MATH: return generateMathTest(count);
-        case Category.MOCK: return generateMockTest();
+        case Category.MOCK: return generateMockELA(); // Default to ELA start
         case Category.READING: 
             const readingData = await generateReadingTest();
             if (readingData && readingData.length > 0 && readingData[0]) {
-                // Return formatted questions for standard reading test too
                 const passageQuestions = readingData[0].questions || [];
                 return passageQuestions.map((q: any, idx: number) => ({
                    id: `reading-solo-${Date.now()}-${idx}`,
