@@ -33,7 +33,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
   // Stats / Progression State
   const maxDay = stats.dailyVocabDay || 1;
 
-  // 1. Initialize from stats.lastViewedDay if it exists, otherwise use maxDay
+  // Initialize from stats.lastViewedDay if it exists, otherwise use maxDay
   const [viewingDay, setViewingDay] = useState(stats.lastViewedDay || maxDay);
 
   const lastProgressRef = useRef(maxDay);
@@ -79,7 +79,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
   // Cumulative Test State
   const [testQuestions, setTestQuestions] = useState<Question[]>([]);
   const [testIndex, setTestIndex] = useState(0);
-  const [testAnswers, setTestAnswers] = useState<Record<string, number>>({}); // qId -> optionIndex
+  const [testAnswers, setTestAnswers] = useState<Record<string, number>>({});
   const [testSubmitted, setTestSubmitted] = useState(false);
   const [testScore, setTestScore] = useState(0);
 
@@ -111,7 +111,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     const WORDS_PER_DAY = 25;
     const REVIEW_WORDS_COUNT = 5;
     
-    // 1. Sequential 20 words for the day (Using viewingDay instead of maxDay)
+    // 1. Sequential 20 words for the day
     const startIndex = ((viewingDay - 1) * WORDS_PER_DAY) % words.length;
     const mainBatch: VocabularyWord[] = [];
     
@@ -120,21 +120,35 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
         if (words[idx]) mainBatch.push(words[idx]);
     }
 
-    // 2. 5 Random words from the rest of the pool
-    // UPDATED: Linked to the stage/day specifically using viewingDay in the hash
+    // 2. Identify the pool of words NOT in the main batch
     const restOfPool = words.filter(w => !mainBatch.some(mb => mb.word === w.word));
     
-    const reviewBatch = [...restOfPool]
-      .sort((a, b) => {
-        // Use viewingDay as a stable seed for this specific day's review words
-        const hashA = hashString(a.word + `stage-${viewingDay}`);
-        const hashB = hashString(b.word + `stage-${viewingDay}`);
-        return hashA - hashB;
-      })
-      .slice(0, REVIEW_WORDS_COUNT);
+    // 3. Prioritize Starred Words
+    const starredInPool = restOfPool.filter(w => starredSet.has(w.word));
+    const nonStarredInPool = restOfPool.filter(w => !starredSet.has(w.word));
+    
+    // Helper sort function
+    const sortFn = (a: VocabularyWord, b: VocabularyWord) => {
+       const hashA = hashString(a.word + `stage-${viewingDay}`);
+       const hashB = hashString(b.word + `stage-${viewingDay}`);
+       return hashA - hashB;
+    };
+
+    // Grab up to 5 starred words first
+    const starredSelected = [...starredInPool].sort(sortFn).slice(0, REVIEW_WORDS_COUNT);
+    
+    // Fill remainder with random non-starred words
+    const remainingSlots = REVIEW_WORDS_COUNT - starredSelected.length;
+    let randomSelected: VocabularyWord[] = [];
+    
+    if (remainingSlots > 0) {
+       randomSelected = [...nonStarredInPool].sort(sortFn).slice(0, remainingSlots);
+    }
+    
+    const reviewBatch = [...starredSelected, ...randomSelected];
     
     return [...mainBatch, ...reviewBatch].sort((a, b) => a.word.localeCompare(b.word));
-  }, [words, viewingDay]);
+  }, [words, viewingDay, starredSet]); // Added starredSet to deps so list updates when stars change
 
   // Filtered List for Search
   const filteredDailyWords = useMemo(() => {
@@ -178,9 +192,8 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     setMatchingError(null);
     setRaceStarted(false);
     setRaceFinished(false);
-    setSearchQuery(''); // Reset search when mode changes
+    setSearchQuery(''); 
     
-    // Reset test state
     if (mode !== 'test') {
         setTestQuestions([]);
         setTestSubmitted(false);
@@ -210,7 +223,6 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     fetchShortDefs();
   }, [mode, dailyWords]);
 
-  // ... (Race timer cleanups same as before) ...
   useEffect(() => {
     if (raceFinished) {
       if (stopwatchRef.current) {
@@ -538,7 +550,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
                 <span className="bg-slate-100 text-slate-500 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-slate-200">Review Mode</span>
             )}
           </div>
-          <p className="text-slate-500 font-medium italic">Mastering 25 main and 5 random review terms for Stage {viewingDay}.</p>
+          <p className="text-slate-500 font-medium italic">Mastering 25 main and 5 review terms for Stage {viewingDay}. (Review prioritizes ★ starred words)</p>
         </div>
         
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
@@ -645,7 +657,9 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
           </div>
         </div>
       )}
-
+      
+      {/* ... [Rest of Flashcards, Matching, Racecar, Test modes omitted for brevity as they remain largely unchanged except for data flow] ... */}
+      
       {mode === 'flashcards' && (
         <div className="flex flex-col items-center py-12">
            <div className="mb-6 bg-slate-100 px-4 py-1.5 rounded-full text-xs font-black uppercase text-slate-500 tracking-widest flex items-center gap-2">
@@ -698,6 +712,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
         </div>
       )}
 
+      {/* Re-including other components for completeness */}
       {mode === 'matching' && (
         <div className="max-w-5xl mx-auto py-4">
           {isMatchingLoading ? (
