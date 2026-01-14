@@ -10,9 +10,11 @@ import { Category, UserStats, VocabularyWord, Question, GrammarLesson, PracticeS
 import { generateVocabulary, generateGrammarLesson, GRAMMAR_TOPICS, FALLBACK_GRAMMAR_DATA } from './geminiService';
 
 const getInitialStats = (): UserStats => ({
+  // Initialize Identity
   username: 'Guest Candidate',
   email: '',
   isLoggedIn: false,
+  
   completedQuizzes: 0,
   averageScore: 0,
   categoryScores: {
