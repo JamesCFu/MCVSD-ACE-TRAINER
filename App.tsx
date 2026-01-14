@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Category, Question, PracticeSession } from '../types';
+import { Category, Question, PracticeSession, UserStats } from '@/types';
 import { 
   generateQuestions, 
   generateReadingTest 
