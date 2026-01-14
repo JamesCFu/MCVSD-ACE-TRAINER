@@ -4,10 +4,14 @@ import { UserStats } from '../types';
 interface ProfileProps {
   stats: UserStats;
   onReset: () => void;
+  onLogin: (name: string, email: string) => void;
+  onLogout: () => void;
 }
 
-const Profile: React.FC<ProfileProps> = ({ stats, onReset }) => {
+const Profile: React.FC<ProfileProps> = ({ stats, onReset, onLogin, onLogout }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [nameInput, setNameInput] = useState('');
+  const [emailInput, setEmailInput] = useState('');
 
   const globalAccuracy = useMemo(() => {
     if (!stats.questionsAnswered) return 0;
@@ -28,8 +32,74 @@ const Profile: React.FC<ProfileProps> = ({ stats, onReset }) => {
     <div className="max-w-4xl mx-auto animate-in fade-in duration-500 pb-20 px-4">
       <header className="mb-12">
         <h2 className="text-4xl font-black text-slate-900 tracking-tighter">Academic Registry</h2>
-        <p className="text-slate-500 font-medium">Detailed performance analytics and credential management.</p>
+        <p className="text-slate-500 font-medium">Record for: <span className="text-indigo-600">{stats.username || 'Guest'}</span></p>
       </header>
+
+      {/* --- IDENTITY SECTION --- */}
+      <div className="bg-indigo-950 rounded-[3rem] p-10 text-white shadow-2xl mb-12 relative overflow-hidden">
+         <div className="absolute top-0 right-0 p-10 opacity-10">
+            <svg className="w-64 h-64" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+         </div>
+         
+         <div className="relative z-10">
+           <div className="flex items-center gap-4 mb-8">
+             <div className="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center font-black text-xl shadow-lg ring-4 ring-indigo-500/20">🆔</div>
+             <h3 className="text-2xl font-black tracking-tight">Student Identification</h3>
+           </div>
+
+           {!stats.isLoggedIn ? (
+             <div className="max-w-md">
+               <p className="text-indigo-200 mb-6 text-sm font-medium leading-relaxed">
+                 Sign in to claim your diagnostic history and personalize your certificate.
+               </p>
+               <div className="space-y-4">
+                 <div>
+                   <label className="text-[10px] font-black uppercase text-indigo-400 tracking-widest mb-1 block">Full Name</label>
+                   <input 
+                      type="text" 
+                      value={nameInput}
+                      onChange={(e) => setNameInput(e.target.value)}
+                      placeholder="Enter Student Name"
+                      className="w-full bg-indigo-900/50 border border-indigo-700 rounded-xl px-4 py-3 text-white placeholder-indigo-400/50 focus:outline-none focus:border-indigo-400 transition-colors font-bold"
+                   />
+                 </div>
+                 <div>
+                   <label className="text-[10px] font-black uppercase text-indigo-400 tracking-widest mb-1 block">Email Address</label>
+                   <input 
+                      type="email" 
+                      value={emailInput}
+                      onChange={(e) => setEmailInput(e.target.value)}
+                      placeholder="student@example.com"
+                      className="w-full bg-indigo-900/50 border border-indigo-700 rounded-xl px-4 py-3 text-white placeholder-indigo-400/50 focus:outline-none focus:border-indigo-400 transition-colors font-medium"
+                   />
+                 </div>
+                 <button 
+                   onClick={() => {
+                     if(nameInput.trim()) onLogin(nameInput, emailInput);
+                   }}
+                   className="w-full py-4 bg-white text-indigo-900 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-indigo-50 transition-all shadow-lg mt-2"
+                 >
+                   Activate Session
+                 </button>
+               </div>
+             </div>
+           ) : (
+             <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
+                <div>
+                   <div className="text-[10px] font-black uppercase text-indigo-400 tracking-widest mb-1">Active Scholar</div>
+                   <div className="text-3xl font-black mb-1">{stats.username}</div>
+                   <div className="text-indigo-300 font-medium text-sm">{stats.email}</div>
+                </div>
+                <button 
+                   onClick={onLogout}
+                   className="px-8 py-3 border border-indigo-700 text-indigo-300 rounded-xl font-bold uppercase text-[10px] tracking-widest hover:bg-indigo-900 hover:text-white transition-all"
+                >
+                   Sign Out
+                </button>
+             </div>
+           )}
+         </div>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
         <div className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-xl">
@@ -38,7 +108,6 @@ const Profile: React.FC<ProfileProps> = ({ stats, onReset }) => {
                 {level}
               </div>
               <div>
-                {/* Changed from "Candidate Level" to {rank} */}
                 <h3 className="text-2xl font-black text-slate-900 tracking-tight">{rank}</h3>
                 <p className="text-indigo-600 font-bold uppercase text-xs tracking-widest">{stats.xp} Total XP</p>
               </div>
