@@ -10,6 +10,9 @@ import { Category, UserStats, VocabularyWord, Question, GrammarLesson, PracticeS
 import { generateVocabulary, generateGrammarLesson, GRAMMAR_TOPICS, FALLBACK_GRAMMAR_DATA } from './geminiService';
 
 const getInitialStats = (): UserStats => ({
+  username: 'Guest Candidate',
+  email: '',
+  isLoggedIn: false,
   completedQuizzes: 0,
   averageScore: 0,
   categoryScores: {
@@ -55,7 +58,7 @@ const getInitialStats = (): UserStats => ({
 const normalizeCategory = (catName: any): Category => {
   const c = String(catName || '').toLowerCase().trim();
   if (c.includes('reading') || c.includes('comprehension') || c.includes('lit')) return Category.READING;
-  if (c.includes('vocab')) return Category.VOCABULARY;
+  if (c.includes('vocab') || c.includes('vocabulary')) return Category.VOCABULARY;
   if (c.includes('gramm') || c.includes('writ')) return Category.GRAMMAR;
   if (c.includes('math')) return Category.MATH;
   if (c.includes('spell')) return Category.SPELLING;
@@ -304,6 +307,26 @@ const App: React.FC = () => {
     });
   }, []);
 
+  // --- Profile Identity Management ---
+
+  const handleLogin = useCallback((username: string, email: string) => {
+    setStats(prev => ({
+      ...prev,
+      isLoggedIn: true,
+      username,
+      email
+    }));
+  }, []);
+
+  const handleLogout = useCallback(() => {
+    setStats(prev => ({
+      ...prev,
+      isLoggedIn: false,
+      username: 'Guest Candidate',
+      email: ''
+    }));
+  }, []);
+
   const resetStats = useCallback(() => {
     const initial = getInitialStats();
     setStats(initial);
@@ -532,7 +555,14 @@ const App: React.FC = () => {
           />
         );
       case 'profile':
-        return <Profile stats={stats} onReset={resetStats} />;
+        return (
+          <Profile 
+            stats={stats} 
+            onReset={resetStats} 
+            onLogin={handleLogin}
+            onLogout={handleLogout}
+          />
+        );
       case 'reading':
       case 'vocab':
       case 'spelling':
