@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Category, Question, PracticeSession, UserStats } from '@/types';
-import { 
-  generateQuestions, 
-  generateReadingTest 
-} from '../geminiService';
+import { generateVocabulary, generateGrammarLesson, GRAMMAR_TOPICS, FALLBACK_GRAMMAR_DATA } from '@/geminiService';
 
 interface PracticeProps {
   category: Category;
