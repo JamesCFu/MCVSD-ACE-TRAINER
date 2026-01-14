@@ -54,6 +54,12 @@ export interface PracticeSession {
 }
 
 export interface UserStats {
+  // Identity
+  username?: string;
+  email?: string;
+  isLoggedIn?: boolean;
+
+  // Stats
   completedQuizzes: number;
   averageScore: number;
   categoryScores: Record<Category, number>;
