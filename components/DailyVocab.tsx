@@ -23,7 +23,7 @@ const hashString = (str: string) => {
 };
 
 const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoading, onAwardXP, onRecordAnswer, onLogMistake }) => {
-  const [mode, setMode] = useState<'list' | 'flashcards' | 'matching' | 'racecar'>('list');
+  const [mode, setMode] = useState<'list' | 'flashcards' | 'matching' | 'racecar' | 'test'>('list');
   const [showAdvanceConfirm, setShowAdvanceConfirm] = useState(false);
   const [selectedWord, setSelectedWord] = useState<VocabularyWord | null>(null);
   
@@ -31,26 +31,25 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
   const [searchQuery, setSearchQuery] = useState('');
 
   // Stats / Progression State
-// Stats / Progression State
   const maxDay = stats.dailyVocabDay || 1;
 
-// 1. Initialize from stats.lastViewedDay if it exists, otherwise use maxDay
-const [viewingDay, setViewingDay] = useState(stats.lastViewedDay || maxDay);
+  // 1. Initialize from stats.lastViewedDay if it exists, otherwise use maxDay
+  const [viewingDay, setViewingDay] = useState(stats.lastViewedDay || maxDay);
 
-const lastProgressRef = useRef(maxDay);
+  const lastProgressRef = useRef(maxDay);
   
   // Sync viewing day if user levels up
   useEffect(() => {
-  const currentMax = stats.dailyVocabDay || 1;
-  
-  if (currentMax > lastProgressRef.current) {
-    setViewingDay(currentMax);
-    // Save this new max as the last viewed day
-    setStats(prev => ({ ...prev, lastViewedDay: currentMax }));
-  }
-  
-  lastProgressRef.current = currentMax;
-}, [stats.dailyVocabDay]);
+    const currentMax = stats.dailyVocabDay || 1;
+    
+    if (currentMax > lastProgressRef.current) {
+      setViewingDay(currentMax);
+      // Save this new max as the last viewed day
+      setStats(prev => ({ ...prev, lastViewedDay: currentMax }));
+    }
+    
+    lastProgressRef.current = currentMax;
+  }, [stats.dailyVocabDay]);
 
   // Flashcard State
   const [cardIndex, setCardIndex] = useState(0);
@@ -77,6 +76,13 @@ const lastProgressRef = useRef(maxDay);
   const [elapsedRaceTime, setElapsedRaceTime] = useState(0);
   const [raceWords, setRaceWords] = useState<VocabularyWord[]>([]);
   
+  // Cumulative Test State
+  const [testQuestions, setTestQuestions] = useState<Question[]>([]);
+  const [testIndex, setTestIndex] = useState(0);
+  const [testAnswers, setTestAnswers] = useState<Record<string, number>>({}); // qId -> optionIndex
+  const [testSubmitted, setTestSubmitted] = useState(false);
+  const [testScore, setTestScore] = useState(0);
+
   const raceTimerRef = useRef<number | null>(null);
   const raceStartTimeRef = useRef<number>(0);
   const stopwatchRef = useRef<number | null>(null);
@@ -115,20 +121,20 @@ const lastProgressRef = useRef(maxDay);
     }
 
     // 2. 5 Random words from the rest of the pool
+    // UPDATED: Linked to the stage/day specifically using viewingDay in the hash
     const restOfPool = words.filter(w => !mainBatch.some(mb => mb.word === w.word));
     
-    // Sort the rest of the pool by the persistent daily seed to get 5 "random" words
-    // that stay the same for this specific day/seed combination
     const reviewBatch = [...restOfPool]
       .sort((a, b) => {
-        const hashA = hashString(a.word + currentSeed);
-        const hashB = hashString(b.word + currentSeed);
+        // Use viewingDay as a stable seed for this specific day's review words
+        const hashA = hashString(a.word + `stage-${viewingDay}`);
+        const hashB = hashString(b.word + `stage-${viewingDay}`);
         return hashA - hashB;
       })
       .slice(0, REVIEW_WORDS_COUNT);
     
     return [...mainBatch, ...reviewBatch].sort((a, b) => a.word.localeCompare(b.word));
-  }, [words, viewingDay, currentSeed]);
+  }, [words, viewingDay]);
 
   // Filtered List for Search
   const filteredDailyWords = useMemo(() => {
@@ -173,6 +179,15 @@ const lastProgressRef = useRef(maxDay);
     setRaceStarted(false);
     setRaceFinished(false);
     setSearchQuery(''); // Reset search when mode changes
+    
+    // Reset test state
+    if (mode !== 'test') {
+        setTestQuestions([]);
+        setTestSubmitted(false);
+        setTestIndex(0);
+        setTestScore(0);
+        setTestAnswers({});
+    }
 
     const fetchShortDefs = async () => {
       if (dailyWords.length > 0 && mode === 'matching') {
@@ -409,6 +424,58 @@ const lastProgressRef = useRef(maxDay);
     return () => { if (raceTimerRef.current) clearInterval(raceTimerRef.current); };
   }, [raceStarted, raceFinished, raceFeedback, raceIndex, raceWords]);
 
+  // Cumulative Test Logic
+  const startCumulativeTest = () => {
+    const totalLearnedCount = Math.min(words.length, maxDay * 25);
+    const learnedPool = words.slice(0, totalLearnedCount);
+    
+    // Pick 20 random words from learned pool
+    const selected = [...learnedPool].sort(() => Math.random() - 0.5).slice(0, 20);
+    
+    const questions: Question[] = selected.map((word, idx) => {
+        const isDef = Math.random() > 0.5;
+        const distractors = [...learnedPool].filter(w => w.word !== word.word).sort(() => Math.random() - 0.5).slice(0, 3);
+        const options = isDef 
+            ? [word.definition, ...distractors.map(d => d.definition)].sort(() => Math.random() - 0.5)
+            : [word.word, ...distractors.map(d => d.word)].sort(() => Math.random() - 0.5);
+            
+        return {
+            id: `cumul-${Date.now()}-${idx}`,
+            category: Category.VOCABULARY,
+            questionText: isDef ? `What is the definition of "${word.word}"?` : `Which word means: "${word.definition}"?`,
+            options,
+            correctAnswer: options.indexOf(isDef ? word.definition : word.word),
+            explanation: `"${word.word}" (${word.partOfSpeech}): ${word.definition}`
+        };
+    });
+
+    setTestQuestions(questions);
+    setTestIndex(0);
+    setTestAnswers({});
+    setTestSubmitted(false);
+    setTestScore(0);
+  };
+
+  const handleTestAnswer = (qId: string, optIdx: number) => {
+      setTestAnswers(prev => ({ ...prev, [qId]: optIdx }));
+  };
+
+  const submitTest = () => {
+      let score = 0;
+      testQuestions.forEach(q => {
+          if (testAnswers[q.id] === q.correctAnswer) {
+              score++;
+              onRecordAnswer(true, Category.VOCABULARY);
+          } else {
+              onRecordAnswer(false, Category.VOCABULARY);
+              onLogMistake(q);
+          }
+      });
+      setTestScore(score);
+      setTestSubmitted(true);
+      onAwardXP(score * 15);
+  };
+
   const handleMarkAsDone = () => {
     if (stats.dailyVocabCompleted) return;
     onAwardXP(450);
@@ -528,6 +595,7 @@ const lastProgressRef = useRef(maxDay);
         <button onClick={() => setMode('flashcards')} className={`px-8 py-3.5 rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest transition-all ${mode === 'flashcards' ? 'bg-white text-indigo-700 shadow-md' : 'text-slate-600 hover:text-slate-800'}`}>Flashcards</button>
         <button onClick={() => setMode('matching')} className={`px-8 py-3.5 rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest transition-all ${mode === 'matching' ? 'bg-white text-indigo-700 shadow-md' : 'text-slate-600 hover:text-slate-800'}`}>Match Grid</button>
         <button onClick={() => setMode('racecar')} className={`px-8 py-3.5 rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest transition-all ${mode === 'racecar' ? 'bg-white text-indigo-700 shadow-md' : 'text-slate-600 hover:text-slate-800'}`}>Speed Circuit</button>
+        <button onClick={() => { setMode('test'); startCumulativeTest(); }} className={`px-8 py-3.5 rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest transition-all ${mode === 'test' ? 'bg-white text-indigo-700 shadow-md' : 'text-slate-600 hover:text-slate-800'}`}>Cumulative Exam</button>
       </div>
 
       {mode === 'list' && (
@@ -740,6 +808,80 @@ const lastProgressRef = useRef(maxDay);
                   <button onClick={() => setRaceStarted(false)} className="px-20 py-8 bg-white text-emerald-900 rounded-[3rem] font-black uppercase text-sm tracking-widest shadow-xl hover:scale-105 transition-all">Return to Hub</button>
                 
               </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {mode === 'test' && (
+        <div className="py-4">
+          {!testSubmitted ? (
+            testQuestions.length === 0 ? (
+              <div className="max-w-2xl mx-auto bg-white p-16 rounded-[4rem] text-center border-4 border-slate-100 shadow-xl">
+                 <div className="text-8xl mb-8">📝</div>
+                 <h3 className="text-3xl font-black text-slate-900 mb-4 tracking-tight uppercase">Cumulative Exam</h3>
+                 <p className="text-slate-500 mb-8 font-medium leading-relaxed">
+                   This exam pulls from all {Math.min(words.length, maxDay * 25)} words you have unlocked so far across all stages. 
+                   It will generate 20 random questions to test your retention.
+                 </p>
+                 <button onClick={startCumulativeTest} className="px-12 py-5 bg-indigo-600 text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl hover:scale-105 active:scale-95 transition-all">Begin Assessment</button>
+              </div>
+            ) : (
+              <div className="max-w-3xl mx-auto space-y-8">
+                 <div className="flex justify-between items-center px-4">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Cumulative Assessment</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-indigo-600">{Object.keys(testAnswers).length} / {testQuestions.length} Answered</span>
+                 </div>
+
+                 {testQuestions.map((q, idx) => (
+                   <div key={q.id} className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
+                      <div className="flex items-start gap-4 mb-6">
+                         <div className="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center font-black text-xs shrink-0">{idx + 1}</div>
+                         <h4 className="text-lg font-bold text-slate-900 pt-1">{q.questionText}</h4>
+                      </div>
+                      <div className="grid grid-cols-1 gap-3 pl-12">
+                         {q.options.map((opt, i) => (
+                           <button 
+                             key={i}
+                             onClick={() => handleTestAnswer(q.id, i)}
+                             className={`w-full text-left p-4 rounded-xl border-2 font-bold text-sm transition-all flex items-center gap-3 ${testAnswers[q.id] === i ? 'border-indigo-600 bg-indigo-50 text-indigo-900' : 'border-slate-100 hover:border-slate-200 text-slate-600'}`}
+                           >
+                             <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center text-[9px] ${testAnswers[q.id] === i ? 'border-indigo-600 text-indigo-600' : 'border-slate-300 text-slate-300'}`}>
+                               {String.fromCharCode(65 + i)}
+                             </div>
+                             {opt}
+                           </button>
+                         ))}
+                      </div>
+                   </div>
+                 ))}
+
+                 <div className="text-center pt-8">
+                    <button 
+                      onClick={submitTest}
+                      disabled={Object.keys(testAnswers).length < testQuestions.length}
+                      className={`px-16 py-5 rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl transition-all ${Object.keys(testAnswers).length < testQuestions.length ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-emerald-600 text-white hover:bg-emerald-500 hover:scale-105 active:scale-95'}`}
+                    >
+                      Submit Exam
+                    </button>
+                 </div>
+              </div>
+            )
+          ) : (
+            <div className="max-w-2xl mx-auto bg-white p-16 rounded-[4rem] text-center border-4 border-slate-100 shadow-xl animate-in zoom-in">
+               <div className="text-8xl mb-6">📊</div>
+               <h3 className="text-4xl font-black text-slate-900 mb-2 tracking-tighter uppercase">Exam Complete</h3>
+               <p className="text-slate-400 font-black uppercase tracking-widest text-xs mb-10">Cumulative Analysis</p>
+               
+               <div className="text-6xl font-black text-indigo-600 mb-4">{testScore} / {testQuestions.length}</div>
+               <p className={`text-lg font-bold mb-10 ${testScore >= 16 ? 'text-emerald-500' : 'text-rose-500'}`}>
+                 {testScore >= 16 ? 'Excellent Retention!' : 'Review Recommended.'}
+               </p>
+
+               <div className="flex justify-center gap-4">
+                 <button onClick={() => setTestSubmitted(false)} className="px-10 py-4 bg-slate-100 text-slate-600 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-200 transition-all">Review Answers</button>
+                 <button onClick={() => { setMode('list'); setTestQuestions([]); }} className="px-10 py-4 bg-indigo-600 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-indigo-700 transition-all shadow-lg">Return to Hub</button>
+               </div>
             </div>
           )}
         </div>
