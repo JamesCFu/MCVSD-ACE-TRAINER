@@ -54,12 +54,12 @@ export interface PracticeSession {
 }
 
 export interface UserStats {
-  // Identity
+  // --- NEW IDENTITY FIELDS ---
   username?: string;
   email?: string;
   isLoggedIn?: boolean;
 
-  // Stats
+  // Existing Stats
   completedQuizzes: number;
   averageScore: number;
   categoryScores: Record<Category, number>;
@@ -79,5 +79,5 @@ export interface UserStats {
   starredWords?: string[];
   dailyRaceRecords?: Record<number, number>;
   sessionRaceRecords?: Record<string, number>;
-  activeSessions?: Record<string, PracticeSession>; // Keyed by Category string
+  activeSessions?: Record<string, PracticeSession>;
 }
