@@ -37,7 +37,7 @@ export interface GrammarLesson {
 export interface Question {
   id: string;
   category: Category;
-  passage?: string; // Content of the passage if applicable
+  passage?: string;
   questionText: string;
   options: string[];
   correctAnswer: number; // index
@@ -49,10 +49,8 @@ export interface PracticeSession {
   userAnswers: Record<string, number>;
   isSubmitted: boolean;
   score: number;
-  passage?: string | null; // For single-passage sessions (Reading Lab)
+  passage?: string | null;
   startTime: number;
-  elapsedTime: number; // Persisted timer in seconds
-  mockStage?: 'ELA' | 'MATH'; // Tracks which part of the mock exam is active
 }
 
 export interface UserStats {
