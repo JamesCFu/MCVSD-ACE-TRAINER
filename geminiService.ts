@@ -1295,42 +1295,28 @@ export const generateMockPart1_ELA = async (): Promise<Question[]> => {
     // 1. Spelling (5 Questions)
     // We can call generateSpellingTest(5) if it exists, or loop manual generation
     // Assuming generateSpellingTest exists from previous context or we use loops:
-    for(let i=0; i<5; i++) {
-        // Simulating fetch or calling existing logic
-        // In real app: questions.push(await fetchGeminiQuestion(generatePromptForSpelling(), Category.SPELLING, 'mock-spell'));
-        questions.push({
-            id: `mock-spell-${i}`,
-            category: Category.SPELLING,
-            questionText: `(Spelling ${i+1}) Identify the misspelled word:`,
-            options: ["Accommodate", "Definately", "Embarrass", "Occurrence"],
-            correctAnswer: 1,
-            explanation: "'Definately' is incorrect. It should be 'Definitely'."
-        });
-    }
+    const spellingQs = await generateSpellingTest(5);
+    questions.push(...spellingQs.map((q, i) => ({
+        ...q,
+        id: `mock-spell-${i}`,
+        questionText: `(Spelling ${i+1}) ${q.questionText}`
+    })));
 
     // 2. Vocabulary (10 Questions)
-    for(let i=0; i<10; i++) {
-         questions.push({
-            id: `mock-vocab-${i}`,
-            category: Category.VOCABULARY,
-            questionText: `(Vocab ${i+1}) Choose the synonym for: EPHEMERAL`,
-            options: ["Lasting", "Fleeting", "Heavy", "Joyful"],
-            correctAnswer: 1,
-            explanation: "Ephemeral means lasting for a very short time."
-        });
-    }
+    const vocabQs = await generateVocabTest(10);
+    questions.push(...vocabQs.map((q, i) => ({
+        ...q,
+        id: `mock-vocab-${i}`,
+        questionText: `(Vocab ${i+1}) ${q.questionText}`
+    })));
 
     // 3. Grammar (15 Questions)
-    for(let i=0; i<15; i++) {
-         questions.push({
-            id: `mock-gram-${i}`,
-            category: Category.GRAMMAR,
-            questionText: `(Grammar ${i+1}) Select the correct sentence structure.`,
-            options: ["Running fast, the wind felt cold.", "Running fast, I felt the cold wind.", "The wind, running fast, felt cold.", "Cold was the wind running fast."],
-            correctAnswer: 1,
-            explanation: "Option A is a dangling modifier. Option B correctly modifies the subject 'I'."
-        });
-    }
+    const grammarQs = await generateGrammarTest(15);
+    questions.push(...grammarQs.map((q, i) => ({
+        ...q,
+        id: `mock-gram-${i}`,
+        questionText: `(Grammar ${i+1}) ${q.questionText}`
+    })));
 
     // 4. Reading (5 Passages/Questions)
     // We will generate 2 passages with ~2-3 questions each to reach 5 questions.
@@ -1394,20 +1380,13 @@ export const generateMockPart1_ELA = async (): Promise<Question[]> => {
 
 // MOCK PART 2: MATH
 export const generateMockPart2_Math = async (): Promise<Question[]> => {
-    const questions: Question[] = [];
-    
     // 40 Math Questions
-    for(let i=0; i<40; i++) {
-        questions.push({
-            id: `mock-math-${i}`,
-            category: Category.MATH,
-            questionText: `(Math ${i+1}) Solve for x: 2x + 5 = 15`,
-            options: ["3", "4", "5", "6"],
-            correctAnswer: 2,
-            explanation: "2x = 10, so x = 5."
-        });
-    }
-    return questions;
+    const mathQs = await generateMathTest(40);
+    return mathQs.map((q, i) => ({
+        ...q,
+        id: `mock-math-${i}`,
+        questionText: `(Math ${i+1}) ${q.questionText}`
+    }));
 };
 
 
@@ -1415,36 +1394,37 @@ export const generateMockPart2_Math = async (): Promise<Question[]> => {
 
 export const generateQuestions = async (category: Category, count: number): Promise<Question[]> => {
     switch (category) {
-        // ... (Keep other cases) ...
         case Category.VOCABULARY: 
-             // Call existing vocab generator or simulation
-             return []; 
+             return generateVocabTest(count);
         case Category.GRAMMAR: 
-             return [];
+             return generateGrammarTest(count);
         case Category.SPELLING: 
-             return [];
+             return generateSpellingTest(count);
         case Category.MATH: 
-             return [];
+             return generateMathTest(count);
         
         // UPDATE MOCK HANDLER
         case Category.MOCK: 
-             // Note: The Practice component will specifically call generateMockPart1_ELA 
-             // and generateMockPart2_Math directly, or we can have this return Part 1 by default.
              return generateMockPart1_ELA();
 
         case Category.READING: 
-            // ... (Keep existing reading logic) ...
+            const readingData = await generateReadingTest();
+            if (readingData && readingData.length > 0 && readingData[0]) {
+                const passageQuestions = readingData[0].questions || [];
+                return passageQuestions.map((q: any, idx: number) => ({
+                   id: `reading-solo-${Date.now()}-${idx}`,
+                   category: Category.READING,
+                   questionText: q.questionText || q.question,
+                   options: q.options || q.choices || [],
+                   correctAnswer: q.correctAnswer,
+                   explanation: q.explanation || ""
+                }));
+            }
             return [];
         default: return [];
     }
 };
 
-// Re-export reading/grammar/etc generators if they were there
-export const generateReadingTest = async () => { /* ... */ };
-export const generateVocabTest = async (c: number) => { /* ... */ };
-export const generateGrammarTest = async (c: number) => { /* ... */ };
-export const generateSpellingTest = async (c: number) => { /* ... */ };
-export const generateMathTest = async (c: number) => { /* ... */ };
 export const generateMockTest = async () => generateMockPart1_ELA(); // Default start
 
 export const generateShortDefinitions = async (words: VocabularyWord[]): Promise<{ word: string, shortDef: string }[]> => {
