@@ -36,22 +36,17 @@ const Practice: React.FC<PracticeProps> = ({
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [score, setScore] = useState(0);
   
-  // Timer State - Initialize from session.elapsedTime if available
+  // Timer State
   const [timer, setTimer] = useState(session?.elapsedTime || 0);
   const [isPaused, setIsPaused] = useState(false);
-  
-  // Ref to keep track of timer for unmount cleanup
   const timerRef = useRef(timer);
 
-  // Sync ref with state
   useEffect(() => {
     timerRef.current = timer;
   }, [timer]);
 
-  // Save time on unmount (Exit)
   useEffect(() => {
     return () => {
-      // Check if session exists to avoid errors on full reset
       if (session && !session.isSubmitted) {
          onSaveTime(category, timerRef.current);
       }
@@ -64,7 +59,7 @@ const Practice: React.FC<PracticeProps> = ({
   const passageRef = useRef<HTMLDivElement>(null);
 
   // Splitter State
-  const [leftPanelWidth, setLeftPanelWidth] = useState(50); // Percentage
+  const [leftPanelWidth, setLeftPanelWidth] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -96,14 +91,12 @@ const Practice: React.FC<PracticeProps> = ({
     return () => clearInterval(interval);
   }, [isPaused, loading, session, isSubmitted]);
 
-  // Handle Tab Switching / Visibility Change
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.hidden && session && !isSubmitted) {
         setIsPaused(true);
       }
     };
-    
     document.addEventListener("visibilitychange", handleVisibilityChange);
     return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
   }, [session, isSubmitted]);
@@ -127,7 +120,6 @@ const Practice: React.FC<PracticeProps> = ({
     if (isDragging && containerRef.current) {
       const containerRect = containerRef.current.getBoundingClientRect();
       const newLeftWidth = ((e.clientX - containerRect.left) / containerRect.width) * 100;
-      // Enforce minimum width of 20% and maximum of 80%
       if (newLeftWidth > 20 && newLeftWidth < 80) {
         setLeftPanelWidth(newLeftWidth);
       }
@@ -138,67 +130,83 @@ const Practice: React.FC<PracticeProps> = ({
     if (isDragging) {
       window.addEventListener('mousemove', resize);
       window.addEventListener('mouseup', stopResizing);
+      // Force disable selection globally while dragging to prevent cursor flicker
+      document.body.style.userSelect = 'none';
     } else {
       window.removeEventListener('mousemove', resize);
       window.removeEventListener('mouseup', stopResizing);
+      document.body.style.userSelect = '';
     }
     return () => {
       window.removeEventListener('mousemove', resize);
       window.removeEventListener('mouseup', stopResizing);
+      document.body.style.userSelect = '';
     };
   }, [isDragging, resize, stopResizing]);
 
   // --- HIGHLIGHT LOGIC ---
 
   const snapToWordBoundary = (range: Range) => {
-    // Only expand start if it's a text node to avoid jumping to container start
-    if (range.startContainer.nodeType === Node.TEXT_NODE) {
-      // Expand start
-      while (range.startOffset > 0) {
-        const char = range.startContainer.textContent?.charAt(range.startOffset - 1);
-        if (char && /\s/.test(char)) break;
-        range.setStart(range.startContainer, range.startOffset - 1);
+    const safeRange = range.cloneRange();
+
+    // 1. Expand Start
+    if (safeRange.startContainer.nodeType === Node.TEXT_NODE) {
+      const text = safeRange.startContainer.textContent || "";
+      let startOffset = safeRange.startOffset;
+      
+      // Move backwards until we hit a space or the start of the node
+      while (startOffset > 0) {
+        const char = text.charAt(startOffset - 1);
+        if (/\s/.test(char)) break;
+        startOffset--;
       }
+      safeRange.setStart(safeRange.startContainer, startOffset);
+    }
+
+    // 2. Expand End
+    if (safeRange.endContainer.nodeType === Node.TEXT_NODE) {
+      const text = safeRange.endContainer.textContent || "";
+      let endOffset = safeRange.endOffset;
+      const len = text.length;
+      
+      // Move forwards until we hit a space or the end of the node
+      while (endOffset < len) {
+        const char = text.charAt(endOffset);
+        if (/\s/.test(char)) break;
+        endOffset++;
+      }
+      safeRange.setEnd(safeRange.endContainer, endOffset);
     }
     
-    // Only expand end if it's a text node
-    if (range.endContainer.nodeType === Node.TEXT_NODE) {
-      // Expand end
-      const len = range.endContainer.textContent?.length || 0;
-      while (range.endOffset < len) {
-        const char = range.endContainer.textContent?.charAt(range.endOffset);
-        if (char && /\s/.test(char)) break;
-        range.setEnd(range.endContainer, range.endOffset + 1);
-      }
-    }
-    
-    return range;
+    return safeRange;
   };
 
   const handleApplyHighlight = () => {
     const selection = window.getSelection();
     if (!selection || selection.rangeCount === 0 || selection.isCollapsed) return;
 
-    const range = selection.getRangeAt(0);
+    let range = selection.getRangeAt(0);
     
     // Verify selection is inside the passage container
     if (passageRef.current && passageRef.current.contains(range.commonAncestorContainer)) {
       try {
-        // Expand to word boundaries to avoid partial word highlights
-        snapToWordBoundary(range);
+        // Use the safer snap logic
+        range = snapToWordBoundary(range);
+
+        // Check if range is valid and not empty after snap
+        if (range.toString().trim().length === 0) return;
 
         const span = document.createElement('span');
-        // px-0 ensures no extra spacing is added. box-decoration-clone handles line breaks gracefully.
         span.className = "bg-yellow-300/50 text-slate-900 rounded-none px-0 box-decoration-clone border-b-2 border-yellow-500 cursor-pointer hover:bg-yellow-300/70 transition-colors highlight-span";
         span.dataset.highlight = "true";
         
         range.surroundContents(span);
         selection.removeAllRanges();
         
-        // Update state to persist highlights
         setPassageHtml(passageRef.current.innerHTML);
       } catch (e) {
-        console.warn("Cannot highlight across complex existing elements. Try selecting smaller chunks.", e);
+        console.warn("Highlight overlap detected. Simple highlights only.", e);
+        selection.removeAllRanges();
       }
     }
   };
@@ -207,12 +215,9 @@ const Practice: React.FC<PracticeProps> = ({
     const selection = window.getSelection();
     if (!selection || selection.rangeCount === 0) return;
 
-    // Check if we are inside a highlight
     let node = selection.anchorNode;
-    // Traverse up to find if we are inside a highlight span
     while (node && node !== passageRef.current) {
         if (node.nodeType === 1 && (node as HTMLElement).dataset.highlight === "true") {
-             // We found a highlight span. Unwrap it.
              const parent = node.parentNode;
              if(parent) {
                  while(node.firstChild) {
@@ -226,14 +231,15 @@ const Practice: React.FC<PracticeProps> = ({
         }
         node = node.parentNode;
     }
-
-    // Fallback: If strict selection unhighlight is needed (complex), 
-    // simply removing the wrapping span is usually sufficient for this use case.
   };
 
-  const handleTextMouseUp = () => {
+  const handleTextMouseUp = (e: React.MouseEvent) => {
+      // Prevent this click from bubbling up to any drag handlers
+      e.stopPropagation(); 
+      
       if (isHighlightMode) {
-          handleApplyHighlight();
+          // Small timeout to ensure browser selection cycle is complete
+          setTimeout(handleApplyHighlight, 10);
       }
   };
 
@@ -400,7 +406,7 @@ const Practice: React.FC<PracticeProps> = ({
           </div>
     
           {/* Resizable Container */}
-          <div ref={containerRef} className="flex-1 flex overflow-hidden pb-4 relative select-text">
+          <div ref={containerRef} className="flex-1 flex overflow-hidden pb-4 relative">
             
             {/* Left Side: Passage */}
             <div 
@@ -438,11 +444,16 @@ const Practice: React.FC<PracticeProps> = ({
                  </div>
               </div>
 
-              <div className="flex-1 overflow-y-auto no-scrollbar p-8 pt-4 md:p-10 md:pt-4 cursor-text" onMouseUp={handleTextMouseUp}>
-                <div className="prose prose-slate max-w-none prose-lg select-text">
+              {/* Added explicit mouse handlers and select-text classes here */}
+              <div 
+                className="flex-1 overflow-y-auto no-scrollbar p-8 pt-4 md:p-10 md:pt-4 cursor-text !select-text" 
+                onMouseUp={handleTextMouseUp}
+                onMouseDown={(e) => e.stopPropagation()} // Critical fix for selection start issue
+              >
+                <div className="prose prose-slate max-w-none prose-lg !select-text">
                     <div 
                       ref={passageRef}
-                      className="leading-relaxed text-slate-800 font-medium whitespace-pre-wrap font-serif select-text cursor-text"
+                      className="leading-relaxed text-slate-800 font-medium whitespace-pre-wrap font-serif !select-text !cursor-text"
                       dangerouslySetInnerHTML={{ __html: passageHtml }}
                     />
                 </div>
