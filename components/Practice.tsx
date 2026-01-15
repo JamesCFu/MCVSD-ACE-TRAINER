@@ -59,7 +59,14 @@ const Practice: React.FC<PracticeProps> = ({
   const [highlights, setHighlights] = useState<Highlight[]>([]);
   const [isHighlightMode, setIsHighlightMode] = useState(false);
   const passageRef = useRef<HTMLDivElement>(null);
-
+  useEffect(() => {
+  if (session?.highlights) {
+    setHighlights(session.highlights);
+  } else {
+    setHighlights([]);
+  }
+}, [session]);
+  
   useEffect(() => {
     timerRef.current = timer;
   }, [timer]);
@@ -95,6 +102,37 @@ const Practice: React.FC<PracticeProps> = ({
     }
     return () => clearInterval(interval);
   }, [isPaused, loading, session, isSubmitted]);
+
+  const renderPassageWithHighlights = () => {
+  const text = session?.passage || "";
+  if (highlights.length === 0) return text;
+
+  // Sort highlights by start position to process linearly
+  const sorted = [...highlights].sort((a, b) => a.start - b.start);
+  const elements = [];
+  let lastIndex = 0;
+
+  sorted.forEach((h) => {
+    // Add text before highlight
+    if (h.start > lastIndex) {
+      elements.push(text.substring(lastIndex, h.start));
+    }
+    // Add the highlighted span
+    elements.push(
+      <span key={h.id} className="bg-yellow-200/80 rounded-sm px-0.5">
+        {text.substring(h.start, h.end)}
+      </span>
+    );
+    lastIndex = h.end;
+  });
+
+  // Add remaining text
+  if (lastIndex < text.length) {
+    elements.push(text.substring(lastIndex));
+  }
+
+  return elements;
+};
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -132,94 +170,44 @@ const Practice: React.FC<PracticeProps> = ({
 
   // --- HIGHLIGHTING LOGIC ---
   const handlePassageMouseUp = () => {
-    if (!isHighlightMode || !passageRef.current) return;
+  const selection = window.getSelection();
+  if (!selection || selection.isCollapsed || !passageRef.current) return;
 
-    const selection = window.getSelection();
-    if (!selection || selection.rangeCount === 0 || selection.isCollapsed) return;
+  const range = selection.getRangeAt(0);
+  const passageText = session?.passage || "";
+  
+  // 1. Get raw offsets
+  let start = range.startOffset;
+  let end = range.endOffset;
 
-    const range = selection.getRangeAt(0);
-    
-    // Ensure selection is strictly inside the passage text
-    if (!passageRef.current.contains(range.commonAncestorContainer)) return;
+  // 2. Snap to word boundaries and remove leading/trailing spaces
+  // Expand start backwards to the beginning of the word
+  while (start > 0 && /\S/.test(passageText[start - 1])) {
+    start--;
+  }
+  // Expand end forwards to the end of the word
+  while (end < passageText.length && /\S/.test(passageText[end])) {
+    end++;
+  }
 
-    // Calculate start relative to the passage container's text content
-    const preSelectionRange = range.cloneRange();
-    preSelectionRange.selectNodeContents(passageRef.current);
-    preSelectionRange.setEnd(range.startContainer, range.startOffset);
-    const start = preSelectionRange.toString().length;
-    const text = range.toString();
-    const end = start + text.length;
+  const selectedText = passageText.slice(start, end).trim();
+  if (selectedText.length === 0) return;
 
-    if (text.trim().length === 0) return;
-
-    // Remove any existing highlights that overlap with the new one to avoid mess
-    const cleanHighlights = highlights.filter(h => 
-      (h.end <= start) || (h.start >= end)
-    );
-
-    const newHighlight: Highlight = {
-      id: Date.now().toString(),
-      start,
-      end,
-      text
-    };
-
-    setHighlights([...cleanHighlights, newHighlight]);
-    selection.removeAllRanges(); // Clear system selection
+  const newHighlight: Highlight = {
+    id: Date.now().toString(),
+    start,
+    end,
+    text: selectedText
   };
 
-  const removeHighlight = (id: string) => {
-    setHighlights(prev => prev.filter(h => h.id !== id));
-  };
-
-  const clearAllHighlights = () => {
-    setHighlights([]);
-  };
-
-  const renderPassageWithHighlights = (text: string) => {
-    if (highlights.length === 0) return text;
-
-    // Sort by start position
-    const sorted = [...highlights].sort((a, b) => a.start - b.start);
-    const elements = [];
-    let lastIndex = 0;
-
-    sorted.forEach((h) => {
-      // 1. Text before highlight
-      if (h.start > lastIndex) {
-        elements.push(
-          <span key={`text-${lastIndex}`}>{text.slice(lastIndex, h.start)}</span>
-        );
-      }
-      
-      // 2. The Highlighted text
-      // Check bounds to ensure we don't crash if state is somehow out of sync
-      const safeEnd = Math.min(h.end, text.length);
-      if (h.start < text.length) {
-         elements.push(
-            <span 
-              key={h.id} 
-              onClick={() => removeHighlight(h.id)}
-              className="bg-yellow-200 cursor-pointer hover:bg-rose-200 transition-colors rounded-sm px-0.5"
-              title="Click to remove highlight"
-            >
-              {text.slice(h.start, safeEnd)}
-            </span>
-         );
-      }
-      lastIndex = safeEnd;
-    });
-
-    // 3. Remaining text
-    if (lastIndex < text.length) {
-      elements.push(
-        <span key={`text-end`}>{text.slice(lastIndex)}</span>
-      );
-    }
-
-    return elements;
-  };
-
+  const updatedHighlights = [...highlights, newHighlight];
+  setHighlights(updatedHighlights);
+  
+  // Persist immediately to the session
+  onUpdateSession(category, session?.userAnswers || {}, updatedHighlights);
+  
+  selection.removeAllRanges();
+};
 
   // --- CORE LOGIC ---
 
