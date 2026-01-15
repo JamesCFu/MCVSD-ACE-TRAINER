@@ -130,7 +130,6 @@ const Practice: React.FC<PracticeProps> = ({
     if (isDragging) {
       window.addEventListener('mousemove', resize);
       window.addEventListener('mouseup', stopResizing);
-      // Force disable selection globally while dragging to prevent cursor flicker
       document.body.style.userSelect = 'none';
     } else {
       window.removeEventListener('mousemove', resize);
@@ -146,39 +145,31 @@ const Practice: React.FC<PracticeProps> = ({
 
   // --- HIGHLIGHT LOGIC ---
 
-  const snapToWordBoundary = (range: Range) => {
-    const safeRange = range.cloneRange();
-
-    // 1. Expand Start
-    if (safeRange.startContainer.nodeType === Node.TEXT_NODE) {
-      const text = safeRange.startContainer.textContent || "";
-      let startOffset = safeRange.startOffset;
-      
-      // Move backwards until we hit a space or the start of the node
-      while (startOffset > 0) {
-        const char = text.charAt(startOffset - 1);
-        if (/\s/.test(char)) break;
-        startOffset--;
-      }
-      safeRange.setStart(safeRange.startContainer, startOffset);
-    }
-
-    // 2. Expand End
-    if (safeRange.endContainer.nodeType === Node.TEXT_NODE) {
-      const text = safeRange.endContainer.textContent || "";
-      let endOffset = safeRange.endOffset;
-      const len = text.length;
-      
-      // Move forwards until we hit a space or the end of the node
-      while (endOffset < len) {
-        const char = text.charAt(endOffset);
-        if (/\s/.test(char)) break;
-        endOffset++;
-      }
-      safeRange.setEnd(safeRange.endContainer, endOffset);
-    }
+  // Improved logic: Finds the full word boundary for a given node and offset
+  // Direction: -1 for start (backwards), 1 for end (forwards)
+  const findWordBoundary = (node: Node, offset: number, direction: -1 | 1): number => {
+    if (node.nodeType !== Node.TEXT_NODE) return offset;
     
-    return safeRange;
+    const text = node.textContent || "";
+    let current = offset;
+    
+    if (direction === -1) {
+      // Moving backwards to find start of word
+      while (current > 0) {
+        const char = text.charAt(current - 1);
+        if (/\s/.test(char)) break;
+        current--;
+      }
+    } else {
+      // Moving forwards to find end of word
+      const len = text.length;
+      while (current < len) {
+        const char = text.charAt(current);
+        if (/\s/.test(char)) break;
+        current++;
+      }
+    }
+    return current;
   };
 
   const handleApplyHighlight = () => {
@@ -187,25 +178,37 @@ const Practice: React.FC<PracticeProps> = ({
 
     let range = selection.getRangeAt(0);
     
-    // Verify selection is inside the passage container
     if (passageRef.current && passageRef.current.contains(range.commonAncestorContainer)) {
       try {
-        // Use the safer snap logic
-        range = snapToWordBoundary(range);
+        const newRange = range.cloneRange();
 
-        // Check if range is valid and not empty after snap
-        if (range.toString().trim().length === 0) return;
+        // 1. Expand Start
+        // If the selection starts inside a text node, verify we include the whole word
+        if (newRange.startContainer.nodeType === Node.TEXT_NODE) {
+            const newStartOffset = findWordBoundary(newRange.startContainer, newRange.startOffset, -1);
+            newRange.setStart(newRange.startContainer, newStartOffset);
+        }
+
+        // 2. Expand End
+        // If the selection ends inside a text node, verify we include the whole word
+        if (newRange.endContainer.nodeType === Node.TEXT_NODE) {
+            const newEndOffset = findWordBoundary(newRange.endContainer, newRange.endOffset, 1);
+            newRange.setEnd(newRange.endContainer, newEndOffset);
+        }
+
+        // Validate range content isn't empty after adjustment
+        if (newRange.toString().trim().length === 0) return;
 
         const span = document.createElement('span');
         span.className = "bg-yellow-300/50 text-slate-900 rounded-none px-0 box-decoration-clone border-b-2 border-yellow-500 cursor-pointer hover:bg-yellow-300/70 transition-colors highlight-span";
         span.dataset.highlight = "true";
         
-        range.surroundContents(span);
+        newRange.surroundContents(span);
         selection.removeAllRanges();
         
         setPassageHtml(passageRef.current.innerHTML);
       } catch (e) {
-        console.warn("Highlight overlap detected. Simple highlights only.", e);
+        console.warn("Highlight structure complex. Defaulting to standard selection.", e);
         selection.removeAllRanges();
       }
     }
@@ -234,11 +237,8 @@ const Practice: React.FC<PracticeProps> = ({
   };
 
   const handleTextMouseUp = (e: React.MouseEvent) => {
-      // Prevent this click from bubbling up to any drag handlers
-      e.stopPropagation(); 
-      
+      e.stopPropagation(); // Prevent drag interference
       if (isHighlightMode) {
-          // Small timeout to ensure browser selection cycle is complete
           setTimeout(handleApplyHighlight, 10);
       }
   };
@@ -444,11 +444,11 @@ const Practice: React.FC<PracticeProps> = ({
                  </div>
               </div>
 
-              {/* Added explicit mouse handlers and select-text classes here */}
+              {/* Text Container */}
               <div 
                 className="flex-1 overflow-y-auto no-scrollbar p-8 pt-4 md:p-10 md:pt-4 cursor-text !select-text" 
                 onMouseUp={handleTextMouseUp}
-                onMouseDown={(e) => e.stopPropagation()} // Critical fix for selection start issue
+                onMouseDown={(e) => e.stopPropagation()} // Keeps selection from resetting to container start
               >
                 <div className="prose prose-slate max-w-none prose-lg !select-text">
                     <div 
