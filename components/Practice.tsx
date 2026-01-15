@@ -21,6 +21,13 @@ interface PracticeProps {
   onSaveTime: (category: Category, time: number) => void;
 }
 
+interface Highlight {
+  id: string;
+  start: number;
+  end: number;
+  text: string;
+}
+
 const Practice: React.FC<PracticeProps> = ({ 
   category, 
   session, 
@@ -43,10 +50,15 @@ const Practice: React.FC<PracticeProps> = ({
   const [isPaused, setIsPaused] = useState(false);
   const timerRef = useRef(timer);
 
-  // Splitter State (For Reading Mode)
+  // Splitter State
   const [leftPanelWidth, setLeftPanelWidth] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // --- HIGHLIGHTING STATE ---
+  const [highlights, setHighlights] = useState<Highlight[]>([]);
+  const [isHighlightMode, setIsHighlightMode] = useState(false);
+  const passageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     timerRef.current = timer;
@@ -66,6 +78,7 @@ const Practice: React.FC<PracticeProps> = ({
       setScore(0);
       setTimer(0);
       setIsPaused(false);
+      setHighlights([]); // Reset highlights on new session
     } else if (session.isSubmitted) {
       setIsSubmitted(true);
       setScore(session.score);
@@ -117,6 +130,97 @@ const Practice: React.FC<PracticeProps> = ({
     };
   }, [isDragging, resize, stopResizing]);
 
+  // --- HIGHLIGHTING LOGIC ---
+  const handlePassageMouseUp = () => {
+    if (!isHighlightMode || !passageRef.current) return;
+
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0 || selection.isCollapsed) return;
+
+    const range = selection.getRangeAt(0);
+    
+    // Ensure selection is strictly inside the passage text
+    if (!passageRef.current.contains(range.commonAncestorContainer)) return;
+
+    // Calculate start relative to the passage container's text content
+    const preSelectionRange = range.cloneRange();
+    preSelectionRange.selectNodeContents(passageRef.current);
+    preSelectionRange.setEnd(range.startContainer, range.startOffset);
+    const start = preSelectionRange.toString().length;
+    const text = range.toString();
+    const end = start + text.length;
+
+    if (text.trim().length === 0) return;
+
+    // Remove any existing highlights that overlap with the new one to avoid mess
+    const cleanHighlights = highlights.filter(h => 
+      (h.end <= start) || (h.start >= end)
+    );
+
+    const newHighlight: Highlight = {
+      id: Date.now().toString(),
+      start,
+      end,
+      text
+    };
+
+    setHighlights([...cleanHighlights, newHighlight]);
+    selection.removeAllRanges(); // Clear system selection
+  };
+
+  const removeHighlight = (id: string) => {
+    setHighlights(prev => prev.filter(h => h.id !== id));
+  };
+
+  const clearAllHighlights = () => {
+    setHighlights([]);
+  };
+
+  const renderPassageWithHighlights = (text: string) => {
+    if (highlights.length === 0) return text;
+
+    // Sort by start position
+    const sorted = [...highlights].sort((a, b) => a.start - b.start);
+    const elements = [];
+    let lastIndex = 0;
+
+    sorted.forEach((h) => {
+      // 1. Text before highlight
+      if (h.start > lastIndex) {
+        elements.push(
+          <span key={`text-${lastIndex}`}>{text.slice(lastIndex, h.start)}</span>
+        );
+      }
+      
+      // 2. The Highlighted text
+      // Check bounds to ensure we don't crash if state is somehow out of sync
+      const safeEnd = Math.min(h.end, text.length);
+      if (h.start < text.length) {
+         elements.push(
+            <span 
+              key={h.id} 
+              onClick={() => removeHighlight(h.id)}
+              className="bg-yellow-200 cursor-pointer hover:bg-rose-200 transition-colors rounded-sm px-0.5"
+              title="Click to remove highlight"
+            >
+              {text.slice(h.start, safeEnd)}
+            </span>
+         );
+      }
+      lastIndex = safeEnd;
+    });
+
+    // 3. Remaining text
+    if (lastIndex < text.length) {
+      elements.push(
+        <span key={`text-end`}>{text.slice(lastIndex)}</span>
+      );
+    }
+
+    return elements;
+  };
+
+
   // --- CORE LOGIC ---
 
   const handleStart = async () => {
@@ -125,6 +229,7 @@ const Practice: React.FC<PracticeProps> = ({
     setScore(0);
     setTimer(0);
     setIsPaused(false);
+    setHighlights([]); 
     
     if (session) {
         onClearSession(category);
@@ -319,10 +424,38 @@ const Practice: React.FC<PracticeProps> = ({
         {/* Split Panes */}
         <div ref={containerRef} className="flex-1 flex overflow-hidden pb-4 relative bg-white rounded-3xl shadow-sm border border-slate-200">
            {/* Left Pane: Passage */}
-           <div style={{ width: `${leftPanelWidth}%` }} className="h-full overflow-y-auto p-8 border-r border-slate-100">
-              <div className="prose prose-indigo max-w-none">
-                 <div className="text-lg leading-loose text-slate-800 font-serif whitespace-pre-wrap">
-                    {passage}
+           <div style={{ width: `${leftPanelWidth}%` }} className="h-full overflow-y-auto border-r border-slate-100 flex flex-col">
+              
+              {/* Highlight Controls */}
+              <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-sm border-b border-slate-100 px-6 py-3 flex items-center justify-between shadow-sm">
+                <div className="flex items-center gap-3">
+                  <button 
+                    onClick={() => setIsHighlightMode(!isHighlightMode)}
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${isHighlightMode ? 'bg-yellow-300 text-yellow-900 shadow-md transform scale-105' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
+                  >
+                    <span className="text-lg">🖍</span> {isHighlightMode ? 'Highlight ON' : 'Highlight Mode'}
+                  </button>
+                  {highlights.length > 0 && (
+                     <span className="text-[10px] font-bold text-slate-400">{highlights.length} Highlight{highlights.length !== 1 && 's'}</span>
+                  )}
+                </div>
+                {highlights.length > 0 && (
+                   <button 
+                      onClick={clearAllHighlights}
+                      className="text-rose-400 hover:text-rose-600 text-[10px] font-black uppercase tracking-widest"
+                   >
+                     Clear All
+                   </button>
+                )}
+              </div>
+
+              <div className="p-8 prose prose-indigo max-w-none flex-1">
+                 <div 
+                   ref={passageRef}
+                   onMouseUp={handlePassageMouseUp}
+                   className={`text-lg leading-loose text-slate-800 font-serif whitespace-pre-wrap ${isHighlightMode ? 'cursor-text selection:bg-yellow-200' : ''}`}
+                 >
+                    {renderPassageWithHighlights(passage)}
                  </div>
               </div>
            </div>
