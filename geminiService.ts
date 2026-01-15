@@ -1235,11 +1235,13 @@ export const generateVocabulary = async (): Promise<VocabularyWord[]> => {
 
 // Helper to get raw reading data (passage + questions structure)
 export const generateReadingTest = async (): Promise<any[]> => {
+  // Fix: Handle case where fullReadingData might be empty or undefined to prevent crash
   if (!fullReadingData || fullReadingData.length === 0) return [];
   const shuffled = shuffleArray(fullReadingData);
-  // Return the raw passage objects (usually just one for a practice session)
+  // Return the raw passage objects
   return shuffled.length > 0 ? [shuffled[0]] : [];
 };
+
 
 export const generateVocabTest = async (count: number): Promise<Question[]> => {
   if (!FULL_PREP_VOCAB || FULL_PREP_VOCAB.length === 0) return [];
