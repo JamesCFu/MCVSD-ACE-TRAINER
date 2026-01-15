@@ -151,19 +151,27 @@ const Practice: React.FC<PracticeProps> = ({
   // --- HIGHLIGHT LOGIC ---
 
   const snapToWordBoundary = (range: Range) => {
-    // Expand start
-    while (range.startOffset > 0) {
-      const char = range.startContainer.textContent?.charAt(range.startOffset - 1);
-      if (char && /\s/.test(char)) break;
-      range.setStart(range.startContainer, range.startOffset - 1);
+    // Only expand start if it's a text node to avoid jumping to container start
+    if (range.startContainer.nodeType === Node.TEXT_NODE) {
+      // Expand start
+      while (range.startOffset > 0) {
+        const char = range.startContainer.textContent?.charAt(range.startOffset - 1);
+        if (char && /\s/.test(char)) break;
+        range.setStart(range.startContainer, range.startOffset - 1);
+      }
     }
-    // Expand end
-    const len = range.endContainer.textContent?.length || 0;
-    while (range.endOffset < len) {
-      const char = range.endContainer.textContent?.charAt(range.endOffset);
-      if (char && /\s/.test(char)) break;
-      range.setEnd(range.endContainer, range.endOffset + 1);
+    
+    // Only expand end if it's a text node
+    if (range.endContainer.nodeType === Node.TEXT_NODE) {
+      // Expand end
+      const len = range.endContainer.textContent?.length || 0;
+      while (range.endOffset < len) {
+        const char = range.endContainer.textContent?.charAt(range.endOffset);
+        if (char && /\s/.test(char)) break;
+        range.setEnd(range.endContainer, range.endOffset + 1);
+      }
     }
+    
     return range;
   };
 
