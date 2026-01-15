@@ -52,6 +52,15 @@ export interface PracticeSession {
   passage?: string | null;
   startTime: number;
 }
+export interface PracticeSession {
+  questions: Question[];
+  userAnswers: Record<string, number>;
+  isSubmitted: boolean;
+  score: number;
+  passage?: string | null;
+  startTime: number;
+  elapsedTime: number; // <--- ADD THIS FIELD
+}
 
 export interface UserStats {
   // --- NEW IDENTITY FIELDS ---
