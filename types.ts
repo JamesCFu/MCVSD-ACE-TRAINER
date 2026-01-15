@@ -44,7 +44,22 @@ export interface Question {
   explanation: string;
 }
 
+export interface Highlight {
+  id: string;
+  start: number;
+  end: number;
+  text: string;
+}
+
 export interface PracticeSession {
+  questions: Question[];
+  userAnswers: Record<string, number>;
+  isSubmitted: boolean;
+  score: number;
+  passage?: string | null;
+  startTime: number;
+  elapsedTime: number;
+  highlights?: Highlight[];
   questions: Question[];
   userAnswers: Record<string, number>;
   isSubmitted: boolean;
