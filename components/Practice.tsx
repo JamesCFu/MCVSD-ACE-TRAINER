@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react';
 import { Category, Question, PracticeSession } from '../types';
 import { 
   generateQuestions, 
@@ -57,6 +57,10 @@ const Practice: React.FC<PracticeProps> = ({
   const [passageHtml, setPassageHtml] = useState<string>("");
   const [isHighlightMode, setIsHighlightMode] = useState(false);
   const passageRef = useRef<HTMLDivElement>(null);
+  
+  // Scroll Restoration State
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const scrollTopRef = useRef<number>(0);
 
   // Splitter State
   const [leftPanelWidth, setLeftPanelWidth] = useState(50);
@@ -70,6 +74,7 @@ const Practice: React.FC<PracticeProps> = ({
       setPassageHtml("");
       setTimer(0);
       setIsPaused(false);
+      scrollTopRef.current = 0;
     } else if (session.isSubmitted) {
       setIsSubmitted(true);
       setScore(session.score);
@@ -79,6 +84,13 @@ const Practice: React.FC<PracticeProps> = ({
       setPassageHtml(session.passage);
     }
   }, [session, category]);
+
+  // --- SCROLL RESTORATION ---
+  useLayoutEffect(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop = scrollTopRef.current;
+    }
+  }, [passageHtml]);
 
   // --- TIMER LOGIC ---
   useEffect(() => {
@@ -183,21 +195,23 @@ const Practice: React.FC<PracticeProps> = ({
         const newRange = range.cloneRange();
 
         // 1. Expand Start
-        // If the selection starts inside a text node, verify we include the whole word
         if (newRange.startContainer.nodeType === Node.TEXT_NODE) {
             const newStartOffset = findWordBoundary(newRange.startContainer, newRange.startOffset, -1);
             newRange.setStart(newRange.startContainer, newStartOffset);
         }
 
         // 2. Expand End
-        // If the selection ends inside a text node, verify we include the whole word
         if (newRange.endContainer.nodeType === Node.TEXT_NODE) {
             const newEndOffset = findWordBoundary(newRange.endContainer, newRange.endOffset, 1);
             newRange.setEnd(newRange.endContainer, newEndOffset);
         }
 
-        // Validate range content isn't empty after adjustment
         if (newRange.toString().trim().length === 0) return;
+
+        // Capture Scroll Position
+        if (scrollContainerRef.current) {
+          scrollTopRef.current = scrollContainerRef.current.scrollTop;
+        }
 
         const span = document.createElement('span');
         span.className = "bg-yellow-300/50 text-slate-900 rounded-none px-0 box-decoration-clone border-b-2 border-yellow-500 cursor-pointer hover:bg-yellow-300/70 transition-colors highlight-span";
@@ -223,6 +237,11 @@ const Practice: React.FC<PracticeProps> = ({
         if (node.nodeType === 1 && (node as HTMLElement).dataset.highlight === "true") {
              const parent = node.parentNode;
              if(parent) {
+                 // Capture Scroll Position
+                 if (scrollContainerRef.current) {
+                   scrollTopRef.current = scrollContainerRef.current.scrollTop;
+                 }
+
                  while(node.firstChild) {
                      parent.insertBefore(node.firstChild, node);
                  }
@@ -252,6 +271,7 @@ const Practice: React.FC<PracticeProps> = ({
     setPassageHtml("");
     setTimer(0);
     setIsPaused(false);
+    scrollTopRef.current = 0;
     
     if (session) {
         onClearSession(category);
@@ -446,6 +466,7 @@ const Practice: React.FC<PracticeProps> = ({
 
               {/* Text Container */}
               <div 
+                ref={scrollContainerRef}
                 className="flex-1 overflow-y-auto no-scrollbar p-8 pt-4 md:p-10 md:pt-4 cursor-text !select-text" 
                 onMouseUp={handleTextMouseUp}
                 onMouseDown={(e) => e.stopPropagation()} // Keeps selection from resetting to container start
