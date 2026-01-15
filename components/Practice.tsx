@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Category, Question, PracticeSession } from '../types';
 import { 
   generateQuestions, 
@@ -7,11 +7,19 @@ import {
   generateMockPart2_Math
 } from '../geminiService';
 
+interface Highlight {
+  id: string;
+  start: number;
+  end: number;
+  text: string;
+}
+
 interface PracticeProps {
   category: Category;
   session: PracticeSession | null;
   onStartSession: (category: Category, questions: Question[], passage?: string | null) => void;
-  onUpdateSession: (category: Category, userAnswers: Record<string, number>) => void;
+  // Updated to support persistence:
+  onUpdateSession: (category: Category, userAnswers: Record<string, number>, highlights?: Highlight[]) => void;
   onCompleteSession: (category: Category, score: number) => void;
   onClearSession: (category: Category) => void;
   onFinish: () => void;
@@ -19,13 +27,6 @@ interface PracticeProps {
   onLogMistake: (question: Question) => void;
   onExit: () => void;
   onSaveTime: (category: Category, time: number) => void;
-}
-
-interface Highlight {
-  id: string;
-  start: number;
-  end: number;
-  text: string;
 }
 
 const Practice: React.FC<PracticeProps> = ({ 
@@ -42,619 +43,350 @@ const Practice: React.FC<PracticeProps> = ({
   onSaveTime
 }) => {
   const [loading, setLoading] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [score, setScore] = useState(0);
-  
-  // Timer State
-  const [timer, setTimer] = useState(session?.elapsedTime || 0);
-  const [isPaused, setIsPaused] = useState(false);
-  const timerRef = useRef(timer);
-
-  // Splitter State
-  const [leftPanelWidth, setLeftPanelWidth] = useState(50);
-  const [isDragging, setIsDragging] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // --- HIGHLIGHTING STATE ---
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [highlights, setHighlights] = useState<Highlight[]>([]);
-  const [isHighlightMode, setIsHighlightMode] = useState(false);
   const passageRef = useRef<HTMLDivElement>(null);
+
+  // Sync highlights when the session loads or changes
   useEffect(() => {
-  if (session?.highlights) {
-    setHighlights(session.highlights);
-  } else {
-    setHighlights([]);
-  }
-}, [session]);
-  
-  useEffect(() => {
-    timerRef.current = timer;
-  }, [timer]);
-
-  useEffect(() => {
-    return () => {
-      if (session && !session.isSubmitted) {
-         onSaveTime(category, timerRef.current);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!session) {
-      setIsSubmitted(false);
-      setScore(0);
-      setTimer(0);
-      setIsPaused(false);
-      setHighlights([]); // Reset highlights on new session
-    } else if (session.isSubmitted) {
-      setIsSubmitted(true);
-      setScore(session.score);
-    }
-  }, [session, category]);
-
-  // --- TIMER LOGIC ---
-  useEffect(() => {
-    let interval: ReturnType<typeof setInterval>;
-    if (!isPaused && !loading && session && !isSubmitted) {
-      interval = setInterval(() => {
-        setTimer((prev) => prev + 1);
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [isPaused, loading, session, isSubmitted]);
-
-  const renderPassageWithHighlights = () => {
-  const text = session?.passage || "";
-  if (highlights.length === 0) return text;
-
-  // Sort highlights by start position to process linearly
-  const sorted = [...highlights].sort((a, b) => a.start - b.start);
-  const elements = [];
-  let lastIndex = 0;
-
-  sorted.forEach((h) => {
-    // Add text before highlight
-    if (h.start > lastIndex) {
-      elements.push(text.substring(lastIndex, h.start));
-    }
-    // Add the highlighted span
-    elements.push(
-      <span key={h.id} className="bg-yellow-200/80 rounded-sm px-0.5">
-        {text.substring(h.start, h.end)}
-      </span>
-    );
-    lastIndex = h.end;
-  });
-
-  // Add remaining text
-  if (lastIndex < text.length) {
-    elements.push(text.substring(lastIndex));
-  }
-
-  return elements;
-};
-
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  // --- SPLITTER LOGIC ---
-  const startResizing = useCallback(() => setIsDragging(true), []);
-  const stopResizing = useCallback(() => setIsDragging(false), []);
-  const resize = useCallback((e: MouseEvent) => {
-    if (isDragging && containerRef.current) {
-      const containerRect = containerRef.current.getBoundingClientRect();
-      const newLeftWidth = ((e.clientX - containerRect.left) / containerRect.width) * 100;
-      if (newLeftWidth > 20 && newLeftWidth < 80) setLeftPanelWidth(newLeftWidth);
-    }
-  }, [isDragging]);
-
-  useEffect(() => {
-    if (isDragging) {
-      window.addEventListener('mousemove', resize);
-      window.addEventListener('mouseup', stopResizing);
-      document.body.style.userSelect = 'none';
+    if (session?.highlights && Array.isArray(session.highlights)) {
+      setHighlights(session.highlights);
     } else {
-      window.removeEventListener('mousemove', resize);
-      window.removeEventListener('mouseup', stopResizing);
-      document.body.style.userSelect = '';
+      setHighlights([]);
     }
-    return () => {
-      window.removeEventListener('mousemove', resize);
-      window.removeEventListener('mouseup', stopResizing);
-      document.body.style.userSelect = '';
-    };
-  }, [isDragging, resize, stopResizing]);
-
-  // --- HIGHLIGHTING LOGIC ---
-  const handlePassageMouseUp = () => {
-  const selection = window.getSelection();
-  if (!selection || selection.isCollapsed || !passageRef.current) return;
-
-  const range = selection.getRangeAt(0);
-  const passageText = session?.passage || "";
-  
-  // 1. Get raw offsets
-  let start = range.startOffset;
-  let end = range.endOffset;
-
-  // 2. Snap to word boundaries and remove leading/trailing spaces
-  // Expand start backwards to the beginning of the word
-  while (start > 0 && /\S/.test(passageText[start - 1])) {
-    start--;
-  }
-  // Expand end forwards to the end of the word
-  while (end < passageText.length && /\S/.test(passageText[end])) {
-    end++;
-  }
-
-  const selectedText = passageText.slice(start, end).trim();
-  if (selectedText.length === 0) return;
-
-  const newHighlight: Highlight = {
-    id: Date.now().toString(),
-    start,
-    end,
-    text: selectedText
-  };
-
-  const updatedHighlights = [...highlights, newHighlight];
-  setHighlights(updatedHighlights);
-  
-  // Persist immediately to the session
-  onUpdateSession(category, session?.userAnswers || {}, updatedHighlights);
-  
-  selection.removeAllRanges();
-};
-
-  // --- CORE LOGIC ---
+  }, [session?.highlights, session?.passage]);
 
   const handleStart = async () => {
     setLoading(true);
-    setIsSubmitted(false);
-    setScore(0);
-    setTimer(0);
-    setIsPaused(false);
-    setHighlights([]); 
-    
-    if (session) {
-        onClearSession(category);
-    }
-
     try {
-      let data: Question[] = [];
+      let questions: Question[] = [];
       let passage: string | null = null;
-      
-      if (category === Category.READING) {
-         const readingResponse = await generateReadingTest();
-         const activePassage = Array.isArray(readingResponse) ? readingResponse[0] : readingResponse;
-         if (activePassage) {
-           passage = activePassage.passage; 
-           data = activePassage.questions || [];
-         }
-      } else if (category === Category.MOCK) {
-         data = await generateMockPart1_ELA();
-      } else {
-         data = await generateQuestions(category, 10);
-      }
-      
-      onStartSession(category, data, passage);
 
-    } catch (err) {
-      console.error("Critical Lab Error:", err);
+      if (category === Category.READING) {
+        const data = await generateReadingTest();
+        questions = data;
+        passage = data[0]?.passage || null;
+      } else if (category === Category.MOCK) {
+        questions = await generateMockPart1_ELA();
+        passage = questions[0]?.passage || null;
+      } else {
+        questions = await generateQuestions(category);
+      }
+
+      onStartSession(category, questions, passage);
+      setCurrentQuestionIndex(0);
+      setHighlights([]);
+    } catch (error) {
+      console.error("Failed to start session:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleOptionSelect = (questionId: string, optionIndex: number) => {
-    if (isSubmitted || !session) return;
-    const newAnswers = { ...session.userAnswers, [questionId]: optionIndex };
-    onUpdateSession(category, newAnswers);
+  const handleAnswer = (optionIndex: number) => {
+    if (!session || session.isSubmitted) return;
+    const newAnswers = { ...session.userAnswers, [questions[currentQuestionIndex].id]: optionIndex };
+    onUpdateSession(category, newAnswers, highlights);
   };
 
-  const handleSubmit = async () => {
-    if (!session) return;
+  const clearHighlights = () => {
+    setHighlights([]);
+    onUpdateSession(category, session?.userAnswers || {}, []);
+  };
 
-    if (category === Category.MOCK) {
-       const currentStage = localStorage.getItem('mock_stage') || 'ELA';
-       
-       if (currentStage === 'ELA' || !session.mockStage) {
-           // ELA Stage Complete -> Move to Math
-           let elaScore = 0;
-           session.questions.forEach(q => {
-             if (session.userAnswers[q.id] === q.correctAnswer) elaScore++;
-           });
+  const handlePassageMouseUp = () => {
+    const selection = window.getSelection();
+    const passageText = session?.passage;
 
-           setLoading(true);
-           try {
-               const mathQuestions = await generateMockPart2_Math();
-               const elaTotal = session.questions.length;
-               
-               // Save intermediate state
-               localStorage.setItem('mock_ela_result', JSON.stringify({ score: elaScore, total: elaTotal }));
-               localStorage.setItem('mock_stage', 'MATH');
-               
-               // Start Math
-               onStartSession(category, mathQuestions, null); 
-               
-           } catch(e) {
-               console.error("Failed to load Math", e);
-           } finally {
-               setLoading(false);
-               window.scrollTo(0,0);
-           }
-           return;
-       }
-       
-       if (currentStage === 'MATH') {
-            // Math Stage Complete -> Finish
-            let mathScore = 0;
-            const mistakes: Question[] = [];
-            session.questions.forEach(q => {
-              if (session.userAnswers[q.id] === q.correctAnswer) {
-                mathScore++;
-              } else {
-                mistakes.push(q);
-                onLogMistake(q);
-              }
-            });
-            
-            const elaData = JSON.parse(localStorage.getItem('mock_ela_result') || '{"score":0, "total":0}');
-            const finalScore = mathScore + elaData.score;
-            const finalTotal = session.questions.length + elaData.total;
-            
-            setScore(finalScore);
-            setIsSubmitted(true);
-            
-            localStorage.removeItem('mock_ela_result');
-            localStorage.removeItem('mock_stage');
-            
-            onRecordOnly(category, finalScore, finalTotal, mistakes, session.questions); 
-            onCompleteSession(category, finalScore);
-            window.scrollTo(0,0);
-            return;
-       }
+    if (!selection || selection.isCollapsed || !passageRef.current || !passageText) return;
+
+    const range = selection.getRangeAt(0);
+    let start = range.startOffset;
+    let end = range.endOffset;
+
+    // Word Snapping Logic: Expand boundaries to the nearest whitespace
+    while (start > 0 && /\S/.test(passageText[start - 1])) {
+      start--;
+    }
+    while (end < passageText.length && /\S/.test(passageText[end])) {
+      end++;
     }
 
-    // Standard Submit
-    let calculatedScore = 0;
+    const selectedText = passageText.slice(start, end).trim();
+    if (!selectedText) return;
+
+    // Check for overlaps to prevent messy rendering
+    const isOverlapping = highlights.some(h => 
+      (start >= h.start && start < h.end) || (end > h.start && end <= h.end)
+    );
+
+    if (isOverlapping) {
+      selection.removeAllRanges();
+      return;
+    }
+
+    const newHighlight: Highlight = {
+      id: `hl-${Date.now()}`,
+      start,
+      end,
+      text: selectedText
+    };
+
+    const updated = [...highlights, newHighlight];
+    setHighlights(updated);
+    onUpdateSession(category, session?.userAnswers || {}, updated);
+    selection.removeAllRanges();
+  };
+
+  const renderPassageWithHighlights = () => {
+    const text = session?.passage;
+    if (!text) return null;
+    if (!highlights || highlights.length === 0) return text;
+
+    try {
+      // Create a copy before sorting to avoid mutating state directly (prevents white screen)
+      const sorted = [...highlights].sort((a, b) => a.start - b.start);
+      const elements: (string | JSX.Element)[] = [];
+      let lastIndex = 0;
+
+      sorted.forEach((h) => {
+        if (h.start < lastIndex) return; // Skip invalid/overlapping highlights
+
+        if (h.start > lastIndex) {
+          elements.push(text.substring(lastIndex, h.start));
+        }
+        elements.push(
+          <span 
+            key={h.id} 
+            className="bg-yellow-200/80 rounded-sm px-0.5 border-b-2 border-yellow-400/40"
+          >
+            {text.substring(h.start, h.end)}
+          </span>
+        );
+        lastIndex = h.end;
+      });
+
+      if (lastIndex < text.length) {
+        elements.push(text.substring(lastIndex));
+      }
+
+      return elements;
+    } catch (e) {
+      return text;
+    }
+  };
+
+  const handleSubmit = () => {
+    if (!session) return;
+    let correctCount = 0;
     const mistakes: Question[] = [];
 
     session.questions.forEach(q => {
       if (session.userAnswers[q.id] === q.correctAnswer) {
-        calculatedScore++;
+        correctCount++;
       } else {
         mistakes.push(q);
         onLogMistake(q);
       }
     });
 
-    setScore(calculatedScore);
-    setIsSubmitted(true);
-    
-    onRecordOnly(category, calculatedScore, session.questions.length, mistakes, session.questions);
-    onCompleteSession(category, calculatedScore);
-    window.scrollTo(0,0);
-  };
-  
-  const getSubmitButtonText = () => {
-      if (category === Category.MOCK) {
-          const stage = localStorage.getItem('mock_stage') || 'ELA';
-          if (stage === 'ELA') return "Submit ELA & Proceed to Math";
-          return "Submit Final Exam";
-      }
-      return "Submit Diagnostics";
+    onCompleteSession(category, correctCount);
+    onRecordOnly(category, correctCount, session.questions.length, mistakes, session.questions);
   };
 
-  if (loading) {
+  if (!session) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh]">
-        <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-6"></div>
-        <p className="text-indigo-900 font-black tracking-[0.4em] uppercase text-[10px]">Processing Exam Data...</p>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] p-8 text-center">
+        {loading ? (
+          <div className="animate-pulse space-y-4">
+            <div className="h-12 w-12 bg-indigo-600 rounded-full mx-auto"></div>
+            <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">Initializing Session...</p>
+          </div>
+        ) : (
+          <div className="max-w-md animate-in fade-in zoom-in duration-500">
+            <h2 className="text-3xl font-black text-slate-900 mb-4">{category} Lab</h2>
+            <p className="text-slate-600 mb-8 font-medium">Ready to begin your diagnostic training? These sessions are timed to simulate exam conditions.</p>
+            <button 
+              onClick={handleStart}
+              className="px-12 py-5 bg-indigo-600 text-white rounded-2xl font-black uppercase tracking-widest text-sm shadow-xl shadow-indigo-600/30 hover:bg-indigo-700 transition-all hover:scale-105 active:scale-95"
+            >
+              Start Practice
+            </button>
+          </div>
+        )}
       </div>
     );
   }
 
-  // INITIALIZATION SCREEN
-  if (!session) {
+  const questions = session.questions;
+  const currentQuestion = questions[currentQuestionIndex];
+  const score = session.score;
+
+  if (session.isSubmitted) {
     return (
-      <div className="max-w-4xl mx-auto py-20 px-6 text-center">
-        <div className="bg-white rounded-[3rem] p-16 shadow-xl border border-slate-100">
-          <div className="w-24 h-24 bg-indigo-50 rounded-3xl flex items-center justify-center mx-auto mb-8 text-6xl shadow-inner">
-            {category === Category.MOCK ? '🎓' : '🚀'}
+      <div className="max-w-4xl mx-auto p-4 animate-in fade-in duration-700">
+        <div className="bg-white rounded-[2.5rem] p-10 shadow-2xl border border-slate-100 mb-8 overflow-hidden relative">
+          <div className="absolute top-0 right-0 p-8">
+            <div className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-1">Performance Rank</div>
+            <div className="text-3xl font-black text-slate-900">
+              {score / questions.length >= 0.8 ? 'A+' : score / questions.length >= 0.6 ? 'B' : 'C'}
+            </div>
           </div>
-          <h2 className="text-4xl font-black text-slate-900 tracking-tight mb-4 uppercase">{category} Lab</h2>
-          <p className="text-slate-500 font-medium mb-12 text-lg max-w-xl mx-auto">
-            {category === Category.MOCK 
-              ? "Two-Part Simulation: ELA (Spelling, Vocab, Grammar, Reading) followed by Math. Comprehensive scoring." 
-              : "Ready to initiate a new diagnostic sequence? Progress will be saved automatically until you submit."}
-          </p>
+          
+          <h2 className="text-4xl font-black text-slate-900 mb-2">Lab Report</h2>
+          <p className="text-slate-500 font-bold uppercase tracking-widest text-xs mb-8">{category}</p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-slate-50 p-6 rounded-3xl">
+              <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Accuracy</div>
+              <div className="text-3xl font-black text-indigo-600">{Math.round((score / questions.length) * 100)}%</div>
+            </div>
+            <div className="bg-slate-50 p-6 rounded-3xl">
+              <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Correct</div>
+              <div className="text-3xl font-black text-emerald-500">{score} / {questions.length}</div>
+            </div>
+            <div className="bg-indigo-900 p-6 rounded-3xl shadow-lg shadow-indigo-900/20">
+              <div className="text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-2">Time Expended</div>
+              <div className="text-3xl font-black text-white">{Math.floor(session.elapsedTime / 60)}m {session.elapsedTime % 60}s</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex justify-center gap-4">
+          <button 
+            onClick={onExit}
+            className="px-10 py-5 bg-slate-200 text-slate-700 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-slate-300 transition-all"
+          >
+            Return to Dashboard
+          </button>
           <button 
             onClick={handleStart}
-            className="px-12 py-5 bg-indigo-600 text-white rounded-2xl font-black uppercase text-sm tracking-[0.2em] shadow-xl hover:bg-indigo-700 hover:scale-105 transition-all active:scale-95"
+            className="px-10 py-5 bg-indigo-600 text-white rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl hover:bg-indigo-700 transition-all"
           >
-            Initialize {category === Category.MOCK ? 'Mock Exam' : 'Test'}
+            Retake Lab
           </button>
         </div>
       </div>
     );
   }
 
-  const { questions, userAnswers, passage } = session;
-  const mockStage = localStorage.getItem('mock_stage') || 'ELA';
-
-  // --- READING LAB SPLIT LAYOUT ---
-  if (category === Category.READING && passage) {
-    return (
-      <div className="h-[calc(100vh-6rem)] flex flex-col animate-in fade-in duration-500">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-6 px-2 shrink-0">
-           <div>
-              <h2 className="text-2xl font-black text-slate-900 tracking-tight uppercase">Reading Lab</h2>
-              <div className="flex items-center gap-2 mt-1">
-                 <span className="text-[10px] font-black uppercase bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-md">Passage Analysis</span>
-                 <span className="text-[10px] font-bold text-slate-400">⏱ {formatTime(timer)}</span>
-              </div>
-           </div>
-           <div className="flex gap-3">
-              <button onClick={onExit} className="px-6 py-3 text-slate-400 font-bold hover:text-slate-600 text-xs uppercase tracking-wider">Exit</button>
-              {!isSubmitted ? (
-                 <button onClick={handleSubmit} className="px-8 py-3 bg-indigo-600 text-white rounded-xl font-black uppercase text-xs tracking-widest shadow-lg hover:bg-indigo-700 transition-all">Submit</button>
-              ) : (
-                 <button onClick={handleStart} className="px-8 py-3 bg-white border-2 border-indigo-600 text-indigo-600 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-indigo-50 transition-all">Next Passage</button>
-              )}
-           </div>
-        </div>
-
-        {/* Split Panes */}
-        <div ref={containerRef} className="flex-1 flex overflow-hidden pb-4 relative bg-white rounded-3xl shadow-sm border border-slate-200">
-           {/* Left Pane: Passage */}
-           <div style={{ width: `${leftPanelWidth}%` }} className="h-full overflow-y-auto border-r border-slate-100 flex flex-col">
-              
-              {/* Highlight Controls */}
-              <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-sm border-b border-slate-100 px-6 py-3 flex items-center justify-between shadow-sm">
-                <div className="flex items-center gap-3">
-                  <button 
-                    onClick={() => setIsHighlightMode(!isHighlightMode)}
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${isHighlightMode ? 'bg-yellow-300 text-yellow-900 shadow-md transform scale-105' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
-                  >
-                    <span className="text-lg">🖍</span> {isHighlightMode ? 'Highlight ON' : 'Highlight Mode'}
-                  </button>
-                  {highlights.length > 0 && (
-                     <span className="text-[10px] font-bold text-slate-400">{highlights.length} Highlight{highlights.length !== 1 && 's'}</span>
-                  )}
+  return (
+    <div className="max-w-6xl mx-auto p-4 md:p-8">
+      <div className="flex flex-col lg:flex-row gap-8">
+        
+        {/* Left Column: Passage or Info */}
+        {(category === Category.READING || (category === Category.MOCK && session.passage)) && (
+          <div className="lg:w-1/2 flex flex-col h-[75vh]">
+            <div className="bg-white rounded-[2rem] p-8 shadow-xl border border-slate-100 flex-1 flex flex-col overflow-hidden">
+              <div className="flex items-center justify-between mb-6 shrink-0">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center text-indigo-600">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                  </div>
+                  <h3 className="font-black text-slate-900 uppercase tracking-tighter">Reading Material</h3>
                 </div>
+                
                 {highlights.length > 0 && (
-                   <button 
-                      onClick={clearAllHighlights}
-                      className="text-rose-400 hover:text-rose-600 text-[10px] font-black uppercase tracking-widest"
-                   >
-                     Clear All
-                   </button>
+                  <button 
+                    onClick={clearHighlights}
+                    className="text-[10px] font-black text-rose-500 uppercase tracking-widest hover:bg-rose-50 px-3 py-1.5 rounded-lg transition-all"
+                  >
+                    Clear Highlights ({highlights.length})
+                  </button>
                 )}
               </div>
-
-              <div className="p-8 prose prose-indigo max-w-none flex-1">
-                 <div 
-                   ref={passageRef}
-                   onMouseUp={handlePassageMouseUp}
-                   className={`text-lg leading-loose text-slate-800 font-serif whitespace-pre-wrap ${isHighlightMode ? 'cursor-text selection:bg-yellow-200' : ''}`}
-                 >
-                    {renderPassageWithHighlights(passage)}
-                 </div>
-              </div>
-           </div>
-
-           {/* Draggable Handle */}
-           <div
-              onMouseDown={startResizing}
-              className="w-4 bg-slate-50 hover:bg-indigo-50 cursor-col-resize flex items-center justify-center border-l border-r border-slate-100 transition-colors z-10"
-           >
-              <div className="w-1 h-8 bg-slate-300 rounded-full"></div>
-           </div>
-
-           {/* Right Pane: Questions */}
-           <div style={{ width: `${100 - leftPanelWidth}%` }} className="h-full overflow-y-auto p-8 bg-slate-50/50">
-              <div className="space-y-8 pb-20">
-                 {questions.map((q, idx) => {
-                    const isCorrect = userAnswers[q.id] === q.correctAnswer;
-                    return (
-                       <div key={q.id} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                          <div className="flex gap-4 mb-4">
-                             <span className="w-6 h-6 bg-slate-900 text-white rounded-md flex items-center justify-center font-bold text-xs shrink-0">{idx + 1}</span>
-                             <p className="font-bold text-slate-800">{q.questionText}</p>
-                          </div>
-                          <div className="space-y-2 pl-10">
-                             {q.options.map((opt, i) => (
-                                <button
-                                   key={i}
-                                   disabled={isSubmitted}
-                                   onClick={() => handleOptionSelect(q.id, i)}
-                                   className={`w-full text-left p-3 rounded-lg text-sm font-medium border transition-all ${
-                                      isSubmitted
-                                         ? i === q.correctAnswer
-                                            ? 'bg-emerald-100 border-emerald-300 text-emerald-800'
-                                            : userAnswers[q.id] === i
-                                            ? 'bg-rose-100 border-rose-300 text-rose-800'
-                                            : 'bg-white border-slate-100 opacity-60'
-                                         : userAnswers[q.id] === i
-                                         ? 'bg-indigo-600 border-indigo-600 text-white'
-                                         : 'bg-white border-slate-200 hover:border-indigo-300 text-slate-600'
-                                   }`}
-                                >
-                                   <span className="mr-3 font-bold opacity-50">{String.fromCharCode(65 + i)}</span>
-                                   {opt}
-                                </button>
-                             ))}
-                          </div>
-                          {isSubmitted && !isCorrect && (
-                             <div className="mt-4 ml-10 p-4 bg-indigo-50 rounded-xl text-xs text-indigo-800 font-medium border border-indigo-100">
-                                {q.explanation}
-                             </div>
-                          )}
-                       </div>
-                    );
-                 })}
-                 
-                 {isSubmitted && (
-                    <div className="text-center p-8 bg-white rounded-3xl border border-slate-200">
-                       <p className="text-xs font-black uppercase text-slate-400 tracking-widest mb-2">Final Score</p>
-                       <p className="text-4xl font-black text-indigo-600">{score} / {questions.length}</p>
-                    </div>
-                 )}
-              </div>
-           </div>
-        </div>
-      </div>
-    );
-  }
-
-  // --- STANDARD LAYOUT (Mock, Vocab, etc.) ---
-  return (
-    <div className="max-w-4xl mx-auto py-10 px-6 animate-in fade-in duration-500 pb-20">
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4">
-        <div>
-          <h2 className="text-3xl font-black text-slate-900 tracking-tight uppercase">{category} Lab</h2>
-          <p className="text-slate-500 font-medium">
-              {category === Category.MOCK 
-                ? `Phase: ${mockStage === 'MATH' ? 'Mathematics' : 'English Language Arts'}`
-                : "Complete all queries to analyze performance."}
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-            <div className="bg-slate-100 px-4 py-2 rounded-xl font-mono font-black text-slate-600 border border-slate-200 flex items-center gap-2">
-               <span>⏱ {formatTime(timer)}</span>
-               {!isSubmitted && (
-                 <button onClick={() => setIsPaused(true)} className="ml-2 w-6 h-6 flex items-center justify-center bg-white rounded-full text-xs hover:bg-slate-200 transition-colors" title="Pause">⏸</button>
-               )}
-            </div>
-            {!isSubmitted && (
-              <div className="bg-indigo-50 text-indigo-700 px-4 py-2 rounded-xl font-black text-xs uppercase tracking-widest border border-indigo-100">
-                {Object.keys(userAnswers).length} / {questions.length} Answered
-              </div>
-            )}
-            <button 
-                onClick={handleStart}
-                className="bg-white border-2 border-slate-200 text-slate-500 px-4 py-2 rounded-xl font-black text-xs uppercase tracking-widest hover:border-indigo-400 hover:text-indigo-600 transition-colors"
-            >
-                Restart
-            </button>
-        </div>
-      </div>
-
-      <div className="space-y-8">
-        {questions.map((q, idx) => {
-          const isCorrect = userAnswers[q.id] === q.correctAnswer;
-          const isWrong = isSubmitted && !isCorrect;
-          
-          return (
-            <div key={q.id} className={`bg-white p-8 rounded-[2rem] border-2 shadow-sm transition-all ${isWrong ? 'border-rose-100 ring-4 ring-rose-50' : isSubmitted && isCorrect ? 'border-emerald-100 ring-4 ring-emerald-50' : 'border-slate-100'}`}>
               
-              {/* Render Passage inside Question Card for Mock Test Reading Questions */}
-              {q.passage && (
-                  <div className="mb-6 p-6 bg-indigo-50/50 rounded-2xl border border-indigo-100 text-slate-800 font-serif leading-relaxed text-sm max-h-64 overflow-y-auto">
-                      <span className="block text-[10px] font-black uppercase text-indigo-400 tracking-widest mb-2 sticky top-0 bg-indigo-50/95 py-1 w-full">Reference Passage</span>
-                      {q.passage}
+              <div 
+                ref={passageRef}
+                onMouseUp={handlePassageMouseUp}
+                className="overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-slate-200"
+              >
+                <div className="prose prose-slate max-w-none text-slate-700 leading-relaxed text-lg font-medium select-text whitespace-pre-wrap">
+                  {renderPassageWithHighlights()}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Right Column: Question */}
+        <div className={`${(category === Category.READING || (category === Category.MOCK && session.passage)) ? 'lg:w-1/2' : 'w-full max-w-3xl mx-auto'}`}>
+          <div className="bg-white rounded-[2rem] p-8 shadow-xl border border-slate-100 h-full flex flex-col">
+            <div className="flex items-center justify-between mb-8">
+              <div className="px-4 py-2 bg-slate-100 rounded-xl text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">
+                Item {currentQuestionIndex + 1} of {questions.length}
+              </div>
+              <div className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">
+                Diagnostic active
+              </div>
+            </div>
+
+            <h2 className="text-2xl font-black text-slate-900 mb-8 leading-tight">
+              {currentQuestion.questionText}
+            </h2>
+
+            <div className="space-y-4 mb-10 flex-1">
+              {currentQuestion.options.map((option, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => handleAnswer(idx)}
+                  className={`w-full text-left p-6 rounded-2xl border-2 transition-all flex items-center group ${
+                    session.userAnswers[currentQuestion.id] === idx
+                      ? 'border-indigo-600 bg-indigo-50/50 ring-4 ring-indigo-600/5'
+                      : 'border-slate-100 hover:border-indigo-200 hover:bg-slate-50'
+                  }`}
+                >
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm mr-4 transition-all ${
+                    session.userAnswers[currentQuestion.id] === idx
+                      ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30'
+                      : 'bg-slate-100 text-slate-400 group-hover:bg-white'
+                  }`}>
+                    {String.fromCharCode(65 + idx)}
                   </div>
-              )}
+                  <span className={`font-bold transition-all ${
+                    session.userAnswers[currentQuestion.id] === idx ? 'text-indigo-900' : 'text-slate-600'
+                  }`}>
+                    {option}
+                  </span>
+                </button>
+              ))}
+            </div>
 
-              <div className="flex items-start gap-4 mb-6">
-                <span className="flex-shrink-0 w-8 h-8 bg-slate-900 text-white rounded-lg flex items-center justify-center font-black text-sm">{idx + 1}</span>
-                <div className="flex-1">
-                    <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1 block">{q.category}</span>
-                    <p className="text-xl font-bold text-slate-900 leading-snug">{q.questionText}</p>
-                </div>
+            <div className="flex items-center justify-between pt-8 border-t border-slate-50">
+              <div className="flex gap-2">
+                <button
+                  disabled={currentQuestionIndex === 0}
+                  onClick={() => setCurrentQuestionIndex(prev => prev - 1)}
+                  className="p-4 bg-slate-100 text-slate-500 rounded-xl disabled:opacity-30 hover:bg-slate-200 transition-all"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                <button
+                  disabled={currentQuestionIndex === questions.length - 1}
+                  onClick={() => setCurrentQuestionIndex(prev => prev + 1)}
+                  className="p-4 bg-slate-100 text-slate-500 rounded-xl disabled:opacity-30 hover:bg-slate-200 transition-all"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7"></path></svg>
+                </button>
               </div>
 
-              <div className="grid grid-cols-1 gap-3 pl-0 md:pl-12">
-                {q.options && q.options.map((opt, optIdx) => {
-                  const isSelected = userAnswers[q.id] === optIdx;
-                  const isActualCorrect = optIdx === q.correctAnswer;
-                  
-                  let buttonStyle = "border-slate-200 hover:border-indigo-400 hover:bg-slate-50 text-slate-600";
-                  
-                  if (isSubmitted) {
-                    if (isActualCorrect) buttonStyle = "bg-emerald-500 border-emerald-500 text-white shadow-md ring-2 ring-emerald-200";
-                    else if (isSelected && !isActualCorrect) buttonStyle = "bg-rose-500 border-rose-500 text-white shadow-md ring-2 ring-rose-200 opacity-60";
-                    else buttonStyle = "border-slate-100 text-slate-300 opacity-50";
-                  } else if (isSelected) {
-                    buttonStyle = "bg-indigo-600 border-indigo-600 text-white shadow-lg scale-[1.01]";
-                  }
-
-                  return (
-                    <button
-                      key={optIdx}
-                      onClick={() => handleOptionSelect(q.id, optIdx)}
-                      disabled={isSubmitted}
-                      className={`w-full text-left p-4 rounded-xl border-2 font-bold transition-all duration-200 flex items-center gap-3 ${buttonStyle}`}
-                    >
-                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 text-[10px] ${isSubmitted && isActualCorrect ? 'border-white text-white' : isSelected ? 'border-white text-white' : 'border-slate-300 text-slate-400'}`}>
-                        {String.fromCharCode(65 + optIdx)}
-                      </div>
-                      <span>{opt}</span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {isSubmitted && !isCorrect && (
-                <div className="mt-6 ml-0 md:ml-12 p-6 bg-slate-50 rounded-2xl border border-slate-200 animate-in slide-in-from-top-2">
-                  <p className="text-[10px] font-black uppercase text-indigo-500 tracking-widest mb-2">Correction Insight</p>
-                  <p className="text-slate-700 font-medium italic text-sm leading-relaxed">{q.explanation}</p>
-                </div>
+              {currentQuestionIndex === questions.length - 1 ? (
+                <button
+                  onClick={handleSubmit}
+                  className="px-10 py-4 bg-emerald-500 text-white rounded-2xl font-black uppercase tracking-widest text-xs shadow-lg shadow-emerald-500/20 hover:bg-emerald-600 transition-all transform hover:-translate-y-1"
+                >
+                  Submit Assessment
+                </button>
+              ) : (
+                <button
+                  onClick={() => setCurrentQuestionIndex(prev => prev + 1)}
+                  className="px-10 py-4 bg-indigo-950 text-white rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-black transition-all"
+                >
+                  Next Question
+                </button>
               )}
             </div>
-          );
-        })}
-      </div>
-
-      <div className="mt-12 sticky bottom-6 z-10">
-        <div className="bg-slate-900/95 backdrop-blur-md p-4 rounded-[2rem] shadow-2xl flex flex-col md:flex-row gap-4 justify-between items-center max-w-4xl mx-auto border border-white/10">
-          {!isSubmitted ? (
-            <>
-              <div className="px-6">
-                <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">Progress</p>
-                <p className="text-white font-black text-xl">{Object.keys(userAnswers).length} / {questions.length}</p>
-              </div>
-              <button 
-                onClick={handleSubmit}
-                disabled={Object.keys(userAnswers).length < questions.length}
-                className={`px-10 py-4 rounded-2xl font-black uppercase text-xs tracking-[0.2em] transition-all shadow-lg w-full md:w-auto ${Object.keys(userAnswers).length < questions.length ? 'bg-slate-700 text-slate-500 cursor-not-allowed' : 'bg-white text-indigo-900 hover:bg-indigo-50 hover:scale-105 active:scale-95'}`}
-              >
-                {getSubmitButtonText()}
-              </button>
-            </>
-          ) : (
-            <>
-              <div className="px-6 text-center md:text-left">
-                <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">
-                    {category === Category.MOCK ? "Exam Total" : "Final Score"}
-                </p>
-                <p className={`font-black text-2xl ${score >= (category === Category.MOCK ? 70 : questions.length * 0.7) ? 'text-emerald-400' : 'text-rose-400'}`}>
-                   {score} <span className="text-sm text-slate-500 ml-1">
-                       {category === Category.MOCK ? "(Cumulative)" : `/ ${questions.length}`}
-                   </span>
-                </p>
-              </div>
-              <div className="flex gap-4 w-full md:w-auto">
-                <button 
-                  onClick={onExit}
-                  className="px-6 py-4 text-slate-300 font-black uppercase text-xs tracking-widest hover:text-white transition-colors flex-1 md:flex-none"
-                >
-                  Close
-                </button>
-                <button 
-                  onClick={handleStart}
-                  className="px-8 py-4 bg-indigo-600 text-white rounded-2xl font-black uppercase text-xs tracking-[0.2em] transition-all shadow-lg hover:bg-indigo-500 hover:scale-105 active:scale-95 flex-1 md:flex-none whitespace-nowrap"
-                >
-                  New {category === Category.MOCK ? 'Exam' : 'Lab'}
-                </button>
-              </div>
-            </>
-          )}
+          </div>
         </div>
       </div>
     </div>
