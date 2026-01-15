@@ -16,6 +16,7 @@ interface PracticeProps {
   onRecordOnly: (category: Category, score: number, total: number, mistakes: Question[], questions: Question[]) => void;
   onLogMistake: (question: Question) => void;
   onExit: () => void;
+  onSaveTime: (category: Category, time: number) => void;
 }
 
 const Practice: React.FC<PracticeProps> = ({ 
@@ -28,16 +29,35 @@ const Practice: React.FC<PracticeProps> = ({
   onFinish, 
   onRecordOnly, 
   onLogMistake, 
-  onExit 
+  onExit,
+  onSaveTime
 }) => {
   const [loading, setLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [score, setScore] = useState(0);
   
-  // Timer State
-  const [timer, setTimer] = useState(0);
+  // Timer State - Initialize from session.elapsedTime if available
+  const [timer, setTimer] = useState(session?.elapsedTime || 0);
   const [isPaused, setIsPaused] = useState(false);
   
+  // Ref to keep track of timer for unmount cleanup
+  const timerRef = useRef(timer);
+
+  // Sync ref with state
+  useEffect(() => {
+    timerRef.current = timer;
+  }, [timer]);
+
+  // Save time on unmount (Exit)
+  useEffect(() => {
+    return () => {
+      // Check if session exists to avoid errors on full reset
+      if (session && !session.isSubmitted) {
+         onSaveTime(category, timerRef.current);
+      }
+    };
+  }, []);
+
   // Highlighting State
   const [passageHtml, setPassageHtml] = useState<string>("");
   const [isHighlightMode, setIsHighlightMode] = useState(false);
@@ -379,7 +399,7 @@ const Practice: React.FC<PracticeProps> = ({
               style={{ width: `${leftPanelWidth}%` }} 
               className="bg-white rounded-[2rem] border-2 border-indigo-50 shadow-xl overflow-hidden relative flex flex-col transition-width duration-75 ease-linear"
             >
-                {/* ... (Passage Content - Same as before) ... */}
+                {/* Passage Toolbar */}
                 <div className="sticky top-0 bg-white/95 backdrop-blur py-3 px-6 z-10 border-b border-indigo-50 flex items-center justify-between">
                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-500">Source Material</span>
                  
