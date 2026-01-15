@@ -439,10 +439,10 @@ const Practice: React.FC<PracticeProps> = ({
               </div>
 
               <div className="flex-1 overflow-y-auto no-scrollbar p-8 pt-4 md:p-10 md:pt-4 cursor-text" onMouseUp={handleTextMouseUp}>
-                <div className="prose prose-slate max-w-none prose-lg">
+                <div className="prose prose-slate max-w-none prose-lg select-text">
                     <div 
                       ref={passageRef}
-                      className="leading-relaxed text-slate-800 font-medium whitespace-pre-wrap font-serif"
+                      className="leading-relaxed text-slate-800 font-medium whitespace-pre-wrap font-serif select-text cursor-text"
                       dangerouslySetInnerHTML={{ __html: passageHtml }}
                     />
                 </div>
