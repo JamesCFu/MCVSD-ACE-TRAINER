@@ -264,22 +264,25 @@ const App: React.FC = () => {
     }));
   }, []);
 
-  const handleUpdateSession = useCallback((category: Category, userAnswers: Record<string, number>) => {
-    setStats(prev => {
-      const currentSession = prev.activeSessions?.[category];
-      if (!currentSession) return prev;
-      return {
-        ...prev,
-        activeSessions: {
-          ...prev.activeSessions,
-          [category]: {
-            ...currentSession,
-            userAnswers
-          }
-        }
-      };
-    });
-  }, []);
+  const handleUpdateSession = useCallback((category: Category, userAnswers: Record<string, number>, highlights?: Highlight[]) => {
+  setStats(prev => {
+    const session = prev.activeSessions?.[category];
+    if (!session) return prev;
+
+    const newSessions = {
+      ...prev.activeSessions,
+      [category]: { 
+        ...session, 
+        userAnswers, 
+        highlights: highlights || session.highlights || [] 
+      }
+    };
+
+    const newStats = { ...prev, activeSessions: newSessions };
+    localStorage.setItem('mcvsd_stats', JSON.stringify(newStats));
+    return newStats;
+  });
+}, []);
 
   const handleSaveTime = useCallback((category: Category, time: number) => {
     setStats(prev => {
