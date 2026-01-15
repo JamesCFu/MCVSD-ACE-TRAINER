@@ -1293,48 +1293,35 @@ export const generateMathTest = async (count: number): Promise<Question[]> => {
 export const generateMockPart1_ELA = async (): Promise<Question[]> => {
     const questions: Question[] = [];
 
-    // 1. Spelling (5 Questions from pool)
-    const spellingQuestions = shuffleArray(LOCAL_SPELLING_POOL).slice(0, 5).map(q => ({
-        ...q,
-        id: `mock-spell-${q.id}-${Date.now()}`
-    }));
-    questions.push(...spellingQuestions);
+    // 1. Spelling (5 Questions)
+    questions.push(...shuffleArray(LOCAL_SPELLING_POOL).slice(0, 5));
 
-    // 2. Vocabulary (10 Questions generated dynamically)
-    const vocabQuestions = await generateVocabTest(10);
-    vocabQuestions.forEach((q, idx) => {
-        q.id = `mock-vocab-${idx}-${Date.now()}`; 
-    });
-    questions.push(...vocabQuestions);
+    // 2. Vocabulary (10 Questions)
+    questions.push(...await generateVocabTest(10));
 
-    // 3. Grammar (15 Questions from pool)
-    const grammarQuestions = shuffleArray(LOCAL_GRAMMAR_POOL).slice(0, 15).map(q => ({
-        ...q,
-        id: `mock-gram-${q.id}-${Date.now()}`
-    }));
-    questions.push(...grammarQuestions);
+    // 3. Grammar (15 Questions)
+    questions.push(...shuffleArray(LOCAL_GRAMMAR_POOL).slice(0, 15));
 
-    // 4. Reading (Pick 1 random passage from fullReadingData)
+    // 4. Reading (Integrated from readingData)
     if (fullReadingData && fullReadingData.length > 0) {
-        const shuffledPassages = shuffleArray(fullReadingData);
-        const selectedPassage = shuffledPassages[0];
+        const selectedPassage = shuffleArray(fullReadingData)[0];
         
-        if (selectedPassage && selectedPassage.questions) {
-            const readingQs = selectedPassage.questions.map((q: any, idx: number) => ({
-                id: `mock-reading-${Date.now()}-${idx}`,
-                category: Category.READING,
-                passage: selectedPassage.passage, // IMPORTANT: Passage text needed for UI
-                questionText: q.questionText,
-                options: q.options,
-                correctAnswer: q.correctAnswer,
-                explanation: q.explanation
-            }));
-            questions.push(...readingQs);
-        }
+        const readingQs = selectedPassage.questions.map((q: any, idx: number) => ({
+            id: `mock-reading-${Date.now()}-${idx}`,
+            category: Category.READING,
+            // Fix: Include the full, un-shortened passage for the Mock Test
+            passage: selectedPassage.passage, 
+            questionText: q.questionText,
+            options: q.options,
+            correctAnswer: q.correctAnswer,
+            explanation: q.explanation
+        }));
+        questions.push(...readingQs);
     }
 
     return questions;
 };
+
 
 // MOCK PART 2: MATH
 export const generateMockPart2_Math = async (): Promise<Question[]> => {
@@ -1351,29 +1338,19 @@ export const generateMockPart2_Math = async (): Promise<Question[]> => {
 
 export const generateQuestions = async (category: Category, count: number): Promise<Question[]> => {
     switch (category) {
-        case Category.VOCABULARY: 
-             return generateVocabTest(count);
-        case Category.GRAMMAR: 
-             return generateGrammarTest(count);
-        case Category.SPELLING: 
-             return generateSpellingTest(count);
-        case Category.MATH: 
-             return generateMathTest(count);
-        
-        // MOCK HANDLER
-        case Category.MOCK: 
-             // Returns Part 1 (ELA) by default. The UI handles Part 2 separation if needed.
-             return generateMockPart1_ELA();
-
+        case Category.VOCABULARY: return generateVocabTest(count);
+        case Category.GRAMMAR: return generateGrammarTest(count);
+        case Category.SPELLING: return generateSpellingTest(count);
+        case Category.MATH: return generateMathTest(count);
+        case Category.MOCK: return generateMockPart1_ELA();
         case Category.READING: 
-            const readingData = await generateReadingTest();
-            if (readingData && readingData.length > 0 && readingData[0]) {
+            const readingData = await generateReadingTest(); // Returns [passageObject]
+            if (readingData && readingData.length > 0) {
                 const passageObj = readingData[0];
-                const passageQuestions = passageObj.questions || [];
-                return passageQuestions.map((q: any, idx: number) => ({
+                return passageObj.questions.map((q: any, idx: number) => ({
                    id: `reading-solo-${Date.now()}-${idx}`,
                    category: Category.READING,
-                   // FIX: Ensure passage text is attached to the question object
+                   // Fix: Explicitly pass the entire un-shortened passage text
                    passage: passageObj.passage, 
                    questionText: q.questionText || q.question,
                    options: q.options || q.choices || [],
