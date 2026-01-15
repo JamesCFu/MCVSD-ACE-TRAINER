@@ -51,15 +51,11 @@ export interface PracticeSession {
   score: number;
   passage?: string | null;
   startTime: number;
-}
-export interface PracticeSession {
-  questions: Question[];
-  userAnswers: Record<string, number>;
-  isSubmitted: boolean;
-  score: number;
-  passage?: string | null;
-  startTime: number;
-  elapsedTime: number; // <--- ADD THIS FIELD
+  elapsedTime: number;
+  // --- NEW MOCK FIELDS ---
+  mockStage?: 'ELA' | 'MATH'; 
+  elaScore?: number;
+  elaTotalQuestions?: number;
 }
 
 export interface UserStats {
@@ -86,7 +82,8 @@ export interface UserStats {
   dailyVocabSeed?: number;
   fastestRaceTime?: number; // milliseconds
   starredWords?: string[];
-  dailyRaceRecords?: Record<number, number>;
-  sessionRaceRecords?: Record<string, number>;
-  activeSessions?: Record<string, PracticeSession>;
+  dailyRaceRecords?: Record<string, number>; // date -> time
+  
+  // Active Sessions
+  activeSessions?: Partial<Record<Category, PracticeSession>>;
 }
