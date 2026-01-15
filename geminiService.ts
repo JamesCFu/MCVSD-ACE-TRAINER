@@ -1234,10 +1234,8 @@ export const generateVocabulary = async (): Promise<VocabularyWord[]> => {
 };
 
 export const generateReadingTest = async (): Promise<any[]> => {
-  // Fix: Handle case where fullReadingData might be empty or undefined to prevent crash
   if (!fullReadingData || fullReadingData.length === 0) return [];
   const shuffled = shuffleArray(fullReadingData);
-  // Return the raw passage objects
   return shuffled.length > 0 ? [shuffled[0]] : [];
 };
 
@@ -1289,131 +1287,64 @@ export const generateMathTest = async (count: number): Promise<Question[]> => {
     return shuffleArray(LOCAL_MATH_POOL).slice(0, count);
 };
 
-export const generateMockPart1_ELA = async (): Promise<Question[]> => {
-    const questions: Question[] = [];
-
-    // 1. Spelling (5 Questions)
-    // We can call generateSpellingTest(5) if it exists, or loop manual generation
-    // Assuming generateSpellingTest exists from previous context or we use loops:
-    const spellingQs = await generateSpellingTest(5);
-    questions.push(...spellingQs.map((q, i) => ({
-        ...q,
-        id: `mock-spell-${i}`,
-        questionText: `(Spelling ${i+1}) ${q.questionText}`
-    })));
-
-    // 2. Vocabulary (10 Questions)
-    const vocabQs = await generateVocabTest(10);
-    questions.push(...vocabQs.map((q, i) => ({
-        ...q,
-        id: `mock-vocab-${i}`,
-        questionText: `(Vocab ${i+1}) ${q.questionText}`
-    })));
-
-    // 3. Grammar (15 Questions)
-    const grammarQs = await generateGrammarTest(15);
-    questions.push(...grammarQs.map((q, i) => ({
-        ...q,
-        id: `mock-gram-${i}`,
-        questionText: `(Grammar ${i+1}) ${q.questionText}`
-    })));
-
-    // 4. Reading (5 Passages/Questions)
-    // We will generate 2 passages with ~2-3 questions each to reach 5 questions.
-    const passage1 = "The Industrial Revolution marked a major turning point in history; almost every aspect of daily life was influenced in some way. In particular, average income and population began to exhibit unprecedented sustained growth. Some economists say that the major impact of the Industrial Revolution was that the standard of living for the general population began to increase consistently for the first time in history...";
+// FIX: Updated generateMockTest to use real data pools
+export const generateMockTest = async (): Promise<Question[]> => {
+  try {
+    // 1. Generate sections from existing pools
+    const vocab = await generateVocabTest(15);
+    const grammar = await generateGrammarTest(15);
+    const math = await generateMathTest(15);
+    const spelling = await generateSpellingTest(5);
     
-    questions.push(
-        {
-            id: `mock-read-1`,
-            category: Category.READING,
-            passage: passage1,
-            questionText: "What is the primary effect of the Industrial Revolution mentioned?",
-            options: ["Population decline", "Sustained growth in income and population", "Decrease in standard of living", "Environmental damage"],
-            correctAnswer: 1,
-            explanation: "The text states that average income and population began to exhibit unprecedented sustained growth."
-        },
-        {
-            id: `mock-read-2`,
-            category: Category.READING,
-            passage: passage1,
-            questionText: "According to the passage, what happened to the standard of living?",
-            options: ["It fluctuated wildly", "It stayed the same", "It increased consistently", "It decreased rapidly"],
-            correctAnswer: 2,
-            explanation: "The text says the standard of living began to increase consistently for the first time."
+    // 2. Generate Reading section from fullReadingData
+    let readingQuestions: Question[] = [];
+    if (fullReadingData && fullReadingData.length > 0) {
+        // Pick one random passage for the mock test
+        const shuffledPassages = shuffleArray(fullReadingData);
+        const selectedPassage = shuffledPassages[0];
+        
+        if (selectedPassage && selectedPassage.questions) {
+            readingQuestions = selectedPassage.questions.map((q: any, idx: number) => ({
+                id: `mock-reading-${Date.now()}-${idx}`,
+                category: Category.READING,
+                passage: selectedPassage.passage, // IMPORTANT: Include passage text on every question
+                questionText: q.questionText,
+                options: q.options,
+                correctAnswer: q.correctAnswer,
+                explanation: q.explanation
+            }));
         }
-    );
-
-    const passage2 = "Photosynthesis is a process used by plants and other organisms to convert light energy into chemical energy that, through cellular respiration, can later be released to fuel the organism's metabolic activities. This chemical energy is stored in carbohydrate molecules, such as sugars and starches, which are synthesized from carbon dioxide and water.";
-
-     questions.push(
-        {
-            id: `mock-read-3`,
-            category: Category.READING,
-            passage: passage2,
-            questionText: "What is the primary output of photosynthesis mentioned?",
-            options: ["Light energy", "Carbon dioxide", "Chemical energy stored in carbohydrates", "Water"],
-            correctAnswer: 2,
-            explanation: "Plants convert light energy into chemical energy stored in carbohydrate molecules."
-        },
-        {
-            id: `mock-read-4`,
-            category: Category.READING,
-            passage: passage2,
-            questionText: "What fuels the organism's metabolic activities?",
-            options: ["Cellular respiration releasing stored energy", "Direct absorption of sunlight", "Drinking water", "Breathing oxygen"],
-            correctAnswer: 0,
-            explanation: "The chemical energy is released through cellular respiration to fuel activities."
-        },
-         {
-            id: `mock-read-5`,
-            category: Category.READING,
-            passage: passage2,
-            questionText: "What are the raw materials for synthesizing sugars in this process?",
-            options: ["Oxygen and Glucose", "Carbon Dioxide and Water", "Nitrogen and Light", "Starch and Soil"],
-            correctAnswer: 1,
-            explanation: "Sugars are synthesized from carbon dioxide and water."
-        }
-    );
-
-    return questions;
+    }
+    
+    // 3. Combine all sections
+    // Note: In a real test, they might be grouped, but shuffling them simulates the cognitive switching required in some exams, 
+    // or you can return them in order: [...readingQuestions, ...vocab, ...grammar, ...spelling, ...math]
+    const combined = [...readingQuestions, ...vocab, ...grammar, ...spelling, ...math];
+    
+    return combined;
+  } catch (e) {
+    console.error("Error generating mock test", e);
+    return [];
+  }
 };
-
-// MOCK PART 2: MATH
-export const generateMockPart2_Math = async (): Promise<Question[]> => {
-    // 40 Math Questions
-    const mathQs = await generateMathTest(40);
-    return mathQs.map((q, i) => ({
-        ...q,
-        id: `mock-math-${i}`,
-        questionText: `(Math ${i+1}) ${q.questionText}`
-    }));
-};
-
-
-// --- UPDATE MAIN GENERATOR ---
 
 export const generateQuestions = async (category: Category, count: number): Promise<Question[]> => {
     switch (category) {
-        case Category.VOCABULARY: 
-             return generateVocabTest(count);
-        case Category.GRAMMAR: 
-             return generateGrammarTest(count);
-        case Category.SPELLING: 
-             return generateSpellingTest(count);
-        case Category.MATH: 
-             return generateMathTest(count);
-        
-        // UPDATE MOCK HANDLER
-        case Category.MOCK: 
-             return generateMockPart1_ELA();
-
+        case Category.VOCABULARY: return generateVocabTest(count);
+        case Category.GRAMMAR: return generateGrammarTest(count);
+        case Category.SPELLING: return generateSpellingTest(count);
+        case Category.MATH: return generateMathTest(count);
+        case Category.MOCK: return generateMockTest();
         case Category.READING: 
             const readingData = await generateReadingTest();
             if (readingData && readingData.length > 0 && readingData[0]) {
-                const passageQuestions = readingData[0].questions || [];
+                const passageObj = readingData[0];
+                const passageQuestions = passageObj.questions || [];
                 return passageQuestions.map((q: any, idx: number) => ({
                    id: `reading-solo-${Date.now()}-${idx}`,
                    category: Category.READING,
+                   // FIX: Ensure passage text is attached to the question object
+                   passage: passageObj.passage, 
                    questionText: q.questionText || q.question,
                    options: q.options || q.choices || [],
                    correctAnswer: q.correctAnswer,
@@ -1424,8 +1355,6 @@ export const generateQuestions = async (category: Category, count: number): Prom
         default: return [];
     }
 };
-
-export const generateMockTest = async () => generateMockPart1_ELA(); // Default start
 
 export const generateShortDefinitions = async (words: VocabularyWord[]): Promise<{ word: string, shortDef: string }[]> => {
   return words.map(w => ({
