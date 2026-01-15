@@ -1233,9 +1233,11 @@ export const generateVocabulary = async (): Promise<VocabularyWord[]> => {
   return FULL_PREP_VOCAB;
 };
 
+// Helper to get raw reading data (passage + questions structure)
 export const generateReadingTest = async (): Promise<any[]> => {
   if (!fullReadingData || fullReadingData.length === 0) return [];
   const shuffled = shuffleArray(fullReadingData);
+  // Return the raw passage objects (usually just one for a practice session)
   return shuffled.length > 0 ? [shuffled[0]] : [];
 };
 
@@ -1287,54 +1289,82 @@ export const generateMathTest = async (count: number): Promise<Question[]> => {
     return shuffleArray(LOCAL_MATH_POOL).slice(0, count);
 };
 
-// FIX: Updated generateMockTest to use real data pools
-export const generateMockTest = async (): Promise<Question[]> => {
-  try {
-    // 1. Generate sections from existing pools
-    const vocab = await generateVocabTest(15);
-    const grammar = await generateGrammarTest(15);
-    const math = await generateMathTest(15);
-    const spelling = await generateSpellingTest(5);
-    
-    // 2. Generate Reading section from fullReadingData
-    let readingQuestions: Question[] = [];
+// FIX: Updated generateMockPart1_ELA to use real data pools instead of hardcoded placeholders
+export const generateMockPart1_ELA = async (): Promise<Question[]> => {
+    const questions: Question[] = [];
+
+    // 1. Spelling (5 Questions from pool)
+    const spellingQuestions = shuffleArray(LOCAL_SPELLING_POOL).slice(0, 5).map(q => ({
+        ...q,
+        id: `mock-spell-${q.id}-${Date.now()}`
+    }));
+    questions.push(...spellingQuestions);
+
+    // 2. Vocabulary (10 Questions generated dynamically)
+    const vocabQuestions = await generateVocabTest(10);
+    vocabQuestions.forEach((q, idx) => {
+        q.id = `mock-vocab-${idx}-${Date.now()}`; 
+    });
+    questions.push(...vocabQuestions);
+
+    // 3. Grammar (15 Questions from pool)
+    const grammarQuestions = shuffleArray(LOCAL_GRAMMAR_POOL).slice(0, 15).map(q => ({
+        ...q,
+        id: `mock-gram-${q.id}-${Date.now()}`
+    }));
+    questions.push(...grammarQuestions);
+
+    // 4. Reading (Pick 1 random passage from fullReadingData)
     if (fullReadingData && fullReadingData.length > 0) {
-        // Pick one random passage for the mock test
         const shuffledPassages = shuffleArray(fullReadingData);
         const selectedPassage = shuffledPassages[0];
         
         if (selectedPassage && selectedPassage.questions) {
-            readingQuestions = selectedPassage.questions.map((q: any, idx: number) => ({
+            const readingQs = selectedPassage.questions.map((q: any, idx: number) => ({
                 id: `mock-reading-${Date.now()}-${idx}`,
                 category: Category.READING,
-                passage: selectedPassage.passage, // IMPORTANT: Include passage text on every question
+                passage: selectedPassage.passage, // IMPORTANT: Passage text needed for UI
                 questionText: q.questionText,
                 options: q.options,
                 correctAnswer: q.correctAnswer,
                 explanation: q.explanation
             }));
+            questions.push(...readingQs);
         }
     }
-    
-    // 3. Combine all sections
-    // Note: In a real test, they might be grouped, but shuffling them simulates the cognitive switching required in some exams, 
-    // or you can return them in order: [...readingQuestions, ...vocab, ...grammar, ...spelling, ...math]
-    const combined = [...readingQuestions, ...vocab, ...grammar, ...spelling, ...math];
-    
-    return combined;
-  } catch (e) {
-    console.error("Error generating mock test", e);
-    return [];
-  }
+
+    return questions;
 };
+
+// MOCK PART 2: MATH
+export const generateMockPart2_Math = async (): Promise<Question[]> => {
+    // 40 Math Questions from pool
+    const mathQuestions = shuffleArray(LOCAL_MATH_POOL).slice(0, 40).map(q => ({
+        ...q,
+        id: `mock-math-${q.id}-${Date.now()}`
+    }));
+    return mathQuestions;
+};
+
+
+// --- MAIN GENERATOR SWITCH ---
 
 export const generateQuestions = async (category: Category, count: number): Promise<Question[]> => {
     switch (category) {
-        case Category.VOCABULARY: return generateVocabTest(count);
-        case Category.GRAMMAR: return generateGrammarTest(count);
-        case Category.SPELLING: return generateSpellingTest(count);
-        case Category.MATH: return generateMathTest(count);
-        case Category.MOCK: return generateMockTest();
+        case Category.VOCABULARY: 
+             return generateVocabTest(count);
+        case Category.GRAMMAR: 
+             return generateGrammarTest(count);
+        case Category.SPELLING: 
+             return generateSpellingTest(count);
+        case Category.MATH: 
+             return generateMathTest(count);
+        
+        // MOCK HANDLER
+        case Category.MOCK: 
+             // Returns Part 1 (ELA) by default. The UI handles Part 2 separation if needed.
+             return generateMockPart1_ELA();
+
         case Category.READING: 
             const readingData = await generateReadingTest();
             if (readingData && readingData.length > 0 && readingData[0]) {
@@ -1355,6 +1385,8 @@ export const generateQuestions = async (category: Category, count: number): Prom
         default: return [];
     }
 };
+
+export const generateMockTest = async () => generateMockPart1_ELA(); 
 
 export const generateShortDefinitions = async (words: VocabularyWord[]): Promise<{ word: string, shortDef: string }[]> => {
   return words.map(w => ({
