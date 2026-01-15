@@ -257,7 +257,8 @@ const App: React.FC = () => {
           isSubmitted: false,
           score: 0,
           passage: passage || null,
-          startTime: Date.now()
+          startTime: Date.now(),
+          elapsedTime: 0 // Initialize elapsed time
         }
       }
     }));
@@ -274,6 +275,23 @@ const App: React.FC = () => {
           [category]: {
             ...currentSession,
             userAnswers
+          }
+        }
+      };
+    });
+  }, []);
+
+  const handleSaveTime = useCallback((category: Category, time: number) => {
+    setStats(prev => {
+      const currentSession = prev.activeSessions?.[category];
+      if (!currentSession) return prev;
+      return {
+        ...prev,
+        activeSessions: {
+          ...prev.activeSessions,
+          [category]: {
+            ...currentSession,
+            elapsedTime: time
           }
         }
       };
@@ -583,6 +601,7 @@ const App: React.FC = () => {
             onRecordOnly={handleRecordPracticeResults}
             onLogMistake={logMistake}
             onExit={() => setActiveView('dashboard')}
+            onSaveTime={handleSaveTime}
           />
         );
       default:
