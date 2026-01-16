@@ -110,6 +110,36 @@ const App: React.FC = () => {
   const syncInitiated = useRef(false);
 
   useEffect(() => {
+  const syncFromCloud = async () => {
+    if (stats.isLoggedIn && stats.email) {
+      try {
+        // In a real app, you'd call your DB here:
+        // const cloudDoc = await getDoc(doc(db, "users", stats.email));
+        // if (cloudDoc.exists()) setStats(cloudDoc.data());
+        console.log("Fetching data for:", stats.email);
+      } catch (error) {
+        console.error("Cloud sync error", error);
+      }
+    }
+  };
+  syncFromCloud();
+}, [stats.isLoggedIn, stats.email]);
+
+// 2. This EFFECT saves data to BOTH local and cloud whenever stats change
+useEffect(() => {
+  if (isInitialized.current) {
+    // Keep local storage as a backup
+    localStorage.setItem('mcvsd-stats', JSON.stringify(stats));
+
+    // If logged in, push to the cloud
+    if (stats.isLoggedIn && stats.email) {
+      // updateDoc(doc(db, "users", stats.email), stats);
+      console.log("Saving progress to cloud...");
+    }
+  }
+}, [stats]);
+
+  useEffect(() => {
     const saved = localStorage.getItem('mcvsd-stats');
     const savedRegistry = localStorage.getItem('mcvsd-grammar-registry');
     
