@@ -60,34 +60,53 @@ const Practice: React.FC<PracticeProps> = ({
   const [isHighlightMode, setIsHighlightMode] = useState(false);
   const passageRef = useRef<HTMLDivElement>(null);
 
+  // Keep ref in sync for cleanup/saving
   useEffect(() => {
     timerRef.current = timer;
   }, [timer]);
 
+  // --- TIMER SYNCHRONIZATION ---
+  // When category changes (or component mounts), reset timer to the session's saved time.
+  // Also handles saving the time when leaving the category.
   useEffect(() => {
+    // 1. Initialize Timer for the new view
+    if (session) {
+      setTimer(session.elapsedTime || 0);
+    } else {
+      setTimer(0);
+    }
+    setIsPaused(false);
+
+    // 2. Cleanup: Save time for the CURRENT category before switching or unmounting
     return () => {
+      // Use the ref to get the latest time value at the moment of unmount/switch
+      const timeToSave = timerRef.current;
+      // We need to check if a session exists effectively in the closure scope, 
+      // but 'session' here refers to the one being unmounted/switched FROM.
       if (session && !session.isSubmitted) {
-         onSaveTime(category, timerRef.current);
+         onSaveTime(category, timeToSave);
       }
     };
-  }, []);
+  }, [category]); // Dependency on 'category' ensures this runs when switching labs
 
+  // --- SESSION STATE SYNCHRONIZATION ---
   useEffect(() => {
     if (!session) {
       setIsSubmitted(false);
       setScore(0);
-      setTimer(0);
-      setIsPaused(false);
       setHighlights([]); // Reset highlights on new session
-    } else if (session.isSubmitted) {
-      setIsSubmitted(true);
+    } else {
+      // FIX: Explicitly sync isSubmitted state. 
+      // Previously only checked 'if (session.isSubmitted)', causing state leaks when switching to incomplete sessions.
+      setIsSubmitted(session.isSubmitted);
       setScore(session.score);
     }
   }, [session, category]);
 
-  // --- TIMER LOGIC ---
+  // --- TIMER TICK LOGIC ---
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>;
+    // Only tick if we have a session, not paused, not loading, and not submitted
     if (!isPaused && !loading && session && !isSubmitted) {
       interval = setInterval(() => {
         setTimer((prev) => prev + 1);
