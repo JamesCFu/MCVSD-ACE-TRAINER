@@ -8,11 +8,35 @@ interface ProfileProps {
   onLogout: () => void;
 }
 
-const Profile: React.FC<ProfileProps> = ({ stats, onReset, onLogin, onLogout }) => {
+const Profile: React.FC<ProfileProps> = ({ stats, onReset, onLogout }) => { // removed onLogin prop, we handle it internally
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [nameInput, setNameInput] = useState('');
-  const [emailInput, setEmailInput] = useState('');
+  
+  // Auth State
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
 
+  const handleAuthAction = async () => {
+    setErrorMsg('');
+    try {
+      if (isRegistering) {
+        // Sign Up
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        // Set display name
+        if (username) await updateProfile(userCredential.user, { displayName: username });
+      } else {
+        // Log In
+        await signInWithEmailAndPassword(auth, email, password);
+      }
+      // App.tsx listener will handle the rest!
+    } catch (error: any) {
+      console.error(error);
+      setErrorMsg(error.message.replace("Firebase: ", ""));
+    }
+  };
+  
   const globalAccuracy = useMemo(() => {
     if (!stats.questionsAnswered) return 0;
     return Math.round((stats.totalCorrect / stats.questionsAnswered) * 100);
@@ -79,45 +103,63 @@ const Profile: React.FC<ProfileProps> = ({ stats, onReset, onLogin, onLogout }) 
 
            {!stats.isLoggedIn ? (
              <div className="max-w-md">
-               <p className="text-indigo-200 mb-6 text-sm font-medium leading-relaxed">
-                 Sign in to claim your diagnostic history and personalize your certificate.
+               <p className="text-indigo-200 mb-6 text-sm font-medium">
+                 {isRegistering ? "Create a secure cloud account to save your progress." : "Sign in to sync your progress across devices."}
                </p>
+               
                <div className="space-y-4">
+                 {isRegistering && (
+                   <div>
+                     <label className="text-[10px] font-black uppercase text-indigo-400 tracking-widest mb-1 block">Username</label>
+                     <input 
+                        type="text" 
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        className="w-full bg-indigo-900/50 border border-indigo-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-400 font-bold"
+                        placeholder="Future Scholar"
+                     />
+                   </div>
+                 )}
+                 
                  <div>
-                   <label className="text-[10px] font-black uppercase text-indigo-400 tracking-widest mb-1 block">Full Name</label>
-                   <input 
-                      type="text" 
-                      value={nameInput}
-                      onChange={(e) => setNameInput(e.target.value)}
-                      placeholder="Enter Student Name"
-                      className="w-full bg-indigo-900/50 border border-indigo-700 rounded-xl px-4 py-3 text-white placeholder-indigo-400/50 focus:outline-none focus:border-indigo-400 transition-colors font-bold"
-                   />
-                 </div>
-                 <div>
-                   <label className="text-[10px] font-black uppercase text-indigo-400 tracking-widest mb-1 block">Email Address</label>
+                   <label className="text-[10px] font-black uppercase text-indigo-400 tracking-widest mb-1 block">Email</label>
                    <input 
                       type="email" 
-                      value={emailInput}
-                      onChange={(e) => setEmailInput(e.target.value)}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full bg-indigo-900/50 border border-indigo-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-400 font-medium"
                       placeholder="student@example.com"
-                      className="w-full bg-indigo-900/50 border border-indigo-700 rounded-xl px-4 py-3 text-white placeholder-indigo-400/50 focus:outline-none focus:border-indigo-400 transition-colors font-medium"
                    />
                  </div>
-                 // Profile.tsx - Update the Login Button
-<button 
-  onClick={() => {
-    if (nameInput.trim() && emailInput.includes('@')) {
-      // Pass the real credentials to the parent
-      onLogin(nameInput, emailInput);
-    } else {
-      alert("Please enter a valid name and email to enable cloud sync.");
-    }
-  }}
-  className="w-full bg-indigo-500 hover:bg-indigo-400 text-white font-black py-4 rounded-xl transition-all shadow-lg"
->
-  Enable Cloud Saving
-</button>
-                
+
+                 <div>
+                   <label className="text-[10px] font-black uppercase text-indigo-400 tracking-widest mb-1 block">Password</label>
+                   <input 
+                      type="password" 
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full bg-indigo-900/50 border border-indigo-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-400 font-medium"
+                      placeholder="••••••••"
+                   />
+                 </div>
+
+                 {errorMsg && <p className="text-rose-400 text-xs font-bold">{errorMsg}</p>}
+
+                 <button 
+                   onClick={handleAuthAction}
+                   className="w-full bg-indigo-500 hover:bg-indigo-400 text-white font-black py-4 rounded-xl transition-all shadow-lg"
+                 >
+                   {isRegistering ? "Create Account" : "Access Cloud Data"}
+                 </button>
+
+                 <div className="text-center mt-4">
+                   <button 
+                     onClick={() => setIsRegistering(!isRegistering)}
+                     className="text-indigo-300 text-xs font-bold hover:text-white underline"
+                   >
+                     {isRegistering ? "Already have an account? Sign In" : "Need an account? Register"}
+                   </button>
+                 </div>
                </div>
              </div>
            ) : (
@@ -126,7 +168,11 @@ const Profile: React.FC<ProfileProps> = ({ stats, onReset, onLogin, onLogout }) 
                    <div className="text-[10px] font-black uppercase text-indigo-400 tracking-widest mb-1">Active Scholar</div>
                    <div className="text-3xl font-black mb-1">{stats.username}</div>
                    <div className="text-indigo-300 font-medium text-sm">{stats.email}</div>
+                   <div className="text-[10px] font-black uppercase text-emerald-400 tracking-widest mb-1">● Cloud Connected</div>
+                   <div className="text-3xl font-black mb-1">{stats.username}</div>
+                   <div className="text-indigo-300 font-medium text-sm">{stats.email}</div>
                 </div>
+                
                 <button 
                    onClick={onLogout}
                    className="px-8 py-3 border border-indigo-700 text-indigo-300 rounded-xl font-bold uppercase text-[10px] tracking-widest hover:bg-indigo-900 hover:text-white transition-all"
