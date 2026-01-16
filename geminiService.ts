@@ -1233,20 +1233,15 @@ export const generateVocabulary = async (): Promise<VocabularyWord[]> => {
   return FULL_PREP_VOCAB;
 };
 
-// Helper to get raw reading data (passage + questions structure)
 export const generateReadingTest = async (): Promise<any[]> => {
   if (!fullReadingData || fullReadingData.length === 0) return [];
   const shuffled = shuffleArray(fullReadingData);
-  // Return the raw passage objects
   return shuffled.length > 0 ? [shuffled[0]] : [];
 };
 
-
 export const generateVocabTest = async (count: number): Promise<Question[]> => {
   if (!FULL_PREP_VOCAB || FULL_PREP_VOCAB.length === 0) return [];
-  
   const shuffledWords = shuffleArray(FULL_PREP_VOCAB).slice(0, count);
-  
   return shuffledWords.map((word, index) => {
     const isDefinitionQuestion = Math.random() > 0.5;
     const distractors = shuffleArray(FULL_PREP_VOCAB.filter(w => w.word !== word.word))
@@ -1333,7 +1328,6 @@ export const generateMockPart2_Math = async (): Promise<Question[]> => {
     }));
     return mathQuestions;
 };
-
 
 // --- MAIN GENERATOR SWITCH ---
 export const generateQuestions = async (category: Category, count: number): Promise<Question[]> => {
