@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useLayoutEffect, useMemo } from 'react';
 import { Category, Question, PracticeSession } from '../types';
 import { 
   generateQuestions, 
@@ -11,7 +11,7 @@ interface PracticeProps {
   category: Category;
   session: PracticeSession | null;
   onStartSession: (category: Category, questions: Question[], passage?: string | null) => void;
-  // UPDATED: Now accepts highlights as the 3rd argument
+  // Now accepts highlights as the 3rd argument
   onUpdateSession: (category: Category, userAnswers: Record<string, number>, highlights?: Highlight[]) => void;
   onCompleteSession: (category: Category, score: number) => void;
   onClearSession: (category: Category) => void;
@@ -61,6 +61,9 @@ const Practice: React.FC<PracticeProps> = ({
   const [isHighlightMode, setIsHighlightMode] = useState(false);
   const passageRef = useRef<HTMLDivElement>(null);
 
+  // --- READING NAV STATE (For multiple passages) ---
+  const [currentPassageIndex, setCurrentPassageIndex] = useState(0);
+
   // --- MOCK READING POP-OUT STATE ---
   const [mockReadingMode, setMockReadingMode] = useState<{passage: string, questions: Question[]} | null>(null);
 
@@ -93,6 +96,7 @@ const Practice: React.FC<PracticeProps> = ({
       setScore(0);
       setHighlights([]); 
       setMockReadingMode(null);
+      setCurrentPassageIndex(0);
     } else {
       setIsSubmitted(session.isSubmitted);
       setScore(session.score);
@@ -155,7 +159,7 @@ const Practice: React.FC<PracticeProps> = ({
     onUpdateSession(category, session.userAnswers, newHighlights);
   };
 
-  // --- HIGHLIGHTING LOGIC (Fixed: Word Snap + Trim) ---
+  // --- HIGHLIGHTING LOGIC ---
   const handlePassageMouseUp = (passageText: string) => {
     if (!isHighlightMode || !passageRef.current) return;
 
@@ -163,11 +167,8 @@ const Practice: React.FC<PracticeProps> = ({
     if (!selection || selection.rangeCount === 0 || selection.isCollapsed) return;
 
     const range = selection.getRangeAt(0);
-    
-    // Ensure selection is strictly inside the passage text
     if (!passageRef.current.contains(range.commonAncestorContainer)) return;
 
-    // 1. Calculate RAW start/end based on DOM
     const preSelectionRange = range.cloneRange();
     preSelectionRange.selectNodeContents(passageRef.current);
     preSelectionRange.setEnd(range.startContainer, range.startOffset);
@@ -176,39 +177,22 @@ const Practice: React.FC<PracticeProps> = ({
     let end = start + range.toString().length;
     const fullText = passageText;
 
-    // Safety check for bounds
     if (start < 0) start = 0;
     if (end > fullText.length) end = fullText.length;
 
-    // 2. TRIM: Contract selection to remove leading/trailing whitespace
-    while (start < end && /\s/.test(fullText[start])) {
-      start++;
-    }
-    while (end > start && /\s/.test(fullText[end - 1])) {
-      end--;
-    }
+    while (start < end && /\s/.test(fullText[start])) start++;
+    while (end > start && /\s/.test(fullText[end - 1])) end--;
 
     if (start >= end) {
       selection.removeAllRanges();
-      return; // Selection was only whitespace
+      return; 
     }
 
-    // 3. EXPAND: Extend selection outwards to nearest word boundaries
-    // Go left until we hit a space or start of string
-    while (start > 0 && /\S/.test(fullText[start - 1])) {
-      start--;
-    }
-    // Go right until we hit a space or end of string
-    while (end < fullText.length && /\S/.test(fullText[end])) {
-      end++;
-    }
+    while (start > 0 && /\S/.test(fullText[start - 1])) start--;
+    while (end < fullText.length && /\S/.test(fullText[end])) end++;
 
     const text = fullText.slice(start, end);
-
-    // Remove any existing highlights that overlap with the new one
-    const cleanHighlights = highlights.filter(h => 
-      (h.end <= start) || (h.start >= end)
-    );
+    const cleanHighlights = highlights.filter(h => (h.end <= start) || (h.start >= end));
 
     const newHighlight: Highlight = {
       id: Date.now().toString(),
@@ -219,38 +203,31 @@ const Practice: React.FC<PracticeProps> = ({
 
     const updatedHighlights = [...cleanHighlights, newHighlight];
     setHighlights(updatedHighlights);
-    saveSessionState(updatedHighlights); // SAVE TO SESSION
+    saveSessionState(updatedHighlights);
     selection.removeAllRanges();
   };
 
   const removeHighlight = (id: string) => {
     const updatedHighlights = highlights.filter(h => h.id !== id);
     setHighlights(updatedHighlights);
-    saveSessionState(updatedHighlights); // SAVE TO SESSION
+    saveSessionState(updatedHighlights); 
   };
 
   const clearAllHighlights = () => {
     setHighlights([]);
-    saveSessionState([]); // SAVE TO SESSION
+    saveSessionState([]); 
   };
 
   const renderPassageWithHighlights = (text: string) => {
     if (highlights.length === 0) return text;
-
-    // Sort by start position
     const sorted = [...highlights].sort((a, b) => a.start - b.start);
     const elements = [];
     let lastIndex = 0;
 
     sorted.forEach((h) => {
-      // 1. Text before highlight
       if (h.start > lastIndex) {
-        elements.push(
-          <span key={`text-${lastIndex}`}>{text.slice(lastIndex, h.start)}</span>
-        );
+        elements.push(<span key={`text-${lastIndex}`}>{text.slice(lastIndex, h.start)}</span>);
       }
-      
-      // 2. The Highlighted text
       const safeEnd = Math.min(h.end, text.length);
       if (h.start < text.length) {
          elements.push(
@@ -267,13 +244,9 @@ const Practice: React.FC<PracticeProps> = ({
       lastIndex = safeEnd;
     });
 
-    // 3. Remaining text
     if (lastIndex < text.length) {
-      elements.push(
-        <span key={`text-end`}>{text.slice(lastIndex)}</span>
-      );
+      elements.push(<span key={`text-end`}>{text.slice(lastIndex)}</span>);
     }
-
     return elements;
   };
 
@@ -288,6 +261,7 @@ const Practice: React.FC<PracticeProps> = ({
     setIsPaused(false);
     setHighlights([]); 
     setMockReadingMode(null);
+    setCurrentPassageIndex(0);
     
     if (session) {
         onClearSession(category);
@@ -298,12 +272,9 @@ const Practice: React.FC<PracticeProps> = ({
       let passage: string | null = null;
       
       if (category === Category.READING) {
-         const readingResponse = await generateReadingTest();
-         const activePassage = Array.isArray(readingResponse) ? readingResponse[0] : readingResponse;
-         if (activePassage) {
-           passage = activePassage.passage; 
-           data = activePassage.questions || [];
-         }
+         // This now returns questions for 3 unique passages
+         data = await generateReadingTest();
+         // We do not set a single 'passage' here because it varies per question
       } else if (category === Category.MOCK) {
          data = await generateMockPart1_ELA();
       } else {
@@ -322,7 +293,6 @@ const Practice: React.FC<PracticeProps> = ({
   const handleOptionSelect = (questionId: string, optionIndex: number) => {
     if (isSubmitted || !session) return;
     const newAnswers = { ...session.userAnswers, [questionId]: optionIndex };
-    // Pass current highlights along with new answers to prevent data loss
     onUpdateSession(category, newAnswers, highlights);
   };
 
@@ -331,26 +301,18 @@ const Practice: React.FC<PracticeProps> = ({
 
     if (category === Category.MOCK) {
        const currentStage = localStorage.getItem('mock_stage') || 'ELA';
-       
        if (currentStage === 'ELA' || !session.mockStage) {
-           // ELA Stage Complete -> Move to Math
            let elaScore = 0;
            session.questions.forEach(q => {
              if (session.userAnswers[q.id] === q.correctAnswer) elaScore++;
            });
-
            setLoading(true);
            try {
                const mathQuestions = await generateMockPart2_Math();
                const elaTotal = session.questions.length;
-               
-               // Save intermediate state
                localStorage.setItem('mock_ela_result', JSON.stringify({ score: elaScore, total: elaTotal }));
                localStorage.setItem('mock_stage', 'MATH');
-               
-               // Start Math
                onStartSession(category, mathQuestions, null); 
-               
            } catch(e) {
                console.error("Failed to load Math", e);
            } finally {
@@ -359,9 +321,7 @@ const Practice: React.FC<PracticeProps> = ({
            }
            return;
        }
-       
        if (currentStage === 'MATH') {
-            // Math Stage Complete -> Finish
             let mathScore = 0;
             const mistakes: Question[] = [];
             session.questions.forEach(q => {
@@ -372,17 +332,13 @@ const Practice: React.FC<PracticeProps> = ({
                 onLogMistake(q);
               }
             });
-            
             const elaData = JSON.parse(localStorage.getItem('mock_ela_result') || '{"score":0, "total":0}');
             const finalScore = mathScore + elaData.score;
             const finalTotal = session.questions.length + elaData.total;
-            
             setScore(finalScore);
             setIsSubmitted(true);
-            
             localStorage.removeItem('mock_ela_result');
             localStorage.removeItem('mock_stage');
-            
             onRecordOnly(category, finalScore, finalTotal, mistakes, session.questions); 
             onCompleteSession(category, finalScore);
             window.scrollTo(0,0);
@@ -390,10 +346,8 @@ const Practice: React.FC<PracticeProps> = ({
        }
     }
 
-    // Standard Submit
     let calculatedScore = 0;
     const mistakes: Question[] = [];
-
     session.questions.forEach(q => {
       if (session.userAnswers[q.id] === q.correctAnswer) {
         calculatedScore++;
@@ -405,7 +359,6 @@ const Practice: React.FC<PracticeProps> = ({
 
     setScore(calculatedScore);
     setIsSubmitted(true);
-    
     onRecordOnly(category, calculatedScore, session.questions.length, mistakes, session.questions);
     onCompleteSession(category, calculatedScore);
     window.scrollTo(0,0);
@@ -455,11 +408,18 @@ const Practice: React.FC<PracticeProps> = ({
   }
 
   const { questions, userAnswers } = session;
-  const activePassage = session.passage;
   const mockStage = localStorage.getItem('mock_stage') || 'ELA';
 
-  // --- SPLIT VIEW RENDERER (Used for Reading Lab OR Mock Reading Pop-out) ---
-  const renderSplitView = (passageText: string, activeQuestions: Question[], isPopOut: boolean) => {
+  // --- SPLIT VIEW RENDERER ---
+  const renderSplitView = (
+      passageText: string, 
+      activeQuestions: Question[], 
+      isPopOut: boolean, 
+      uniquePassagesCount: number = 1
+  ) => {
+    // Check if user has answered ALL questions in the entire session
+    const allAnswered = questions.every(q => userAnswers[q.id] !== undefined);
+
     return (
       <div className="h-[calc(100vh-6rem)] flex flex-col animate-in fade-in duration-500 fixed inset-0 z-50 bg-slate-50 md:relative md:h-[calc(100vh-6rem)] md:z-0">
         {/* Header */}
@@ -470,7 +430,11 @@ const Practice: React.FC<PracticeProps> = ({
                   {isPopOut && <span className="bg-indigo-600 text-white text-[10px] px-2 py-0.5 rounded-full uppercase tracking-widest">Expanded View</span>}
               </h2>
               <div className="flex items-center gap-2 mt-1">
-                 <span className="text-[10px] font-black uppercase bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-md">Passage Analysis</span>
+                 {uniquePassagesCount > 1 && (
+                     <span className="text-[10px] font-black uppercase bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-md">
+                        Passage {currentPassageIndex + 1} of {uniquePassagesCount}
+                     </span>
+                 )}
                  <span className="text-[10px] font-bold text-slate-400">⏱ {formatTime(timer)}</span>
               </div>
            </div>
@@ -484,16 +448,42 @@ const Practice: React.FC<PracticeProps> = ({
                     }} 
                     className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-black uppercase text-xs tracking-widest hover:bg-indigo-700 transition-all shadow-lg flex items-center gap-2"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     Return to Exam
                   </button>
               ) : (
                   <>
                     <button onClick={onExit} className="px-6 py-3 text-slate-400 font-bold hover:text-slate-600 text-xs uppercase tracking-wider">Exit</button>
                     {!isSubmitted ? (
-                        <button onClick={handleSubmit} className="px-8 py-3 bg-indigo-600 text-white rounded-xl font-black uppercase text-xs tracking-widest shadow-lg hover:bg-indigo-700 transition-all">Submit</button>
+                        uniquePassagesCount > 1 && currentPassageIndex < uniquePassagesCount - 1 ? (
+                           // NEXT PASSAGE BUTTON
+                           <button 
+                              onClick={() => {
+                                  // Clear highlights for the new passage view (optional, or persist per passage)
+                                  // For simplicity, we clear visualization but state is saved in session if needed
+                                  setHighlights([]); 
+                                  setCurrentPassageIndex(prev => prev + 1);
+                              }}
+                              className="px-8 py-3 bg-indigo-600 text-white rounded-xl font-black uppercase text-xs tracking-widest shadow-lg hover:bg-indigo-700 transition-all"
+                           >
+                             Next Passage &rarr;
+                           </button>
+                        ) : (
+                           // SUBMIT BUTTON (Only if all questions answered)
+                           <button 
+                              onClick={handleSubmit} 
+                              disabled={!allAnswered}
+                              className={`px-8 py-3 rounded-xl font-black uppercase text-xs tracking-widest shadow-lg transition-all ${
+                                 !allAnswered 
+                                 ? 'bg-slate-200 text-slate-400 cursor-not-allowed' 
+                                 : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                              }`}
+                              title={!allAnswered ? "Please answer all questions before submitting." : "Submit"}
+                           >
+                             Submit
+                           </button>
+                        )
                     ) : (
-                        <button onClick={handleStart} className="px-8 py-3 bg-white border-2 border-indigo-600 text-indigo-600 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-indigo-50 transition-all">Next Passage</button>
+                        <button onClick={handleStart} className="px-8 py-3 bg-white border-2 border-indigo-600 text-indigo-600 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-indigo-50 transition-all">Start New Lab</button>
                     )}
                   </>
               )}
@@ -550,11 +540,11 @@ const Practice: React.FC<PracticeProps> = ({
            {/* Right Pane: Questions */}
            <div style={{ width: `${100 - leftPanelWidth}%` }} className="h-full overflow-y-auto p-8 bg-slate-50/50">
               
-              {/* --- PROGRESS BAR (Only for full Reading Lab, not Pop-out subset) --- */}
               {!isPopOut && (
                   <div className="mb-8 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm sticky top-0 z-10">
                       <div className="flex justify-between items-end mb-3">
                           <span className="text-[10px] font-black uppercase text-indigo-400 tracking-widest">Lab Progress</span>
+                          {/* Show total progress across ALL questions, not just current passage */}
                           <span className="text-xs font-bold text-slate-700">{Object.keys(userAnswers).length} / {questions.length} Completed</span>
                       </div>
                       <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
@@ -568,14 +558,13 @@ const Practice: React.FC<PracticeProps> = ({
 
               <div className="space-y-8 pb-20">
                  {activeQuestions.map((q, idx) => {
-                    // Find actual index in the main session if needed, but here we just map the subset
-                    // We need to access userAnswers by q.id which works globally
                     const isCorrect = userAnswers[q.id] === q.correctAnswer;
+                    // Calculate absolute index if needed, but local index is fine for display
                     return (
                        <div key={q.id} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                           <div className="flex gap-4 mb-4">
                              <span className="w-6 h-6 bg-slate-900 text-white rounded-md flex items-center justify-center font-bold text-xs shrink-0">
-                                 {isPopOut ? questions.findIndex(quest => quest.id === q.id) + 1 : idx + 1}
+                                 {questions.findIndex(quest => quest.id === q.id) + 1}
                              </span>
                              <p className="font-bold text-slate-800">{q.questionText}</p>
                           </div>
@@ -624,9 +613,19 @@ const Practice: React.FC<PracticeProps> = ({
       return renderSplitView(mockReadingMode.passage, mockReadingMode.questions, true);
   }
 
-  // 2. If standard Reading Lab (Category.READING)
-  if (category === Category.READING && activePassage) {
-      return renderSplitView(activePassage, questions, false);
+  // 2. If standard Reading Lab (Category.READING) - Handles Multiple Passages
+  if (category === Category.READING && questions.length > 0) {
+      // Extract unique passages from the questions list
+      // We rely on the order of questions; usually grouped by passage from generator
+      // We can create a map or set to identify unique passages
+      const uniquePassages = Array.from(new Set(questions.map(q => q.passage || ""))).filter(p => p !== "");
+      
+      if (uniquePassages.length > 0) {
+          const activePassageText = uniquePassages[currentPassageIndex];
+          const activeQuestions = questions.filter(q => q.passage === activePassageText);
+          
+          return renderSplitView(activePassageText, activeQuestions, false, uniquePassages.length);
+      }
   }
 
   // 3. Standard Layout (Mock, Vocab, etc.)
@@ -679,7 +678,7 @@ const Practice: React.FC<PracticeProps> = ({
                              onClick={() => {
                                  // Filter all questions in this session that share the same passage
                                  const relevantQs = questions.filter(quest => quest.passage === q.passage);
-                                 setHighlights(session?.highlights || []); // Restore session highlights
+                                 setHighlights(session?.highlights || []); 
                                  setIsHighlightMode(false);
                                  setMockReadingMode({ passage: q.passage!, questions: relevantQs });
                              }}
@@ -758,8 +757,10 @@ const Practice: React.FC<PracticeProps> = ({
               </div>
               <button 
                 onClick={handleSubmit}
+                // STRICT CHECK: Disable if not all questions answered
                 disabled={Object.keys(userAnswers).length < questions.length}
                 className={`px-10 py-4 rounded-2xl font-black uppercase text-xs tracking-[0.2em] transition-all shadow-lg w-full md:w-auto ${Object.keys(userAnswers).length < questions.length ? 'bg-slate-700 text-slate-500 cursor-not-allowed' : 'bg-white text-indigo-900 hover:bg-indigo-50 hover:scale-105 active:scale-95'}`}
+                title={Object.keys(userAnswers).length < questions.length ? "Complete all questions to submit" : "Submit Exam"}
               >
                 {getSubmitButtonText()}
               </button>
