@@ -133,16 +133,15 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     const restOfPool = words.filter(w => !mainBatch.some(mb => mb.word === w.word));
     
     // C. Prioritize Starred Words
-    // We use the current starredSet here, but we removed it from the dependency array 
-    // to snapshot the list for the stage duration.
+    // We filter the rest of the pool for starred words
     const starredInPool = restOfPool.filter(w => starredSet.has(w.word));
     const nonStarredInPool = restOfPool.filter(w => !starredSet.has(w.word));
     
-    // Helper sort function - Uses viewingDay as seed to shuffle differently every stage.
-    // This ensures that even if we have 50 starred words, we get a RANDOM 5 each stage.
+    // Helper sort function - Uses viewingDay AND currentSeed to shuffle differently every stage.
+    // This ensures that we get a RANDOM 5 starred words each stage from the available pool.
     const sortFn = (a: VocabularyWord, b: VocabularyWord) => {
-       const hashA = hashString(a.word + `stage-${viewingDay}`);
-       const hashB = hashString(b.word + `stage-${viewingDay}`);
+       const hashA = hashString(a.word + `stage-${viewingDay}-seed-${currentSeed}`);
+       const hashB = hashString(b.word + `stage-${viewingDay}-seed-${currentSeed}`);
        return hashA - hashB;
     };
 
@@ -161,8 +160,8 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     
     return [...mainBatch, ...reviewBatch].sort((a, b) => a.word.localeCompare(b.word));
     
-    // We intentionally exclude 'starredSet' from deps to keep the review words stable for the session/stage
-  }, [words, viewingDay, isStarredReviewMode]); 
+    // Included currentSeed in dependencies to refresh randomization on day advance
+  }, [words, viewingDay, isStarredReviewMode, currentSeed]); 
 
   // Filtered List for Search
   const filteredDailyWords = useMemo(() => {
