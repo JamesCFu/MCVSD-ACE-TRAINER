@@ -1233,10 +1233,31 @@ export const generateVocabulary = async (): Promise<VocabularyWord[]> => {
   return FULL_PREP_VOCAB;
 };
 
-export const generateReadingTest = async (): Promise<any[]> => {
+// UPDATED: Now returns questions for 3 distinct passages
+export const generateReadingTest = async (): Promise<Question[]> => {
   if (!fullReadingData || fullReadingData.length === 0) return [];
-  const shuffled = shuffleArray(fullReadingData);
-  return shuffled.length > 0 ? [shuffled[0]] : [];
+  
+  // 1. Shuffle and pick 3 unique passages
+  // (If data has fewer than 3, we take what we have)
+  const distinctPassages = shuffleArray(fullReadingData).slice(0, 3);
+  
+  const allQuestions: Question[] = [];
+
+  // 2. Map questions from each passage
+  distinctPassages.forEach((passageObj, pIndex) => {
+      const passageQuestions = passageObj.questions.map((q: any, qIdx: number) => ({
+        id: `reading-${passageObj.id}-${pIndex}-${qIdx}-${Date.now()}`,
+        category: Category.READING,
+        passage: passageObj.passage, // Attach the specific passage to the question
+        questionText: q.questionText || q.question,
+        options: q.options || [],
+        correctAnswer: q.correctAnswer,
+        explanation: q.explanation || ""
+      }));
+      allQuestions.push(...passageQuestions);
+  });
+
+  return allQuestions;
 };
 
 export const generateVocabTest = async (count: number): Promise<Question[]> => {
@@ -1288,26 +1309,17 @@ export const generateMathTest = async (count: number): Promise<Question[]> => {
 // MOCK PART 1: ELA
 export const generateMockPart1_ELA = async (): Promise<Question[]> => {
     const questions: Question[] = [];
-
-    // 1. Add Spelling (5 Questions)
     questions.push(...shuffleArray(LOCAL_SPELLING_POOL).slice(0, 5));
-
-    // 2. Add Vocabulary (10 Questions)
     questions.push(...await generateVocabTest(10));
-
-    // 3. Add Grammar (15 Questions)
     questions.push(...shuffleArray(LOCAL_GRAMMAR_POOL).slice(0, 15));
 
-    // 4. Add Reading (1 Full Random Passage from readingData.ts)
     if (fullReadingData && fullReadingData.length > 0) {
-        // Randomly select ONE passage
+        // Randomly select ONE passage for the mock (keeping mock somewhat shorter than full reading lab)
         const selectedPassage = fullReadingData[Math.floor(Math.random() * fullReadingData.length)];
-        
-        // Map ALL questions associated with that passage
         const readingQs = selectedPassage.questions.map((q: any, idx: number) => ({
             id: `mock-reading-${selectedPassage.id}-${idx}`,
             category: Category.READING,
-            passage: selectedPassage.passage, // THE FULL PASSAGE
+            passage: selectedPassage.passage,
             questionText: q.questionText,
             options: q.options,
             correctAnswer: q.correctAnswer,
@@ -1321,7 +1333,6 @@ export const generateMockPart1_ELA = async (): Promise<Question[]> => {
 
 // MOCK PART 2: MATH
 export const generateMockPart2_Math = async (): Promise<Question[]> => {
-    // 40 Math Questions from pool
     const mathQuestions = shuffleArray(LOCAL_MATH_POOL).slice(0, 40).map(q => ({
         ...q,
         id: `mock-math-${q.id}-${Date.now()}`
@@ -1339,21 +1350,8 @@ export const generateQuestions = async (category: Category, count: number): Prom
         case Category.MOCK: return generateMockPart1_ELA();
         
         case Category.READING: 
-            // 1. Get a random passage object from readingData.ts
-            if (!fullReadingData || fullReadingData.length === 0) return [];
-            const randomPassageObj = fullReadingData[Math.floor(Math.random() * fullReadingData.length)];
-            
-            // 2. Map the passage's specific questions into the Question interface
-            // IMPORTANT: We attach the full 'passage' string to every single question
-            return randomPassageObj.questions.map((q: any, idx: number) => ({
-                id: `reading-${randomPassageObj.id}-${idx}-${Date.now()}`,
-                category: Category.READING,
-                passage: randomPassageObj.passage, // THE FULL PASSAGE
-                questionText: q.questionText || q.question,
-                options: q.options || [],
-                correctAnswer: q.correctAnswer,
-                explanation: q.explanation || ""
-            }));
+            // UPDATED: Calls the new 3-passage generator
+            return generateReadingTest();
 
         default: return [];
     }
@@ -1367,4 +1365,3 @@ export const generateShortDefinitions = async (words: VocabularyWord[]): Promise
     shortDef: w.definition.split(' ').slice(0, 6).join(' ') + (w.definition.split(' ').length > 6 ? '...' : '')
   }));
 };
-
