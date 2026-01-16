@@ -60,6 +60,9 @@ const Practice: React.FC<PracticeProps> = ({
   const [isHighlightMode, setIsHighlightMode] = useState(false);
   const passageRef = useRef<HTMLDivElement>(null);
 
+  // --- MOCK READING POP-OUT STATE ---
+  const [mockReadingMode, setMockReadingMode] = useState<{passage: string, questions: Question[]} | null>(null);
+
   // Keep ref in sync for cleanup/saving
   useEffect(() => {
     timerRef.current = timer;
@@ -88,6 +91,7 @@ const Practice: React.FC<PracticeProps> = ({
       setIsSubmitted(false);
       setScore(0);
       setHighlights([]); 
+      setMockReadingMode(null);
     } else {
       setIsSubmitted(session.isSubmitted);
       setScore(session.score);
@@ -140,8 +144,8 @@ const Practice: React.FC<PracticeProps> = ({
   }, [isDragging, resize, stopResizing]);
 
   // --- HIGHLIGHTING LOGIC (Fixed: Word Snap + Trim) ---
-  const handlePassageMouseUp = () => {
-    if (!isHighlightMode || !passageRef.current || !session?.passage) return;
+  const handlePassageMouseUp = (passageText: string) => {
+    if (!isHighlightMode || !passageRef.current) return;
 
     const selection = window.getSelection();
     if (!selection || selection.rangeCount === 0 || selection.isCollapsed) return;
@@ -158,7 +162,7 @@ const Practice: React.FC<PracticeProps> = ({
     
     let start = preSelectionRange.toString().length;
     let end = start + range.toString().length;
-    const fullText = session.passage;
+    const fullText = passageText;
 
     // Safety check for bounds
     if (start < 0) start = 0;
@@ -266,6 +270,7 @@ const Practice: React.FC<PracticeProps> = ({
     setTimer(0);
     setIsPaused(false);
     setHighlights([]); 
+    setMockReadingMode(null);
     
     if (session) {
         onClearSession(category);
@@ -431,36 +436,56 @@ const Practice: React.FC<PracticeProps> = ({
     );
   }
 
-  const { questions, userAnswers, passage } = session;
+  const { questions, userAnswers } = session;
+  const activePassage = session.passage;
   const mockStage = localStorage.getItem('mock_stage') || 'ELA';
 
-  // --- READING LAB SPLIT LAYOUT ---
-  if (category === Category.READING && passage) {
+  // --- SPLIT VIEW RENDERER (Used for Reading Lab OR Mock Reading Pop-out) ---
+  const renderSplitView = (passageText: string, activeQuestions: Question[], isPopOut: boolean) => {
     return (
-      <div className="h-[calc(100vh-6rem)] flex flex-col animate-in fade-in duration-500">
+      <div className="h-[calc(100vh-6rem)] flex flex-col animate-in fade-in duration-500 fixed inset-0 z-50 bg-slate-50 md:relative md:h-[calc(100vh-6rem)] md:z-0">
         {/* Header */}
-        <div className="flex justify-between items-center mb-6 px-2 shrink-0">
+        <div className="flex justify-between items-center mb-4 px-4 py-2 shrink-0 bg-white md:bg-transparent shadow-sm md:shadow-none border-b md:border-none border-slate-100">
            <div>
-              <h2 className="text-2xl font-black text-slate-900 tracking-tight uppercase">Reading Lab</h2>
+              <h2 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight uppercase flex items-center gap-3">
+                  {isPopOut ? "Mock Reading Lab" : "Reading Lab"}
+                  {isPopOut && <span className="bg-indigo-600 text-white text-[10px] px-2 py-0.5 rounded-full uppercase tracking-widest">Expanded View</span>}
+              </h2>
               <div className="flex items-center gap-2 mt-1">
                  <span className="text-[10px] font-black uppercase bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-md">Passage Analysis</span>
                  <span className="text-[10px] font-bold text-slate-400">⏱ {formatTime(timer)}</span>
               </div>
            </div>
            <div className="flex gap-3">
-              <button onClick={onExit} className="px-6 py-3 text-slate-400 font-bold hover:text-slate-600 text-xs uppercase tracking-wider">Exit</button>
-              {!isSubmitted ? (
-                 <button onClick={handleSubmit} className="px-8 py-3 bg-indigo-600 text-white rounded-xl font-black uppercase text-xs tracking-widest shadow-lg hover:bg-indigo-700 transition-all">Submit</button>
+              {isPopOut ? (
+                  <button 
+                    onClick={() => {
+                        setMockReadingMode(null);
+                        setHighlights([]);
+                        setIsHighlightMode(false);
+                    }} 
+                    className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-black uppercase text-xs tracking-widest hover:bg-indigo-700 transition-all shadow-lg flex items-center gap-2"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    Return to Exam
+                  </button>
               ) : (
-                 <button onClick={handleStart} className="px-8 py-3 bg-white border-2 border-indigo-600 text-indigo-600 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-indigo-50 transition-all">Next Passage</button>
+                  <>
+                    <button onClick={onExit} className="px-6 py-3 text-slate-400 font-bold hover:text-slate-600 text-xs uppercase tracking-wider">Exit</button>
+                    {!isSubmitted ? (
+                        <button onClick={handleSubmit} className="px-8 py-3 bg-indigo-600 text-white rounded-xl font-black uppercase text-xs tracking-widest shadow-lg hover:bg-indigo-700 transition-all">Submit</button>
+                    ) : (
+                        <button onClick={handleStart} className="px-8 py-3 bg-white border-2 border-indigo-600 text-indigo-600 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-indigo-50 transition-all">Next Passage</button>
+                    )}
+                  </>
               )}
            </div>
         </div>
 
         {/* Split Panes */}
-        <div ref={containerRef} className="flex-1 flex overflow-hidden pb-4 relative bg-white rounded-3xl shadow-sm border border-slate-200">
+        <div ref={containerRef} className="flex-1 flex overflow-hidden pb-4 relative bg-white rounded-3xl shadow-sm border border-slate-200 mx-2 mb-2 md:mx-0 md:mb-0">
            {/* Left Pane: Passage */}
-           <div style={{ width: `${leftPanelWidth}%` }} className="h-full overflow-y-auto border-r border-slate-100 flex flex-col">
+           <div style={{ width: `${leftPanelWidth}%` }} className="h-full overflow-y-auto border-r border-slate-100 flex flex-col relative group">
               
               {/* Highlight Controls */}
               <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-sm border-b border-slate-100 px-6 py-3 flex items-center justify-between shadow-sm">
@@ -485,13 +510,13 @@ const Practice: React.FC<PracticeProps> = ({
                 )}
               </div>
 
-              <div className="p-8 prose prose-indigo max-w-none flex-1">
+              <div className="p-8 prose prose-indigo max-w-none flex-1 selection:bg-yellow-100">
                  <div 
                    ref={passageRef}
-                   onMouseUp={handlePassageMouseUp}
-                   className={`text-lg leading-loose text-slate-800 font-serif whitespace-pre-wrap ${isHighlightMode ? 'cursor-text selection:bg-yellow-200' : ''}`}
+                   onMouseUp={() => handlePassageMouseUp(passageText)}
+                   className={`text-lg leading-loose text-slate-800 font-serif whitespace-pre-wrap ${isHighlightMode ? 'cursor-text' : ''}`}
                  >
-                    {renderPassageWithHighlights(passage)}
+                    {renderPassageWithHighlights(passageText)}
                  </div>
               </div>
            </div>
@@ -507,27 +532,33 @@ const Practice: React.FC<PracticeProps> = ({
            {/* Right Pane: Questions */}
            <div style={{ width: `${100 - leftPanelWidth}%` }} className="h-full overflow-y-auto p-8 bg-slate-50/50">
               
-              {/* --- PROGRESS BAR --- */}
-              <div className="mb-8 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm sticky top-0 z-10">
-                  <div className="flex justify-between items-end mb-3">
-                      <span className="text-[10px] font-black uppercase text-indigo-400 tracking-widest">Lab Progress</span>
-                      <span className="text-xs font-bold text-slate-700">{Object.keys(userAnswers).length} / {questions.length} Completed</span>
+              {/* --- PROGRESS BAR (Only for full Reading Lab, not Pop-out subset) --- */}
+              {!isPopOut && (
+                  <div className="mb-8 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm sticky top-0 z-10">
+                      <div className="flex justify-between items-end mb-3">
+                          <span className="text-[10px] font-black uppercase text-indigo-400 tracking-widest">Lab Progress</span>
+                          <span className="text-xs font-bold text-slate-700">{Object.keys(userAnswers).length} / {questions.length} Completed</span>
+                      </div>
+                      <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                          <div 
+                            className="bg-indigo-600 h-full transition-all duration-500 ease-out rounded-full" 
+                            style={{ width: `${(Object.keys(userAnswers).length / questions.length) * 100}%` }}
+                          ></div>
+                      </div>
                   </div>
-                  <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
-                      <div 
-                        className="bg-indigo-600 h-full transition-all duration-500 ease-out rounded-full" 
-                        style={{ width: `${(Object.keys(userAnswers).length / questions.length) * 100}%` }}
-                      ></div>
-                  </div>
-              </div>
+              )}
 
               <div className="space-y-8 pb-20">
-                 {questions.map((q, idx) => {
+                 {activeQuestions.map((q, idx) => {
+                    // Find actual index in the main session if needed, but here we just map the subset
+                    // We need to access userAnswers by q.id which works globally
                     const isCorrect = userAnswers[q.id] === q.correctAnswer;
                     return (
                        <div key={q.id} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                           <div className="flex gap-4 mb-4">
-                             <span className="w-6 h-6 bg-slate-900 text-white rounded-md flex items-center justify-center font-bold text-xs shrink-0">{idx + 1}</span>
+                             <span className="w-6 h-6 bg-slate-900 text-white rounded-md flex items-center justify-center font-bold text-xs shrink-0">
+                                 {isPopOut ? questions.findIndex(quest => quest.id === q.id) + 1 : idx + 1}
+                             </span>
                              <p className="font-bold text-slate-800">{q.questionText}</p>
                           </div>
                           <div className="space-y-2 pl-10">
@@ -561,21 +592,26 @@ const Practice: React.FC<PracticeProps> = ({
                        </div>
                     );
                  })}
-                 
-                 {isSubmitted && (
-                    <div className="text-center p-8 bg-white rounded-3xl border border-slate-200">
-                       <p className="text-xs font-black uppercase text-slate-400 tracking-widest mb-2">Final Score</p>
-                       <p className="text-4xl font-black text-indigo-600">{score} / {questions.length}</p>
-                    </div>
-                 )}
               </div>
            </div>
         </div>
       </div>
     );
+  };
+
+  // --- RENDER LOGIC ---
+
+  // 1. If in Mock Reading Pop-out Mode
+  if (mockReadingMode) {
+      return renderSplitView(mockReadingMode.passage, mockReadingMode.questions, true);
   }
 
-  // --- STANDARD LAYOUT (Mock, Vocab, etc.) ---
+  // 2. If standard Reading Lab (Category.READING)
+  if (category === Category.READING && activePassage) {
+      return renderSplitView(activePassage, questions, false);
+  }
+
+  // 3. Standard Layout (Mock, Vocab, etc.)
   return (
     <div className="max-w-4xl mx-auto py-10 px-6 animate-in fade-in duration-500 pb-20">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4">
@@ -616,11 +652,31 @@ const Practice: React.FC<PracticeProps> = ({
           return (
             <div key={q.id} className={`bg-white p-8 rounded-[2rem] border-2 shadow-sm transition-all ${isWrong ? 'border-rose-100 ring-4 ring-rose-50' : isSubmitted && isCorrect ? 'border-emerald-100 ring-4 ring-emerald-50' : 'border-slate-100'}`}>
               
-              {/* Render Passage inside Question Card for Mock Test Reading Questions */}
+              {/* READING PASSAGE EXPANDER FOR MOCK TEST */}
               {q.passage && (
-                  <div className="mb-6 p-6 bg-indigo-50/50 rounded-2xl border border-indigo-100 text-slate-800 font-serif leading-relaxed text-sm max-h-64 overflow-y-auto">
-                      <span className="block text-[10px] font-black uppercase text-indigo-400 tracking-widest mb-2 sticky top-0 bg-indigo-50/95 py-1 w-full">Reference Passage</span>
-                      {q.passage}
+                  <div className="mb-6 p-6 bg-indigo-50/50 rounded-2xl border border-indigo-100 text-slate-800 font-serif leading-relaxed text-sm">
+                      <div className="flex justify-between items-center mb-4 border-b border-indigo-100 pb-2">
+                          <span className="text-[10px] font-black uppercase text-indigo-400 tracking-widest">Reference Passage</span>
+                          <button 
+                             onClick={() => {
+                                 // Filter all questions in this session that share the same passage
+                                 const relevantQs = questions.filter(quest => quest.passage === q.passage);
+                                 setHighlights([]); // Reset highlights for new view
+                                 setIsHighlightMode(false);
+                                 setMockReadingMode({ passage: q.passage!, questions: relevantQs });
+                             }}
+                             className="group flex items-center gap-2 bg-white border border-indigo-200 text-indigo-600 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-all shadow-sm"
+                          >
+                             <svg className="w-3 h-3 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                             Expand to Reading Lab
+                          </button>
+                      </div>
+                      <div className="line-clamp-4 opacity-70">
+                          {q.passage}
+                      </div>
+                      <div className="mt-2 text-center">
+                          <span className="text-[9px] font-bold text-indigo-300 uppercase tracking-widest">Click expand to view full text & use tools</span>
+                      </div>
                   </div>
               )}
 
