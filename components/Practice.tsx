@@ -66,10 +66,7 @@ const Practice: React.FC<PracticeProps> = ({
   }, [timer]);
 
   // --- TIMER SYNCHRONIZATION ---
-  // When category changes (or component mounts), reset timer to the session's saved time.
-  // Also handles saving the time when leaving the category.
   useEffect(() => {
-    // 1. Initialize Timer for the new view
     if (session) {
       setTimer(session.elapsedTime || 0);
     } else {
@@ -77,27 +74,21 @@ const Practice: React.FC<PracticeProps> = ({
     }
     setIsPaused(false);
 
-    // 2. Cleanup: Save time for the CURRENT category before switching or unmounting
     return () => {
-      // Use the ref to get the latest time value at the moment of unmount/switch
       const timeToSave = timerRef.current;
-      // We need to check if a session exists effectively in the closure scope, 
-      // but 'session' here refers to the one being unmounted/switched FROM.
       if (session && !session.isSubmitted) {
          onSaveTime(category, timeToSave);
       }
     };
-  }, [category]); // Dependency on 'category' ensures this runs when switching labs
+  }, [category]); 
 
   // --- SESSION STATE SYNCHRONIZATION ---
   useEffect(() => {
     if (!session) {
       setIsSubmitted(false);
       setScore(0);
-      setHighlights([]); // Reset highlights on new session
+      setHighlights([]); 
     } else {
-      // FIX: Explicitly sync isSubmitted state. 
-      // Previously only checked 'if (session.isSubmitted)', causing state leaks when switching to incomplete sessions.
       setIsSubmitted(session.isSubmitted);
       setScore(session.score);
     }
@@ -106,7 +97,6 @@ const Practice: React.FC<PracticeProps> = ({
   // --- TIMER TICK LOGIC ---
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>;
-    // Only tick if we have a session, not paused, not loading, and not submitted
     if (!isPaused && !loading && session && !isSubmitted) {
       interval = setInterval(() => {
         setTimer((prev) => prev + 1);
@@ -149,9 +139,9 @@ const Practice: React.FC<PracticeProps> = ({
     };
   }, [isDragging, resize, stopResizing]);
 
-  // --- HIGHLIGHTING LOGIC ---
+  // --- HIGHLIGHTING LOGIC (Fixed: Word Snap + Trim) ---
   const handlePassageMouseUp = () => {
-    if (!isHighlightMode || !passageRef.current) return;
+    if (!isHighlightMode || !passageRef.current || !session?.passage) return;
 
     const selection = window.getSelection();
     if (!selection || selection.rangeCount === 0 || selection.isCollapsed) return;
@@ -161,17 +151,45 @@ const Practice: React.FC<PracticeProps> = ({
     // Ensure selection is strictly inside the passage text
     if (!passageRef.current.contains(range.commonAncestorContainer)) return;
 
-    // Calculate start relative to the passage container's text content
+    // 1. Calculate RAW start/end based on DOM
     const preSelectionRange = range.cloneRange();
     preSelectionRange.selectNodeContents(passageRef.current);
     preSelectionRange.setEnd(range.startContainer, range.startOffset);
-    const start = preSelectionRange.toString().length;
-    const text = range.toString();
-    const end = start + text.length;
+    
+    let start = preSelectionRange.toString().length;
+    let end = start + range.toString().length;
+    const fullText = session.passage;
 
-    if (text.trim().length === 0) return;
+    // Safety check for bounds
+    if (start < 0) start = 0;
+    if (end > fullText.length) end = fullText.length;
 
-    // Remove any existing highlights that overlap with the new one to avoid mess
+    // 2. TRIM: Contract selection to remove leading/trailing whitespace
+    while (start < end && /\s/.test(fullText[start])) {
+      start++;
+    }
+    while (end > start && /\s/.test(fullText[end - 1])) {
+      end--;
+    }
+
+    if (start >= end) {
+      selection.removeAllRanges();
+      return; // Selection was only whitespace
+    }
+
+    // 3. EXPAND: Extend selection outwards to nearest word boundaries
+    // Go left until we hit a space or start of string
+    while (start > 0 && /\S/.test(fullText[start - 1])) {
+      start--;
+    }
+    // Go right until we hit a space or end of string
+    while (end < fullText.length && /\S/.test(fullText[end])) {
+      end++;
+    }
+
+    const text = fullText.slice(start, end);
+
+    // Remove any existing highlights that overlap with the new one
     const cleanHighlights = highlights.filter(h => 
       (h.end <= start) || (h.start >= end)
     );
@@ -184,7 +202,7 @@ const Practice: React.FC<PracticeProps> = ({
     };
 
     setHighlights([...cleanHighlights, newHighlight]);
-    selection.removeAllRanges(); // Clear system selection
+    selection.removeAllRanges();
   };
 
   const removeHighlight = (id: string) => {
@@ -212,14 +230,13 @@ const Practice: React.FC<PracticeProps> = ({
       }
       
       // 2. The Highlighted text
-      // Check bounds to ensure we don't crash if state is somehow out of sync
       const safeEnd = Math.min(h.end, text.length);
       if (h.start < text.length) {
          elements.push(
             <span 
               key={h.id} 
               onClick={() => removeHighlight(h.id)}
-              className="bg-yellow-200 cursor-pointer hover:bg-rose-200 transition-colors rounded-sm px-0.5"
+              className="bg-yellow-200 cursor-pointer hover:bg-rose-200 transition-colors rounded-sm px-0.5 box-decoration-clone"
               title="Click to remove highlight"
             >
               {text.slice(h.start, safeEnd)}
