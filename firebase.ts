@@ -3,14 +3,15 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-// PASTE YOUR CONFIG FROM FIREBASE CONSOLE HERE
+// Using the config from your index.html
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY_HERE",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyADwIjQ47UDiFC7CS0QJ8liifT8FZBkg8s",
+  authDomain: "trainacademy.firebaseapp.com",
+  projectId: "trainacademy",
+  storageBucket: "trainacademy.firebasestorage.app",
+  messagingSenderId: "496275167687",
+  appId: "1:496275167687:web:033793619269cc8334e1e2",
+  measurementId: "G-6B5F8WF0Q0"
 };
 
 const app = initializeApp(firebaseConfig);
