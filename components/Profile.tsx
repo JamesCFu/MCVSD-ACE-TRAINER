@@ -28,7 +28,37 @@ const Profile: React.FC<ProfileProps> = ({ stats, onReset, onLogin, onLogout }) 
   if (level >= 20) rank = "Academy Legend";
   if (level >= 30) rank = "Professional Learner";
 
+  
+
   return (
+
+  const handleAuthAction = async () => {
+    setErrorMsg('');
+    const globalAuth = (window as any).auth; // Access global auth
+
+    if (!globalAuth) {
+      setErrorMsg("Firebase not loaded. Check index.html");
+      return;
+    }
+
+    try {
+      if (isRegistering) {
+        // Sign Up
+        const userCredential = await globalAuth.createUserWithEmailAndPassword(email, password);
+        // Update username
+        if (username && userCredential.user) {
+          await userCredential.user.updateProfile({ displayName: username });
+        }
+      } else {
+        // Log In
+        await globalAuth.signInWithEmailAndPassword(email, password);
+      }
+      // App.tsx handles the state update automatically via the listener!
+    } catch (error: any) {
+      console.error(error);
+      setErrorMsg(error.message);
+    }
+  };
     <div className="max-w-4xl mx-auto animate-in fade-in duration-500 pb-20 px-4">
       <header className="mb-12">
         <h2 className="text-4xl font-black text-slate-900 tracking-tighter">Academic Registry</h2>
