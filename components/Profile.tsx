@@ -1,5 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { UserStats } from '../types';
+import { auth } from '../firebase'; // Import the auth instance we initialized
+import { 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword, 
+  updateProfile, 
+  signOut 
+} from 'firebase/auth';
 
 interface ProfileProps {
   stats: UserStats;
@@ -8,7 +15,7 @@ interface ProfileProps {
   onLogout: () => void;
 }
 
-const Profile: React.FC<ProfileProps> = ({ stats, onReset, onLogout }) => { // removed onLogin prop, we handle it internally
+const Profile: React.FC<ProfileProps> = ({ stats, onReset, onLogout }) => { 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   
   // Auth State
@@ -18,22 +25,29 @@ const Profile: React.FC<ProfileProps> = ({ stats, onReset, onLogout }) => { // r
   const [username, setUsername] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
+  // Fixed Auth Handler
   const handleAuthAction = async () => {
     setErrorMsg('');
     try {
       if (isRegistering) {
         // Sign Up
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        // Set display name
-        if (username) await updateProfile(userCredential.user, { displayName: username });
+        // Set display name if provided
+        if (username && userCredential.user) {
+          await updateProfile(userCredential.user, { displayName: username });
+        }
       } else {
         // Log In
         await signInWithEmailAndPassword(auth, email, password);
       }
-      // App.tsx listener will handle the rest!
+      // The onAuthStateChanged listener in App.tsx will handle the state update automatically
     } catch (error: any) {
       console.error(error);
-      setErrorMsg(error.message.replace("Firebase: ", ""));
+      // Clean up the error message for the user
+      const message = error.message
+        ? error.message.replace("Firebase: ", "").replace("auth/", "").replace(/-/g, " ")
+        : "An error occurred";
+      setErrorMsg(message);
     }
   };
   
@@ -52,37 +66,7 @@ const Profile: React.FC<ProfileProps> = ({ stats, onReset, onLogout }) => { // r
   if (level >= 20) rank = "Academy Legend";
   if (level >= 30) rank = "Professional Learner";
 
-  
-
   return (
-
-  const handleAuthAction = async () => {
-    setErrorMsg('');
-    const globalAuth = (window as any).auth; // Access global auth
-
-    if (!globalAuth) {
-      setErrorMsg("Firebase not loaded. Check index.html");
-      return;
-    }
-
-    try {
-      if (isRegistering) {
-        // Sign Up
-        const userCredential = await globalAuth.createUserWithEmailAndPassword(email, password);
-        // Update username
-        if (username && userCredential.user) {
-          await userCredential.user.updateProfile({ displayName: username });
-        }
-      } else {
-        // Log In
-        await globalAuth.signInWithEmailAndPassword(email, password);
-      }
-      // App.tsx handles the state update automatically via the listener!
-    } catch (error: any) {
-      console.error(error);
-      setErrorMsg(error.message);
-    }
-  };
     <div className="max-w-4xl mx-auto animate-in fade-in duration-500 pb-20 px-4">
       <header className="mb-12">
         <h2 className="text-4xl font-black text-slate-900 tracking-tighter">Academic Registry</h2>
@@ -143,11 +127,11 @@ const Profile: React.FC<ProfileProps> = ({ stats, onReset, onLogout }) => { // r
                    />
                  </div>
 
-                 {errorMsg && <p className="text-rose-400 text-xs font-bold">{errorMsg}</p>}
+                 {errorMsg && <p className="text-rose-400 text-xs font-bold bg-rose-900/30 p-2 rounded-lg">{errorMsg}</p>}
 
                  <button 
                    onClick={handleAuthAction}
-                   className="w-full bg-indigo-500 hover:bg-indigo-400 text-white font-black py-4 rounded-xl transition-all shadow-lg"
+                   className="w-full bg-indigo-500 hover:bg-indigo-400 text-white font-black py-4 rounded-xl transition-all shadow-lg mt-2"
                  >
                    {isRegistering ? "Create Account" : "Access Cloud Data"}
                  </button>
@@ -168,9 +152,10 @@ const Profile: React.FC<ProfileProps> = ({ stats, onReset, onLogout }) => { // r
                    <div className="text-[10px] font-black uppercase text-indigo-400 tracking-widest mb-1">Active Scholar</div>
                    <div className="text-3xl font-black mb-1">{stats.username}</div>
                    <div className="text-indigo-300 font-medium text-sm">{stats.email}</div>
-                   <div className="text-[10px] font-black uppercase text-emerald-400 tracking-widest mb-1">● Cloud Connected</div>
-                   <div className="text-3xl font-black mb-1">{stats.username}</div>
-                   <div className="text-indigo-300 font-medium text-sm">{stats.email}</div>
+                   <div className="mt-4 flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
+                      <span className="text-[10px] font-black uppercase text-emerald-400 tracking-widest">Cloud Connected</span>
+                   </div>
                 </div>
                 
                 <button 
@@ -184,6 +169,7 @@ const Profile: React.FC<ProfileProps> = ({ stats, onReset, onLogout }) => { // r
          </div>
       </div>
 
+      {/* --- STATISTICS SECTION --- */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
         <div className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-xl">
            <div className="flex items-center gap-6 mb-8">
@@ -229,6 +215,7 @@ const Profile: React.FC<ProfileProps> = ({ stats, onReset, onLogout }) => { // r
         </div>
       </div>
 
+      {/* --- RESET ZONE --- */}
       <div className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm mb-12">
         <h3 className="text-2xl font-black text-slate-900 mb-8 tracking-tight">App Configuration</h3>
         <div className="flex flex-col md:flex-row items-center justify-between p-8 bg-rose-50 rounded-[2.5rem] border border-rose-200 gap-6">
