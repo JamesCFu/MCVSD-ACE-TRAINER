@@ -2,12 +2,11 @@
 export default {
   content: [
     "./index.html",
-    "./**/*.{js,ts,jsx,tsx}", // Scans all JS/TS files in root and subfolders
-    "!./node_modules/**"       // Ignores node_modules to prevent errors
+    "./**/*.{js,ts,jsx,tsx}", // This ensures Tailwind sees all your files in the root
+    "!./node_modules/**"
   ],
   theme: {
     extend: {
-      // Defines custom animations used in your components
       animation: {
         'shake': 'shake 0.2s ease-in-out 0s 2',
         'speed-lines': 'speed-lines 0.5s linear infinite',
