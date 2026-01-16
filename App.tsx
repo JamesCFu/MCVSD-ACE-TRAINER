@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+// fileName: App.tsx
+
+import React, { useState, useEffect } from 'react';
 import Layout from './components/Layout';
 import Dashboard from './components/Dashboard';
 import Practice from './components/Practice';
@@ -6,18 +8,18 @@ import LearningCenter from './components/LearningCenter';
 import ShortNotes from './components/ShortNotes';
 import DailyVocab from './components/DailyVocab';
 import Profile from './components/Profile';
-import { Category, UserStats, VocabularyWord, Question, GrammarLesson, PracticeSession } from './types';
-import { generateVocabulary, generateGrammarLesson, GRAMMAR_TOPICS, FALLBACK_GRAMMAR_DATA } from './geminiService';
+import { Category, UserStats, VocabularyWord, Question } from './types';
+import { generateVocabulary } from './geminiService';
 
 // --- FIREBASE IMPORTS ---
-import { auth } from './firebase'; 
+import { auth, db } from './firebase'; 
 import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 
 const getInitialStats = (): UserStats => ({
   username: 'Guest Candidate',
   email: '',
   isLoggedIn: false,
-  
   completedQuizzes: 0,
   averageScore: 0,
   categoryScores: {
@@ -54,42 +56,72 @@ const getInitialStats = (): UserStats => ({
 
 const App: React.FC = () => {
   const [activeView, setActiveView] = useState('dashboard');
-  const [stats, setStats] = useState<UserStats>(() => {
-    const saved = localStorage.getItem('mcvsd_stats_v1');
-    return saved ? JSON.parse(saved) : getInitialStats();
-  });
-
+  const [stats, setStats] = useState<UserStats>(getInitialStats());
   const [allWords, setAllWords] = useState<VocabularyWord[]>([]);
   const [isVocabLoading, setIsVocabLoading] = useState(false);
+  const [dataLoaded, setDataLoaded] = useState(false);
 
-  // --- AUTH LISTENER ---
+  // --- AUTH & DATA SYNC LISTENER ---
   useEffect(() => {
-    // This replaces the old window.auth logic
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        setStats(prev => ({
-          ...prev,
-          isLoggedIn: true,
-          email: user.email || '',
-          username: user.displayName || 'Scholar'
-        }));
+        // User is signed in. Fetch data from Firestore.
+        const userRef = doc(db, 'users', user.uid);
+        try {
+          const docSnap = await getDoc(userRef);
+          
+          if (docSnap.exists()) {
+            // Load existing data
+            const loadedStats = docSnap.data() as UserStats;
+            setStats({ ...loadedStats, isLoggedIn: true, email: user.email || '', username: user.displayName || loadedStats.username });
+          } else {
+            // New user: create document with initial stats
+            const newStats = { 
+              ...getInitialStats(), 
+              isLoggedIn: true, 
+              email: user.email || '', 
+              username: user.displayName || 'Scholar' 
+            };
+            await setDoc(userRef, newStats);
+            setStats(newStats);
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
       } else {
-        setStats(prev => ({
-          ...prev,
-          isLoggedIn: false,
-          email: '',
-          username: 'Guest Candidate'
-        }));
+        // User is signed out. Load from LocalStorage or reset.
+        const saved = localStorage.getItem('mcvsd_stats_v1');
+        setStats(saved ? JSON.parse(saved) : getInitialStats());
       }
+      setDataLoaded(true);
     });
 
     return () => unsubscribe();
   }, []);
 
-  // Save to LocalStorage
+  // --- SAVE DATA TO FIREBASE OR LOCALSTORAGE ---
   useEffect(() => {
-    localStorage.setItem('mcvsd_stats_v1', JSON.stringify(stats));
-  }, [stats]);
+    if (!dataLoaded) return;
+
+    const saveData = async () => {
+      if (stats.isLoggedIn && auth.currentUser) {
+        // Save to Firestore
+        try {
+          const userRef = doc(db, 'users', auth.currentUser.uid);
+          await updateDoc(userRef, { ...stats });
+        } catch (error) {
+          console.error("Error saving to cloud:", error);
+        }
+      } else {
+        // Save to LocalStorage (Guest)
+        localStorage.setItem('mcvsd_stats_v1', JSON.stringify(stats));
+      }
+    };
+
+    // Debounce save (wait 1s after last change)
+    const timeoutId = setTimeout(saveData, 1000);
+    return () => clearTimeout(timeoutId);
+  }, [stats, dataLoaded]);
 
   // Load Vocab on Mount
   useEffect(() => {
@@ -130,7 +162,6 @@ const App: React.FC = () => {
 
   const logMistake = (question: Question) => {
     setStats(prev => {
-      // Avoid duplicates
       if (prev.incorrectQuestions.some(q => q.id === question.id)) return prev;
       return {
         ...prev,
@@ -139,22 +170,30 @@ const App: React.FC = () => {
     });
   };
 
-  const resetStats = () => {
-    setStats(getInitialStats());
-    localStorage.removeItem('mcvsd_stats_v1');
+  const resetStats = async () => {
+    const freshStats = getInitialStats();
+    if (stats.isLoggedIn && auth.currentUser) {
+      // Reset Cloud Data
+      const userRef = doc(db, 'users', auth.currentUser.uid);
+      await setDoc(userRef, { ...freshStats, isLoggedIn: true, email: stats.email, username: stats.username });
+      setStats({ ...freshStats, isLoggedIn: true, email: stats.email, username: stats.username });
+    } else {
+      // Reset Local Data
+      setStats(freshStats);
+      localStorage.removeItem('mcvsd_stats_v1');
+    }
     window.location.reload();
   };
 
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      // The useEffect listener will update the state automatically
     } catch (error) {
       console.error("Logout failed", error);
     }
   };
 
-  // Mock handlers for session management (placeholder logic for now)
+  // --- SESSION HANDLERS ---
   const handleStartSession = (cat: Category, q: Question[], p?: string | null) => {
      setStats(prev => ({
        ...prev,
@@ -209,52 +248,35 @@ const App: React.FC = () => {
     });
   };
 
-  const handleRecordPracticeResults = (cat: Category, score: number, total: number, mistakes: Question[], questions: Question[]) => {
-     // Calculate XP based on score
+  const handleRecordPracticeResults = (cat: Category, score: number, total: number, mistakes: Question[]) => {
      const xpEarned = score * 10;
      awardXP(xpEarned);
      
-     // Update category stats
-     setStats(prev => {
-        const correctCount = score; // Assuming score is raw count here
-        return {
-           ...prev,
-           completedQuizzes: prev.completedQuizzes + 1,
-           questionsAnswered: prev.questionsAnswered + total,
-           totalCorrect: prev.totalCorrect + correctCount,
-           categoryAttempted: {
-             ...prev.categoryAttempted,
-             [cat]: (prev.categoryAttempted[cat] || 0) + total
-           },
-           categoryCorrect: {
-             ...prev.categoryCorrect,
-             [cat]: (prev.categoryCorrect[cat] || 0) + correctCount
-           },
-           incorrectQuestions: [...prev.incorrectQuestions, ...mistakes]
-        };
-     });
+     setStats(prev => ({
+         ...prev,
+         completedQuizzes: prev.completedQuizzes + 1,
+         questionsAnswered: prev.questionsAnswered + total,
+         totalCorrect: prev.totalCorrect + score,
+         categoryAttempted: {
+           ...prev.categoryAttempted,
+           [cat]: (prev.categoryAttempted[cat] || 0) + total
+         },
+         categoryCorrect: {
+           ...prev.categoryCorrect,
+           [cat]: (prev.categoryCorrect[cat] || 0) + score
+         },
+         incorrectQuestions: [...prev.incorrectQuestions, ...mistakes]
+     }));
   };
   
   const handleSaveTime = (cat: Category, time: number) => {
-    // Optional: save elapsed time
-  };
-
-  const mapCategoryToView = (cat: Category): string => {
-    switch(cat) {
-      case Category.READING: return 'reading';
-      case Category.VOCABULARY: return 'vocab';
-      case Category.SPELLING: return 'spelling';
-      case Category.GRAMMAR: return 'grammar';
-      case Category.MATH: return 'math';
-      case Category.MOCK: return 'mock';
-      default: return 'dashboard';
-    }
+    // Optional: could save time stats here
   };
 
   const renderView = () => {
     switch (activeView) {
       case 'dashboard':
-        return <Dashboard stats={stats} setActiveView={setActiveView} onStartPractice={(cat) => setActiveView(mapCategoryToView(cat))} />;
+        return <Dashboard stats={stats} setActiveView={setActiveView} onStartPractice={(cat) => setActiveView(cat === Category.VOCABULARY ? 'vocab' : cat === Category.MATH ? 'math' : 'reading')} />;
       case 'learning':
         return <LearningCenter />;
       case 'notes':
@@ -276,7 +298,7 @@ const App: React.FC = () => {
           <Profile 
             stats={stats} 
             onReset={resetStats} 
-            onLogin={() => {}} // Profile handles its own login via Firebase now
+            onLogin={() => {}} 
             onLogout={handleLogout}
           />
         );
@@ -286,7 +308,6 @@ const App: React.FC = () => {
       case 'grammar':
       case 'math':
       case 'mock':
-        // Determine category enum from view string
         let cat = Category.READING;
         if (activeView === 'vocab') cat = Category.VOCABULARY;
         if (activeView === 'spelling') cat = Category.SPELLING;
@@ -310,9 +331,11 @@ const App: React.FC = () => {
           />
         );
       default:
-        return <Dashboard stats={stats} setActiveView={setActiveView} onStartPractice={(cat) => setActiveView(mapCategoryToView(cat))} />;
+        return <Dashboard stats={stats} setActiveView={setActiveView} onStartPractice={() => setActiveView('reading')} />;
     }
   };
+
+  if (!dataLoaded) return <div className="min-h-screen flex items-center justify-center bg-slate-50"><div className="animate-pulse text-indigo-600 font-bold">Loading Profile...</div></div>;
 
   return (
     <Layout activeView={activeView} setActiveView={setActiveView} mistakeCount={stats.incorrectQuestions.length}>
