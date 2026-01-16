@@ -124,17 +124,20 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     const restOfPool = words.filter(w => !mainBatch.some(mb => mb.word === w.word));
     
     // 3. Prioritize Starred Words
+    // IMPORTANT: We use the current starredSet here, but by NOT including it in 
+    // the dependency array below, we "snapshot" the state of starred words when 
+    // the stage first loads. This keeps the review list stable even if words get unstarred.
     const starredInPool = restOfPool.filter(w => starredSet.has(w.word));
     const nonStarredInPool = restOfPool.filter(w => !starredSet.has(w.word));
     
-    // Helper sort function
+    // Helper sort function - uses viewingDay to shuffle differently each stage
     const sortFn = (a: VocabularyWord, b: VocabularyWord) => {
        const hashA = hashString(a.word + `stage-${viewingDay}`);
        const hashB = hashString(b.word + `stage-${viewingDay}`);
        return hashA - hashB;
     };
 
-    // Grab up to 5 starred words first
+    // Grab up to 5 starred words first, sorted by the stage hash
     const starredSelected = [...starredInPool].sort(sortFn).slice(0, REVIEW_WORDS_COUNT);
     
     // Fill remainder with random non-starred words
@@ -148,7 +151,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     const reviewBatch = [...starredSelected, ...randomSelected];
     
     return [...mainBatch, ...reviewBatch].sort((a, b) => a.word.localeCompare(b.word));
-  }, [words, viewingDay, starredSet]); // Added starredSet to deps so list updates when stars change
+  }, [words, viewingDay]); 
 
   // Filtered List for Search
   const filteredDailyWords = useMemo(() => {
@@ -958,7 +961,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
 
       {/* Advance Day Confirmation Modal */}
       {showAdvanceConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm animate-in fade-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-md animate-in fade-in">
           <div className="bg-white max-w-lg w-full rounded-[3rem] p-10 shadow-2xl border-4 border-indigo-500 animate-in zoom-in-95">
             <div className="text-center">
               <div className="w-20 h-20 bg-indigo-100 text-indigo-600 rounded-3xl flex items-center justify-center mx-auto mb-6 text-4xl">
