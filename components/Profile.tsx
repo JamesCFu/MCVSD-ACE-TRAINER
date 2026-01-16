@@ -87,7 +87,7 @@ const Profile: React.FC<ProfileProps> = ({ stats, onReset, onLogin, onLogout }) 
 >
   Enable Cloud Saving
 </button>
-                 </button>
+                
                </div>
              </div>
            ) : (
