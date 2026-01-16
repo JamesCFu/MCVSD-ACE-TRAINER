@@ -506,6 +506,21 @@ const Practice: React.FC<PracticeProps> = ({
 
            {/* Right Pane: Questions */}
            <div style={{ width: `${100 - leftPanelWidth}%` }} className="h-full overflow-y-auto p-8 bg-slate-50/50">
+              
+              {/* --- PROGRESS BAR --- */}
+              <div className="mb-8 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm sticky top-0 z-10">
+                  <div className="flex justify-between items-end mb-3">
+                      <span className="text-[10px] font-black uppercase text-indigo-400 tracking-widest">Lab Progress</span>
+                      <span className="text-xs font-bold text-slate-700">{Object.keys(userAnswers).length} / {questions.length} Completed</span>
+                  </div>
+                  <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                      <div 
+                        className="bg-indigo-600 h-full transition-all duration-500 ease-out rounded-full" 
+                        style={{ width: `${(Object.keys(userAnswers).length / questions.length) * 100}%` }}
+                      ></div>
+                  </div>
+              </div>
+
               <div className="space-y-8 pb-20">
                  {questions.map((q, idx) => {
                     const isCorrect = userAnswers[q.id] === q.correctAnswer;
