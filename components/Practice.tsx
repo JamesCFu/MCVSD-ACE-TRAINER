@@ -11,7 +11,8 @@ interface PracticeProps {
   category: Category;
   session: PracticeSession | null;
   onStartSession: (category: Category, questions: Question[], passage?: string | null) => void;
-  onUpdateSession: (category: Category, userAnswers: Record<string, number>) => void;
+  // UPDATED: Now accepts highlights as the 3rd argument
+  onUpdateSession: (category: Category, userAnswers: Record<string, number>, highlights?: Highlight[]) => void;
   onCompleteSession: (category: Category, score: number) => void;
   onClearSession: (category: Category) => void;
   onFinish: () => void;
@@ -95,6 +96,10 @@ const Practice: React.FC<PracticeProps> = ({
     } else {
       setIsSubmitted(session.isSubmitted);
       setScore(session.score);
+      // RESTORE HIGHLIGHTS FROM SESSION
+      if (session.highlights) {
+        setHighlights(session.highlights);
+      }
     }
   }, [session, category]);
 
@@ -142,6 +147,13 @@ const Practice: React.FC<PracticeProps> = ({
       document.body.style.userSelect = '';
     };
   }, [isDragging, resize, stopResizing]);
+
+  // --- HELPER TO SAVE STATE (Answers + Highlights) ---
+  const saveSessionState = (newHighlights: Highlight[]) => {
+    if (!session) return;
+    // Pass both the current answers and the new highlights to the parent
+    onUpdateSession(category, session.userAnswers, newHighlights);
+  };
 
   // --- HIGHLIGHTING LOGIC (Fixed: Word Snap + Trim) ---
   const handlePassageMouseUp = (passageText: string) => {
@@ -205,16 +217,21 @@ const Practice: React.FC<PracticeProps> = ({
       text
     };
 
-    setHighlights([...cleanHighlights, newHighlight]);
+    const updatedHighlights = [...cleanHighlights, newHighlight];
+    setHighlights(updatedHighlights);
+    saveSessionState(updatedHighlights); // SAVE TO SESSION
     selection.removeAllRanges();
   };
 
   const removeHighlight = (id: string) => {
-    setHighlights(prev => prev.filter(h => h.id !== id));
+    const updatedHighlights = highlights.filter(h => h.id !== id);
+    setHighlights(updatedHighlights);
+    saveSessionState(updatedHighlights); // SAVE TO SESSION
   };
 
   const clearAllHighlights = () => {
     setHighlights([]);
+    saveSessionState([]); // SAVE TO SESSION
   };
 
   const renderPassageWithHighlights = (text: string) => {
@@ -305,7 +322,8 @@ const Practice: React.FC<PracticeProps> = ({
   const handleOptionSelect = (questionId: string, optionIndex: number) => {
     if (isSubmitted || !session) return;
     const newAnswers = { ...session.userAnswers, [questionId]: optionIndex };
-    onUpdateSession(category, newAnswers);
+    // Pass current highlights along with new answers to prevent data loss
+    onUpdateSession(category, newAnswers, highlights);
   };
 
   const handleSubmit = async () => {
@@ -661,7 +679,7 @@ const Practice: React.FC<PracticeProps> = ({
                              onClick={() => {
                                  // Filter all questions in this session that share the same passage
                                  const relevantQs = questions.filter(quest => quest.passage === q.passage);
-                                 setHighlights([]); // Reset highlights for new view
+                                 setHighlights(session?.highlights || []); // Restore session highlights
                                  setIsHighlightMode(false);
                                  setMockReadingMode({ passage: q.passage!, questions: relevantQs });
                              }}
