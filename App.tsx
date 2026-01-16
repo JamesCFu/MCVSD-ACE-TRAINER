@@ -110,35 +110,61 @@ const App: React.FC = () => {
   const syncInitiated = useRef(false);
 
   useEffect(() => {
-  const syncFromCloud = async () => {
-    if (stats.isLoggedIn && stats.email) {
-      try {
-        // In a real app, you'd call your DB here:
-        // const cloudDoc = await getDoc(doc(db, "users", stats.email));
-        // if (cloudDoc.exists()) setStats(cloudDoc.data());
-        console.log("Fetching data for:", stats.email);
-      } catch (error) {
-        console.error("Cloud sync error", error);
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // User just logged in
+        console.log("User detected:", user.email);
+        
+        // Fetch their data from Cloud
+        const docRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          // Found cloud data! Load it into the app
+          const cloudData = docSnap.data() as UserStats;
+          console.log("Cloud data loaded!");
+          setStats(prev => ({
+            ...prev,
+            ...cloudData,
+            isLoggedIn: true,
+            username: user.displayName || cloudData.username || 'Scholar',
+            email: user.email || ''
+          }));
+        } else {
+          // New user in cloud? Save current local stats to cloud
+          console.log("Creating new cloud record...");
+          await setDoc(docRef, { ...stats, email: user.email });
+        }
+      } else {
+        // User logged out
+        setStats(prev => ({ ...prev, isLoggedIn: false, username: 'Guest Candidate' }));
       }
-    }
-  };
-  syncFromCloud();
-}, [stats.isLoggedIn, stats.email]);
+    });
 
-// 2. This EFFECT saves data to BOTH local and cloud whenever stats change
-useEffect(() => {
-  if (isInitialized.current) {
-    // Keep local storage as a backup
-    localStorage.setItem('mcvsd-stats', JSON.stringify(stats));
+    return () => unsubscribe();
+  }, []); // Run once on mount
 
-    // If logged in, push to the cloud
-    if (stats.isLoggedIn && stats.email) {
-      // updateDoc(doc(db, "users", stats.email), stats);
-      console.log("Saving progress to cloud...");
-    }
-  }
-}, [stats]);
+  // 2. AUTO-SAVE TO CLOUD (Debounced)
+  useEffect(() => {
+    const saveToCloud = async () => {
+      if (auth.currentUser && isInitialized.current) {
+        try {
+          const userRef = doc(db, "users", auth.currentUser.uid);
+          // remove activeSessionWords to save space if needed, or keep it
+          await updateDoc(userRef, { ...stats }); 
+          console.log("☁️ Synced to cloud");
+        } catch (e) {
+          console.error("Sync failed:", e);
+        }
+      }
+    };
 
+    // Debounce: Wait 2 seconds after last change before saving to avoid spamming
+    const timeoutId = setTimeout(saveToCloud, 2000);
+    return () => clearTimeout(timeoutId);
+  }, [stats]);
+
+  
   useEffect(() => {
     const saved = localStorage.getItem('mcvsd-stats');
     const savedRegistry = localStorage.getItem('mcvsd-grammar-registry');
@@ -372,12 +398,8 @@ useEffect(() => {
   }, []);
 
   const handleLogout = useCallback(() => {
-    setStats(prev => ({
-      ...prev,
-      isLoggedIn: false,
-      username: 'Guest Candidate',
-      email: ''
-    }));
+    signOut(auth);
+    // Local state update happens in the onAuthStateChanged listener automatically
   }, []);
 
   const resetStats = useCallback(() => {
