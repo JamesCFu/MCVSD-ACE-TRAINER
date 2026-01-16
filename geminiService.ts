@@ -1235,7 +1235,6 @@ export const generateVocabulary = async (): Promise<VocabularyWord[]> => {
 
 // Helper to get raw reading data (passage + questions structure)
 export const generateReadingTest = async (): Promise<any[]> => {
-  // Fix: Handle case where fullReadingData might be empty or undefined to prevent crash
   if (!fullReadingData || fullReadingData.length === 0) return [];
   const shuffled = shuffleArray(fullReadingData);
   // Return the raw passage objects
@@ -1291,7 +1290,7 @@ export const generateMathTest = async (count: number): Promise<Question[]> => {
     return shuffleArray(LOCAL_MATH_POOL).slice(0, count);
 };
 
-// FIX: Updated generateMockPart1_ELA to use real data pools instead of hardcoded placeholders
+// MOCK PART 1: ELA
 export const generateMockPart1_ELA = async (): Promise<Question[]> => {
     const questions: Question[] = [];
 
@@ -1304,10 +1303,12 @@ export const generateMockPart1_ELA = async (): Promise<Question[]> => {
     // 3. Add Grammar (15 Questions)
     questions.push(...shuffleArray(LOCAL_GRAMMAR_POOL).slice(0, 15));
 
-    // 4. Add Reading (1 Full Random Passage from your data)
+    // 4. Add Reading (1 Full Random Passage from readingData.ts)
     if (fullReadingData && fullReadingData.length > 0) {
+        // Randomly select ONE passage
         const selectedPassage = fullReadingData[Math.floor(Math.random() * fullReadingData.length)];
         
+        // Map ALL questions associated with that passage
         const readingQs = selectedPassage.questions.map((q: any, idx: number) => ({
             id: `mock-reading-${selectedPassage.id}-${idx}`,
             category: Category.READING,
@@ -1322,9 +1323,6 @@ export const generateMockPart1_ELA = async (): Promise<Question[]> => {
 
     return questions;
 };
-
-
-
 
 // MOCK PART 2: MATH
 export const generateMockPart2_Math = async (): Promise<Question[]> => {
@@ -1367,15 +1365,13 @@ export const generateQuestions = async (category: Category, count: number): Prom
     }
 };
 
-/**
- * FIXED: Mock Test Part 1 (ELA)
- * Pulls a full passage randomly and correctly formats the ELA section.
- */
 export const generateMockTest = async () => generateMockPart1_ELA(); 
 
 export const generateShortDefinitions = async (words: VocabularyWord[]): Promise<{ word: string, shortDef: string }[]> => {
   return words.map(w => ({
     word: w.word,
     shortDef: w.definition.split(' ').slice(0, 6).join(' ') + (w.definition.split(' ').length > 6 ? '...' : '')
+  }));
+};
   }));
 };
