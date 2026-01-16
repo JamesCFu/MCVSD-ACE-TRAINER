@@ -27,6 +27,9 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
   const [showAdvanceConfirm, setShowAdvanceConfirm] = useState(false);
   const [selectedWord, setSelectedWord] = useState<VocabularyWord | null>(null);
   
+  // --- NEW STATE: Starred Review Mode ---
+  const [isStarredReviewMode, setIsStarredReviewMode] = useState(false);
+  
   // Search State
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -108,10 +111,16 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
   const dailyWords = useMemo(() => {
     if (!words || words.length === 0) return [];
     
+    // --- 1. STARRED REVIEW MODE ---
+    if (isStarredReviewMode) {
+        return words.filter(w => starredSet.has(w.word)).sort((a, b) => a.word.localeCompare(b.word));
+    }
+
+    // --- 2. STANDARD DAILY STAGE LOGIC ---
     const WORDS_PER_DAY = 25;
     const REVIEW_WORDS_COUNT = 5;
     
-    // 1. Sequential 20 words for the day
+    // A. Sequential 25 words for the day
     const startIndex = ((viewingDay - 1) * WORDS_PER_DAY) % words.length;
     const mainBatch: VocabularyWord[] = [];
     
@@ -120,27 +129,27 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
         if (words[idx]) mainBatch.push(words[idx]);
     }
 
-    // 2. Identify the pool of words NOT in the main batch
+    // B. Identify the pool of words NOT in the main batch
     const restOfPool = words.filter(w => !mainBatch.some(mb => mb.word === w.word));
     
-    // 3. Prioritize Starred Words
-    // IMPORTANT: We use the current starredSet here, but by NOT including it in 
-    // the dependency array below, we "snapshot" the state of starred words when 
-    // the stage first loads. This keeps the review list stable even if words get unstarred.
+    // C. Prioritize Starred Words
+    // We use the current starredSet here, but we removed it from the dependency array 
+    // to snapshot the list for the stage duration.
     const starredInPool = restOfPool.filter(w => starredSet.has(w.word));
     const nonStarredInPool = restOfPool.filter(w => !starredSet.has(w.word));
     
-    // Helper sort function - uses viewingDay to shuffle differently each stage
+    // Helper sort function - Uses viewingDay as seed to shuffle differently every stage.
+    // This ensures that even if we have 50 starred words, we get a RANDOM 5 each stage.
     const sortFn = (a: VocabularyWord, b: VocabularyWord) => {
        const hashA = hashString(a.word + `stage-${viewingDay}`);
        const hashB = hashString(b.word + `stage-${viewingDay}`);
        return hashA - hashB;
     };
 
-    // Grab up to 5 starred words first, sorted by the stage hash
+    // Grab up to 5 starred words first (randomized by stage hash)
     const starredSelected = [...starredInPool].sort(sortFn).slice(0, REVIEW_WORDS_COUNT);
     
-    // Fill remainder with random non-starred words
+    // Fill remainder with random non-starred words (randomized by stage hash)
     const remainingSlots = REVIEW_WORDS_COUNT - starredSelected.length;
     let randomSelected: VocabularyWord[] = [];
     
@@ -151,7 +160,9 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     const reviewBatch = [...starredSelected, ...randomSelected];
     
     return [...mainBatch, ...reviewBatch].sort((a, b) => a.word.localeCompare(b.word));
-  }, [words, viewingDay]); 
+    
+    // We intentionally exclude 'starredSet' from deps to keep the review words stable for the session/stage
+  }, [words, viewingDay, isStarredReviewMode]); 
 
   // Filtered List for Search
   const filteredDailyWords = useMemo(() => {
@@ -162,9 +173,20 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
   }, [dailyWords, searchQuery]);
 
   // Determine Flashcard Deck (Starred vs All)
+  // In Starred Review Mode, the deck is naturally all starred words.
+  // In Daily Mode, we can still filter by starred if we want, but usually default to the daily list.
   useEffect(() => {
-    const starredInDaily = dailyWords.filter(w => starredSet.has(w.word));
-    const newDeck = starredInDaily.length > 0 ? starredInDaily : dailyWords;
+    let newDeck: VocabularyWord[] = [];
+    
+    if (isStarredReviewMode) {
+        newDeck = dailyWords; // dailyWords is already just the starred words
+    } else {
+        // In daily mode, if user has starred words IN THE LIST, prioritize them for flashcards? 
+        // Or just show all. Let's show all for now to avoid confusion, or prioritize like before.
+        const starredInDaily = dailyWords.filter(w => starredSet.has(w.word));
+        newDeck = starredInDaily.length > 0 ? starredInDaily : dailyWords;
+    }
+
     setFlashcardDeck(newDeck);
     
     setCardIndex(prev => {
@@ -172,7 +194,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
         return prev;
     });
 
-  }, [dailyWords, starredSet]);
+  }, [dailyWords, starredSet, isStarredReviewMode]);
   
   const matchingPairs = useMemo(() => {
     if (mode !== 'matching' || matchingGameWords.length === 0) {
@@ -386,13 +408,16 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
             
             const currentBest = stats.dailyRaceRecords?.[viewingDay];
             
-            setStats(prev => ({
-                ...prev,
-                dailyRaceRecords: {
-                    ...(prev.dailyRaceRecords || {}),
-                    [viewingDay]: currentBest ? Math.min(currentBest, finalTime) : finalTime
-                }
-            }));
+            // Only update best time if NOT in starred review mode (to keep daily records clean)
+            if (!isStarredReviewMode) {
+                setStats(prev => ({
+                    ...prev,
+                    dailyRaceRecords: {
+                        ...(prev.dailyRaceRecords || {}),
+                        [viewingDay]: currentBest ? Math.min(currentBest, finalTime) : finalTime
+                    }
+                }));
+            }
 
             setTimeout(() => setRaceFinished(true), 1000);
         } else {
@@ -441,15 +466,21 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
 
   // Cumulative Test Logic
   const startCumulativeTest = () => {
-    const totalLearnedCount = Math.min(words.length, maxDay * 25);
-    const learnedPool = words.slice(0, totalLearnedCount);
+    // In Starred Mode, test only starred words
+    const pool = isStarredReviewMode ? dailyWords : words.slice(0, Math.min(words.length, maxDay * 25));
     
-    // Pick 20 random words from learned pool
-    const selected = [...learnedPool].sort(() => Math.random() - 0.5).slice(0, 20);
+    // Pick 20 random words from pool
+    const selected = [...pool].sort(() => Math.random() - 0.5).slice(0, 20);
     
+    if (selected.length < 4) {
+        // Not enough words for a test
+        alert("Need at least 4 words unlocked or starred to generate a test.");
+        return;
+    }
+
     const questions: Question[] = selected.map((word, idx) => {
         const isDef = Math.random() > 0.5;
-        const distractors = [...learnedPool].filter(w => w.word !== word.word).sort(() => Math.random() - 0.5).slice(0, 3);
+        const distractors = [...pool].filter(w => w.word !== word.word).sort(() => Math.random() - 0.5).slice(0, 3);
         const options = isDef 
             ? [word.definition, ...distractors.map(d => d.definition)].sort(() => Math.random() - 0.5)
             : [word.word, ...distractors.map(d => d.word)].sort(() => Math.random() - 0.5);
@@ -545,19 +576,41 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
       <header className="mb-8 flex flex-col md:flex-row justify-between items-start gap-6">
         <div className="flex-1">
           <div className="flex items-center gap-4 mb-2">
-            <h2 className="text-4xl font-black text-slate-900 tracking-tight uppercase">Daily Focus ({(dailyWords.length-5)*viewingDay}/{words.length})</h2>
-            {isCurrentMaxDay && stats.dailyVocabCompleted && (
+            <h2 className="text-4xl font-black text-slate-900 tracking-tight uppercase">
+                {isStarredReviewMode ? `Starred Review (${dailyWords.length})` : `Daily Focus (${(dailyWords.length-5)*viewingDay}/${words.length})`}
+            </h2>
+            
+            {/* NEW STAR REVIEW BUTTON */}
+            <button 
+                onClick={() => {
+                    setIsStarredReviewMode(!isStarredReviewMode);
+                    setCardIndex(0);
+                    setMode('list');
+                }}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all ${isStarredReviewMode ? 'bg-yellow-400 text-yellow-900 border-yellow-500 ring-2 ring-yellow-200' : 'bg-slate-100 text-slate-400 border-slate-200 hover:bg-yellow-100 hover:text-yellow-600'}`}
+                title={isStarredReviewMode ? "Return to Daily Focus" : "Review All Starred Words"}
+            >
+                <svg className="w-4 h-4" fill={isStarredReviewMode ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>
+                {isStarredReviewMode ? 'Exit Review' : 'Starred Only'}
+            </button>
+
+            {!isStarredReviewMode && isCurrentMaxDay && stats.dailyVocabCompleted && (
               <span className="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-emerald-200">Cycle Logged</span>
             )}
-            {!isCurrentMaxDay && (
+            {!isStarredReviewMode && !isCurrentMaxDay && (
                 <span className="bg-slate-100 text-slate-500 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-slate-200">Review Mode</span>
             )}
           </div>
-          <p className="text-slate-500 font-medium italic">Mastering 25 main and 5 review terms for Stage {viewingDay}. (Review prioritizes ★ starred words)</p>
+          <p className="text-slate-500 font-medium italic">
+            {isStarredReviewMode 
+                ? "Reviewing all vocabulary terms you have marked with a star." 
+                : `Mastering 25 main and 5 review terms for Stage ${viewingDay}. (Review prioritizes ★ starred words)`}
+          </p>
         </div>
         
+        {/* Navigation Controls - Hidden in Starred Mode */}
+        {!isStarredReviewMode && (
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-            {/* Navigation Controls */}
             <div className="flex items-center gap-4 w-full md:w-auto">
               {viewingDay > 1 && (
                 <button 
@@ -603,6 +656,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
                 <div className="text-2xl font-black text-slate-800 text-center uppercase tracking-tighter">Day {viewingDay}</div>
             </div>
         </div>
+        )}
       </header>
       
       <div className="flex flex-wrap gap-2 bg-slate-200 p-1.5 rounded-[1.5rem] w-fit mb-12 shadow-inner border border-slate-300">
