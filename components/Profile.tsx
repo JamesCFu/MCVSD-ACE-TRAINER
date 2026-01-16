@@ -73,13 +73,20 @@ const Profile: React.FC<ProfileProps> = ({ stats, onReset, onLogin, onLogout }) 
                       className="w-full bg-indigo-900/50 border border-indigo-700 rounded-xl px-4 py-3 text-white placeholder-indigo-400/50 focus:outline-none focus:border-indigo-400 transition-colors font-medium"
                    />
                  </div>
-                 <button 
-                   onClick={() => {
-                     if(nameInput.trim()) onLogin(nameInput, emailInput);
-                   }}
-                   className="w-full py-4 bg-white text-indigo-900 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-indigo-50 transition-all shadow-lg mt-2"
-                 >
-                   Activate Session
+                 // Profile.tsx - Update the Login Button
+<button 
+  onClick={() => {
+    if (nameInput.trim() && emailInput.includes('@')) {
+      // Pass the real credentials to the parent
+      onLogin(nameInput, emailInput);
+    } else {
+      alert("Please enter a valid name and email to enable cloud sync.");
+    }
+  }}
+  className="w-full bg-indigo-500 hover:bg-indigo-400 text-white font-black py-4 rounded-xl transition-all shadow-lg"
+>
+  Enable Cloud Saving
+</button>
                  </button>
                </div>
              </div>
