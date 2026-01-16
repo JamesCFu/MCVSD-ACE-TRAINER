@@ -1373,5 +1373,4 @@ export const generateShortDefinitions = async (words: VocabularyWord[]): Promise
     shortDef: w.definition.split(' ').slice(0, 6).join(' ') + (w.definition.split(' ').length > 6 ? '...' : '')
   }));
 };
-  }));
-};
+
