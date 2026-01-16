@@ -1,12 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { UserStats } from '../types';
-import { auth } from '../firebase'; // Import the auth instance we initialized
-import { 
-  createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword, 
-  updateProfile, 
-  signOut 
-} from 'firebase/auth';
 
 interface ProfileProps {
   stats: UserStats;
@@ -15,42 +8,11 @@ interface ProfileProps {
   onLogout: () => void;
 }
 
-const Profile: React.FC<ProfileProps> = ({ stats, onReset, onLogout }) => { 
+const Profile: React.FC<ProfileProps> = ({ stats, onReset, onLogin, onLogout }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  
-  // Auth State
-  const [isRegistering, setIsRegistering] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [username, setUsername] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
+  const [nameInput, setNameInput] = useState('');
+  const [emailInput, setEmailInput] = useState('');
 
-  // Fixed Auth Handler
-  const handleAuthAction = async () => {
-    setErrorMsg('');
-    try {
-      if (isRegistering) {
-        // Sign Up
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        // Set display name if provided
-        if (username && userCredential.user) {
-          await updateProfile(userCredential.user, { displayName: username });
-        }
-      } else {
-        // Log In
-        await signInWithEmailAndPassword(auth, email, password);
-      }
-      // The onAuthStateChanged listener in App.tsx will handle the state update automatically
-    } catch (error: any) {
-      console.error(error);
-      // Clean up the error message for the user
-      const message = error.message
-        ? error.message.replace("Firebase: ", "").replace("auth/", "").replace(/-/g, " ")
-        : "An error occurred";
-      setErrorMsg(message);
-    }
-  };
-  
   const globalAccuracy = useMemo(() => {
     if (!stats.questionsAnswered) return 0;
     return Math.round((stats.totalCorrect / stats.questionsAnswered) * 100);
@@ -87,63 +49,38 @@ const Profile: React.FC<ProfileProps> = ({ stats, onReset, onLogout }) => {
 
            {!stats.isLoggedIn ? (
              <div className="max-w-md">
-               <p className="text-indigo-200 mb-6 text-sm font-medium">
-                 {isRegistering ? "Create a secure cloud account to save your progress." : "Sign in to sync your progress across devices."}
+               <p className="text-indigo-200 mb-6 text-sm font-medium leading-relaxed">
+                 Sign in to claim your diagnostic history and personalize your certificate.
                </p>
-               
                <div className="space-y-4">
-                 {isRegistering && (
-                   <div>
-                     <label className="text-[10px] font-black uppercase text-indigo-400 tracking-widest mb-1 block">Username</label>
-                     <input 
-                        type="text" 
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        className="w-full bg-indigo-900/50 border border-indigo-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-400 font-bold"
-                        placeholder="Future Scholar"
-                     />
-                   </div>
-                 )}
-                 
                  <div>
-                   <label className="text-[10px] font-black uppercase text-indigo-400 tracking-widest mb-1 block">Email</label>
+                   <label className="text-[10px] font-black uppercase text-indigo-400 tracking-widest mb-1 block">Full Name</label>
+                   <input 
+                      type="text" 
+                      value={nameInput}
+                      onChange={(e) => setNameInput(e.target.value)}
+                      placeholder="Enter Student Name"
+                      className="w-full bg-indigo-900/50 border border-indigo-700 rounded-xl px-4 py-3 text-white placeholder-indigo-400/50 focus:outline-none focus:border-indigo-400 transition-colors font-bold"
+                   />
+                 </div>
+                 <div>
+                   <label className="text-[10px] font-black uppercase text-indigo-400 tracking-widest mb-1 block">Email Address</label>
                    <input 
                       type="email" 
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full bg-indigo-900/50 border border-indigo-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-400 font-medium"
+                      value={emailInput}
+                      onChange={(e) => setEmailInput(e.target.value)}
                       placeholder="student@example.com"
+                      className="w-full bg-indigo-900/50 border border-indigo-700 rounded-xl px-4 py-3 text-white placeholder-indigo-400/50 focus:outline-none focus:border-indigo-400 transition-colors font-medium"
                    />
                  </div>
-
-                 <div>
-                   <label className="text-[10px] font-black uppercase text-indigo-400 tracking-widest mb-1 block">Password</label>
-                   <input 
-                      type="password" 
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="w-full bg-indigo-900/50 border border-indigo-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-400 font-medium"
-                      placeholder="••••••••"
-                   />
-                 </div>
-
-                 {errorMsg && <p className="text-rose-400 text-xs font-bold bg-rose-900/30 p-2 rounded-lg">{errorMsg}</p>}
-
                  <button 
-                   onClick={handleAuthAction}
-                   className="w-full bg-indigo-500 hover:bg-indigo-400 text-white font-black py-4 rounded-xl transition-all shadow-lg mt-2"
+                   onClick={() => {
+                     if(nameInput.trim()) onLogin(nameInput, emailInput);
+                   }}
+                   className="w-full py-4 bg-white text-indigo-900 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-indigo-50 transition-all shadow-lg mt-2"
                  >
-                   {isRegistering ? "Create Account" : "Access Cloud Data"}
+                   Activate Session
                  </button>
-
-                 <div className="text-center mt-4">
-                   <button 
-                     onClick={() => setIsRegistering(!isRegistering)}
-                     className="text-indigo-300 text-xs font-bold hover:text-white underline"
-                   >
-                     {isRegistering ? "Already have an account? Sign In" : "Need an account? Register"}
-                   </button>
-                 </div>
                </div>
              </div>
            ) : (
@@ -152,12 +89,7 @@ const Profile: React.FC<ProfileProps> = ({ stats, onReset, onLogout }) => {
                    <div className="text-[10px] font-black uppercase text-indigo-400 tracking-widest mb-1">Active Scholar</div>
                    <div className="text-3xl font-black mb-1">{stats.username}</div>
                    <div className="text-indigo-300 font-medium text-sm">{stats.email}</div>
-                   <div className="mt-4 flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
-                      <span className="text-[10px] font-black uppercase text-emerald-400 tracking-widest">Cloud Connected</span>
-                   </div>
                 </div>
-                
                 <button 
                    onClick={onLogout}
                    className="px-8 py-3 border border-indigo-700 text-indigo-300 rounded-xl font-bold uppercase text-[10px] tracking-widest hover:bg-indigo-900 hover:text-white transition-all"
@@ -169,7 +101,6 @@ const Profile: React.FC<ProfileProps> = ({ stats, onReset, onLogout }) => {
          </div>
       </div>
 
-      {/* --- STATISTICS SECTION --- */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
         <div className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-xl">
            <div className="flex items-center gap-6 mb-8">
@@ -215,7 +146,6 @@ const Profile: React.FC<ProfileProps> = ({ stats, onReset, onLogout }) => {
         </div>
       </div>
 
-      {/* --- RESET ZONE --- */}
       <div className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm mb-12">
         <h3 className="text-2xl font-black text-slate-900 mb-8 tracking-tight">App Configuration</h3>
         <div className="flex flex-col md:flex-row items-center justify-between p-8 bg-rose-50 rounded-[2.5rem] border border-rose-200 gap-6">
