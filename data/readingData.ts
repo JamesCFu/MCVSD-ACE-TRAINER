@@ -1398,6 +1398,193 @@ Although protected by the Australian government, Great Barrier Reef faces enviro
       { id: "q500", category: Category.READING, questionText: "The author gives all the following reasons for continuing affirmative action in college admissions EXCEPT that it", options: ["fosters diversity.", "provides fair access to higher education.", "is necessary to promote social mobility.", "exposes students to a broad spectrum of society.", "prepares students for the future."], correctAnswer: 2, explanation: "While social mobility is mentioned as a general principle of AA, the author's specific arguments focus on diversity, access, and preparation." },
       { id: "q501", category: Category.READING, questionText: "The argument for affirmative action in the workplace that most closely mirrors the author’s reasoning about affirmative action in college admissions is", options: ["it is the law of the land.", "diversity in the workplace better prepares a company to compete in the marketplace.", "a diverse workforce is more efficient.", "a less-qualified minority candidate is still a great asset to a company.", "it is the right thing to do."], correctAnswer: 1, explanation: "The author argues diversity prepares students to succeed; similarly, diversity prepares companies to compete." }
     ]
-  }
+  },
+  {
+    id: "passage-72-weavers-song",
+    passage: "The Weaver's Song\n\nMy mother’s hands, like ancient roots,\nEntwine the wool, the crimson shoots\nOf dyed yarn, spun from mountain sheep,\nWhile shadows in the corners creep.\n\nThe loom, a harp of wood and string,\nBegins to hum, begins to sing,\nA song of patterns, old and deep,\nOf promises the elders keep.\n\nShe throws the shuttle, swift and true,\nA flash of red, a thread of blue,\nAnd in the warp, a story grows,\nOf winter rains and summer snows.\n\n“Observe,” she whispers, soft and low,\n“The way the river waters flow,\nThe way the eagle rides the breeze,\nThe secrets hidden in the trees.”\n\nNo written word, no ink on page,\nPreserves this wisdom, age to age,\nBut in the rug, the tapestry,\nThe history of our ancestry.\n\nI watch her fingers, gnarled and strong,\nAnd pray that I may learn the song,\nTo weave the threads of past and new,\nAnd keep the pattern strict and true.",
+    questions: [
+      { id: "q502", category: Category.READING, questionText: "The poem suggests that the mother’s weaving is", options: ["a purely economic activity.", "a tedious chore.", "a form of storytelling and history preservation.", "a way to pass time during the winter.", "a method of teaching the narrator to read."], correctAnswer: 2, explanation: "Lines 19-20 state 'But in the rug, the tapestry, / The history of our ancestry,' indicating the weaving preserves history." },
+      { id: "q503", category: Category.READING, questionText: "In line 5, the metaphor 'The loom, a harp of wood and string' suggests that", options: ["the loom is actually a musical instrument.", "the weaving process has a rhythmic, musical quality.", "the mother sings while she works.", "the loom is broken and makes noise.", "the loom is made of expensive materials."], correctAnswer: 1, explanation: "Comparing the loom to a harp suggests the rhythmic sound and 'singing' quality of the work." },
+      { id: "q504", category: Category.READING, questionText: "The narrator’s attitude toward the mother can best be described as", options: ["resentful.", "indifferent.", "reverent.", "impatient.", "pitying."], correctAnswer: 2, explanation: "The narrator watches with prayerful hope to learn the skill ('pray that I may learn the song'), showing deep respect." },
+      { id: "q505", category: Category.READING, questionText: "In the context of the poem, 'warp' (line 11) refers to", options: ["a distortion in the pattern.", "the threads running lengthwise in the loom.", "the speed of the shuttle.", "the mistake made by the weaver.", "the type of wool used."], correctAnswer: 1, explanation: "In weaving, the warp is the set of lengthwise yarns through which the weft (shuttle thread) is woven." },
+      { id: "q506", category: Category.READING, questionText: "The rhyme scheme of the first stanza is", options: ["ABAB", "AABB", "ABBA", "ABCB", "ABCD"], correctAnswer: 1, explanation: "Roots/shoots (AA) and sheep/creep (BB) form an AABB rhyme scheme." },
+      { id: "q507", category: Category.READING, questionText: "Based on the structure and meter, this poem is best classified as", options: ["free verse.", "a sonnet.", "a haiku.", "lyric poetry.", "an epic."], correctAnswer: 3, explanation: "It expresses personal emotions/observations with a musical rhythm (rhyme and meter), typical of lyric poetry. It is not a sonnet (14 lines) or free verse (no meter)." }
+    ]
+  },
+  {
+    id: "passage-73-anansi",
+    passage: "In the days when the world was new, all the wisdom in the world was scattered. Nyame, the Sky God, possessed a great pot that contained all the wisdom there was. Anansi the Spider, who was as clever as he was greedy, decided that he wanted all the wisdom for himself. He went to Nyame and, through flattery and trickery, persuaded the Sky God to give him the pot. 'I will keep it safe,' Anansi promised, 'and share it when the time is right.'\n\nNyame, amused by the little spider's arrogance, gave him the pot. Anansi scurried away, delighted. He peered inside and learned how to weave intricate webs, how to predict the weather, and how to outsmart the leopard. But Anansi was paranoid. 'If I leave this pot in my house,' he thought, 'someone might steal it.' He decided to hide it at the very top of the tallest silk-cotton tree in the forest.\n\nHe tied the heavy clay pot to his stomach with a vine and began to climb. But the pot was cumbersome. It bumped against his knees and scraped against the bark. He slipped, slid, and struggled, making very little progress. \n\nUnknown to Anansi, his young son, Ntikuma, was watching from the bushes. Ntikuma saw his father struggling and called out, 'Father! Why do you tie the pot to your front? If you tied it to your back, your hands would be free and the climbing would be easy!'\n\nAnansi stopped. He was the owner of all wisdom, yet his young son had seen the solution he had missed. In a fit of temper and embarrassment, Anansi shouted, 'I have the pot of wisdom, yet a child tells me what to do!' He realized that wisdom is useless if it is not shared or applied correctly. In his frustration, he threw the pot down from the tree.\n\nCrash! The pot shattered into thousands of pieces. The wisdom inside flew out like a swarm of bees. It drifted on the wind, scattering across the four corners of the earth. People everywhere caught bits of it. That is why today, no single person knows everything, but everyone knows a little something. And Anansi? He returned home, a little wiser, having learned that even the keeper of wisdom can learn from a child.",
+    questions: [
+      { id: "q508", category: Category.READING, questionText: "The passage is best described as a", options: ["historical account.", "scientific report.", "origin myth.", "biography.", "political satire."], correctAnswer: 2, explanation: "The story explains the origin of how wisdom was scattered around the world." },
+      { id: "q509", category: Category.READING, questionText: "Why did Anansi want to hide the pot?", options: ["He wanted to protect it from the rain.", "He was afraid Nyame would take it back.", "He was greedy and paranoid that someone would steal it.", "He wanted to surprise his son.", "He couldn't fit it in his house."], correctAnswer: 2, explanation: "Paragraph 2 states Anansi was paranoid and thought, 'someone might steal it.'" },
+      { id: "q510", category: Category.READING, questionText: "The irony in the story is that", options: ["Anansi is a spider but acts like a human.", "Nyame gave the pot away easily.", "Anansi possessed all the wisdom but failed to see a simple solution.", "the pot broke when it hit the ground.", "Ntikuma was watching from the bushes."], correctAnswer: 2, explanation: "Anansi held 'all the wisdom' yet had to be taught a simple climbing technique by his child." },
+      { id: "q511", category: Category.READING, questionText: "In line 12, 'cumbersome' most nearly means", options: ["fragile.", "valuable.", "unwieldy.", "mysterious.", "shiny."], correctAnswer: 2, explanation: "The pot bumped his knees and made climbing difficult, indicating it was awkward or unwieldy." },
+      { id: "q512", category: Category.READING, questionText: "According to the passage, the result of the pot breaking was that", options: ["Anansi was punished by Nyame.", "wisdom was lost forever.", "wisdom was distributed among all people.", "Anansi became the Sky God.", "the silk-cotton tree fell down."], correctAnswer: 2, explanation: "The wisdom flew out and 'People everywhere caught bits of it.'" },
+      { id: "q513", category: Category.READING, questionText: "The character of Anansi can best be described as", options: ["humble and generous.", "selfish but capable of learning.", "evil and destructive.", "foolish and lazy.", "heroic and brave."], correctAnswer: 1, explanation: "He is greedy/selfish (wanted it all) but learns a lesson at the end ('returned home, a little wiser')." }
+    ]
+  },
+  {
+    id: "passage-74-panama-canal",
+    passage: "The construction of the Panama Canal stands as one of the supreme engineering feats of the 20th century, a testament to human ingenuity and determination in the face of overwhelming natural obstacles. The dream of a waterway linking the Atlantic and Pacific oceans dates back to the early Spanish explorers, who hauled gold across the Isthmus of Panama. However, it was not until 1880 that the French, led by Ferdinand de Lesseps, the builder of the Suez Canal, broke ground. The French effort was doomed by poor planning, financial mismanagement, and, most devastatingly, disease. Malaria and yellow fever, transmitted by mosquitoes, decimated the workforce, claiming an estimated 20,000 lives before the French abandoned the project in 1889.\n\nIn 1904, the United States took over the project under the leadership of President Theodore Roosevelt. The Americans quickly realized that controlling disease was a prerequisite for construction. Colonel William C. Gorgas was placed in charge of sanitation. Implementing the then-revolutionary theories that mosquitoes carried malaria and yellow fever, Gorgas launched a massive campaign to fumigate homes, drain swamps, and screen windows. Within two years, yellow fever was virtually eliminated, and malaria cases dropped significantly. With the health crisis managed, the engineering challenge took center stage.\n\nUnlike the sea-level Suez Canal, the Panama Canal required a lock system to lift ships 85 feet above sea level to the man-made Gatun Lake and then lower them back down on the other side. This required the excavation of the Culebra Cut, a nine-mile channel through the Continental Divide. It was a Herculean task involving steam shovels, dynamite, and thousands of laborers from the West Indies, Europe, and America. Landslides were a constant plague; often, months of work would be undone in hours as the unstable earth collapsed into the cut. \n\nDespite these hardships, the canal opened on August 15, 1914. The 50-mile passage reduced the sea voyage from New York to San Francisco by nearly 8,000 miles. It revolutionized global trade and military strategy. Today, the canal remains a vital artery of commerce, though it faces new challenges. Modern supertankers often exceed the size limits of the original locks, prompting a massive expansion project completed in 2016 to accommodate these 'Neopanamax' vessels.",
+    questions: [
+      { id: "q514", category: Category.READING, questionText: "The primary reason the French failed to complete the canal was", options: ["lack of engineering technology.", "interference from the Spanish.", "disease and poor planning.", "political pressure from the United States.", "the inability to build locks."], correctAnswer: 2, explanation: "The passage cites 'poor planning, financial mismanagement, and, most devastatingly, disease' as reasons for the French failure." },
+      { id: "q515", category: Category.READING, questionText: "In line 13, the word 'decimated' most nearly means", options: ["delayed.", "angered.", "drastically reduced.", "infected.", "employed."], correctAnswer: 2, explanation: "Disease 'decimated' the workforce, claiming 20,000 lives, meaning it drastically reduced the number of workers." },
+      { id: "q516", category: Category.READING, questionText: "Colonel William C. Gorgas contributed to the canal's success by", options: ["designing the lock system.", "negotiating the treaty with Panama.", "eliminating the mosquito-borne diseases.", "inventing a new steam shovel.", "securing funding from Congress."], correctAnswer: 2, explanation: "Gorgas launched a campaign to control mosquitoes, eliminating yellow fever and reducing malaria." },
+      { id: "q517", category: Category.READING, questionText: "Why was the Panama Canal different from the Suez Canal?", options: ["It was built by the French.", "It required a lock system to change elevation.", "It was longer.", "It was built solely for military use.", "It did not face disease outbreaks."], correctAnswer: 1, explanation: "The Suez was a sea-level canal, whereas Panama required locks to lift ships 85 feet." },
+      { id: "q518", category: Category.READING, questionText: "The Culebra Cut (line 22) refers to", options: ["a specialized medical procedure.", "a channel excavated through the mountains.", "a reduction in worker wages.", "a shortcut through the jungle.", "the type of mosquito that carries malaria."], correctAnswer: 1, explanation: "It is described as 'a nine-mile channel through the Continental Divide'." },
+      { id: "q519", category: Category.READING, questionText: "The passage implies that the expansion completed in 2016 was necessary because", options: ["the original canal was collapsing.", "global warming lowered water levels.", "ships had become too large for the old locks.", "political treaties required it.", "the route was no longer popular."], correctAnswer: 2, explanation: "Modern supertankers exceed the size limits of the original locks, prompting expansion for 'Neopanamax' vessels." },
+      { id: "q520", category: Category.READING, questionText: "The tone of the passage is", options: ["critical.", "informative and admiring.", "humorous.", "melancholy.", "skeptical."], correctAnswer: 1, explanation: "The author uses terms like 'supreme engineering feats' and 'testament to human ingenuity,' indicating admiration alongside the factual history." }
+    ]
+  },
+  {
+    id: "passage-75-seasons-sonnet",
+    passage: "Sonnet of the Turning Year\n\nWhen green buds break the winter’s icy hold,\nAnd birds return to sing their morning tune,\nThe earth awakes, shaking off the cold,\nTo bask beneath the golden eye of noon.\nThen summer comes with heavy, humid breath,\nThe fields are high with corn, the rivers slow,\nWe little dream of distant, coming death,\nOr how the chilling northern winds will blow.\nBut autumn paints the leaves in red and gold,\nA final flaring fire before the night,\nThe days grow short, the stories become old,\nAnd shadows lengthen in the fading light.\nSo time wheels on, a circle never done,\nFrom frozen stars to burning summer sun.",
+    questions: [
+      { id: "q521", category: Category.READING, questionText: "This poem is identified as a sonnet because", options: ["it rhymes.", "it is about nature.", "it has fourteen lines and a specific rhyme scheme.", "it uses metaphors.", "it has four stanzas."], correctAnswer: 2, explanation: "A sonnet is strictly defined by having 14 lines and a set rhyme scheme (here, Shakespearean: ABAB CDCD EFEF GG)." },
+      { id: "q522", category: Category.READING, questionText: "In line 4, 'the golden eye of noon' refers to", options: ["a sunflower.", "a clock.", "the sun.", "a gold coin.", "the moon."], correctAnswer: 2, explanation: "The sun is high at noon and is often metaphorically described as an eye." },
+      { id: "q523", category: Category.READING, questionText: "The shift in tone from line 8 to line 9 signifies", options: ["the transition from morning to night.", "the change from summer to autumn.", "the death of the narrator.", "a change in the rhyme scheme.", "the speaker waking up."], correctAnswer: 1, explanation: "Line 8 mentions coming winds; Line 9 explicitly states 'But autumn paints the leaves'." },
+      { id: "q524", category: Category.READING, questionText: "The central theme of the poem is", options: ["the danger of winter storms.", "the joy of farming.", "the cyclical nature of time.", "the sadness of aging.", "the beauty of birds."], correctAnswer: 2, explanation: "The final couplet summarizes the theme: 'So time wheels on, a circle never done'." },
+      { id: "q525", category: Category.READING, questionText: "Which line contains an example of alliteration?", options: ["When green buds break the winter’s icy hold", "A final flaring fire before the night", "The earth awakes, shaking off the cold", "Then summer comes with heavy, humid breath", "So time wheels on, a circle never done"], correctAnswer: 1, explanation: "'Final flaring fire' repeats the 'f' sound." }
+    ]
+  },
+  {
+    id: "passage-76-bioluminescence",
+    passage: "On a moonless night in the Caribbean, a boat cuts through the water, leaving a glowing wake of neon blue. This is not magic, but bioluminescence, one of nature’s most fascinating chemical phenomena. Bioluminescence is the production and emission of light by a living organism. While fireflies are the most familiar example on land, the phenomenon is far more common in the ocean, where at least 1,500 species of fish, jellyfish, bacteria, and crustaceans possess the ability to glow.\n\nThe chemistry behind the glow involves two main components: a molecule called luciferin and an enzyme called luciferase. When luciferin reacts with oxygen in the presence of luciferase, energy is released in the form of light. This reaction is incredibly efficient. A traditional incandescent light bulb wastes about 90% of its energy as heat, emitting only 10% as light. In contrast, the bioluminescent reaction is nearly 100% efficient, producing almost no heat, which is why it is often called 'cold light.'\n\nMarine organisms use this light for a variety of survival strategies. The most common is defense. Some squid shoot out a cloud of glowing mucus to confuse predators, similar to how an octopus uses ink. This 'burglar alarm' effect can also reveal the predator to its own enemies. Other creatures use light for camouflage. The hatchetfish, for example, has light-producing organs on its belly. By matching the light intensity of the surface water above, the fish becomes invisible to predators looking up from below, a strategy known as counter-illumination.\n\nBioluminescence also plays a role in feeding and mating. The anglerfish, a deep-sea dweller, dangles a glowing lure in front of its mouth to attract unsuspecting prey. In the mating game, fireflies use specific flash patterns to identify members of their own species and attract partners. Scientists are now studying these mechanisms to apply them to medical research. By tagging cancer cells with bioluminescent proteins, researchers can track the progression of disease and the effectiveness of treatments in real-time, proving that the light of the deep sea may one day help save lives on land.",
+    questions: [
+      { id: "q526", category: Category.READING, questionText: "According to the passage, bioluminescence is rare", options: ["in the ocean.", "in jellyfish.", "on land.", "in the Caribbean.", "in fireflies."], correctAnswer: 2, explanation: "The passage states the phenomenon is 'far more common in the ocean,' implying it is rarer on land (fireflies are the 'most familiar' but singular example given)." },
+      { id: "q527", category: Category.READING, questionText: "The 'cold light' referred to in line 14 is 'cold' because", options: ["it is found in deep, cold water.", "the reaction produces almost no heat.", "it is blue in color.", "it requires cold temperatures to occur.", "it feels cold to the touch."], correctAnswer: 1, explanation: "The reaction is nearly 100% efficient, producing almost no heat." },
+      { id: "q528", category: Category.READING, questionText: "The hatchetfish uses bioluminescence to", options: ["attract a mate.", "lure prey.", "see in the dark.", "warm itself.", "hide from predators."], correctAnswer: 4, explanation: "It matches the surface light to become invisible to predators (counter-illumination)." },
+      { id: "q529", category: Category.READING, questionText: "In line 20, the term 'counter-illumination' refers to", options: ["shining light on a predator.", "turning lights off.", "matching background light to blend in.", "using light to fight.", "reflecting sunlight."], correctAnswer: 2, explanation: "The passage defines it as matching the light intensity of the surface water to become invisible." },
+      { id: "q530", category: Category.READING, questionText: "How are scientists using bioluminescence in medicine?", options: ["to cure blindness", "to create glowing tattoos", "to track cancer cells", "to heat human bodies", "to synthesize vitamins"], correctAnswer: 2, explanation: "Researchers tag cancer cells with bioluminescent proteins to track disease progression." },
+      { id: "q531", category: Category.READING, questionText: "The interaction between luciferin and oxygen requires which component to produce light?", options: ["heat", "water", "luciferase", "mucus", "sunlight"], correctAnswer: 2, explanation: "Paragraph 2 states: 'When luciferin reacts with oxygen in the presence of luciferase...'" },
+      { id: "q532", category: Category.READING, questionText: "The author uses the comparison to a light bulb (lines 11-13) to illustrate", options: ["how bright bioluminescence is.", "the efficiency of the chemical reaction.", "how much heat fireflies produce.", "the cost of electricity.", "the color of the light."], correctAnswer: 1, explanation: "It contrasts the 10% efficiency of a bulb with the nearly 100% efficiency of bioluminescence." }
+    ]
+  },
+  import { Category } from "../types";
+
+export const hardPoetryQuestions = [
+  // Questions for Passage 72: The Weaver's Song
+  {
+    id: "q502-hard",
+    category: Category.READING,
+    passageId: "passage-72-weavers-song",
+    questionText: "In the first stanza, the simile describing the mother's hands as 'ancient roots' (line 1) serves primarily to",
+    options: [
+      "highlight the physical pain caused by the weaving process.",
+      "suggest a deep, organic connection between the weaver, her ancestors, and the earth.",
+      "describe the color and texture of the wool she is handling.",
+      "indicate that the mother is too old to be weaving effectively.",
+      "imply that the weaving loom is made of wood from the forest."
+    ],
+    correctAnswer: 1,
+    explanation: "The comparison to 'roots' implies grounding, origin, and a lifeline to the past, reinforcing the poem's theme of ancestry and tradition (lines 19-20) rather than just physical appearance."
+  },
+  {
+    id: "q503-hard",
+    category: Category.READING,
+    passageId: "passage-72-weavers-song",
+    questionText: "The contrast drawn between the 'written word' and the 'rug' in lines 17–20 suggests that",
+    options: [
+      "the culture described is illiterate and cannot record history.",
+      "books are considered fragile and temporary compared to textiles.",
+      "cultural wisdom is viewed as a living, tactile experience rather than static facts.",
+      "the weaving patterns are actually a secret code used in times of war.",
+      "the narrator prefers reading to manual labor."
+    ],
+    correctAnswer: 2,
+    explanation: "The speaker notes that wisdom is not preserved by ink, but 'in the rug,' suggesting that their history is experiential, visual, and crafted—a living tradition passed down through action rather than static recording."
+  },
+  {
+    id: "q504-hard",
+    category: Category.READING,
+    passageId: "passage-72-weavers-song",
+    questionText: "The juxtaposition of the words 'gnarled' and 'strong' in line 21 emphasizes",
+    options: [
+      "the ugliness of the finished rug.",
+      "the resilience and enduring skill of the mother despite the physical toll of her labor.",
+      "the softness of the wool compared to the hardness of the loom.",
+      "the narrator’s fear of growing old.",
+      "the fragility of the loom strings."
+    ],
+    correctAnswer: 1,
+    explanation: "'Gnarled' suggests age and wear, while 'strong' suggests capability; together they highlight that despite the physical toll of age, her mastery and power remain intact."
+  },
+  {
+    id: "q505-hard",
+    category: Category.READING,
+    passageId: "passage-72-weavers-song",
+    questionText: "The narrator’s prayer to 'keep the pattern strict and true' (line 24) implies a sense of",
+    options: [
+      "artistic restriction and boredom.",
+      "fear of punishment from the elders.",
+      "responsibility to maintain the integrity of cultural heritage.",
+      "desire to innovate and change the old designs.",
+      "religious devotion to the Sky God."
+    ],
+    correctAnswer: 2,
+    explanation: "The desire to keep the pattern 'strict and true' reflects a stewardship of heritage, ensuring the history described in the previous stanzas is preserved accurately for future generations."
+  },
+
+  // Questions for Passage 75: Sonnet of the Turning Year
+  {
+    id: "q521-hard",
+    category: Category.READING,
+    passageId: "passage-75-seasons-sonnet",
+    questionText: "The shift in tone at line 9, signaled by the word 'But', represents which feature common to the sonnet form?",
+    options: [
+      "The refrain",
+      "The volta",
+      "The couplet",
+      "The prologue",
+      "The stanza break"
+    ],
+    correctAnswer: 1,
+    explanation: "A 'volta' is a turn or shift in thought/argument in a sonnet. Here, the poem shifts from the vitality of spring/summer to the decline of autumn/winter."
+  },
+  {
+    id: "q522-hard",
+    category: Category.READING,
+    passageId: "passage-75-seasons-sonnet",
+    questionText: "Lines 7 and 8 ('We little dream of distant, coming death / Or how the chilling northern winds will blow') suggest that the essence of Summer, as depicted in the poem, is",
+    options: [
+      "a time of frantic preparation for winter survival.",
+      "a period defined by a blissful, perhaps naive, ignorance of mortality.",
+      "characterized by a deep fear of the changing weather.",
+      "the only time of year when humans are truly awake.",
+      "a conscious rebellion against the passage of time."
+    ],
+    correctAnswer: 1,
+    explanation: "The phrase 'We little dream' suggests that during the abundance of summer, one is unaware or dismissive of the inevitable end (winter/death), characterizing the season by its illusion of permanence."
+  },
+  {
+    id: "q523-hard",
+    category: Category.READING,
+    passageId: "passage-75-seasons-sonnet",
+    questionText: "The imagery of 'summer... with heavy, humid breath' (line 5) utilizes which literary device to establish the atmosphere?",
+    options: [
+      "Alliteration",
+      "Personification",
+      "Hyperbole",
+      "Simile",
+      "Paradox"
+    ],
+    correctAnswer: 1,
+    explanation: "Giving summer 'breath' attributes human/living qualities to the season (personification), creating a sense of a living, oppressive presence."
+  },
+  {
+    id: "q524-hard",
+    category: Category.READING,
+    passageId: "passage-75-seasons-sonnet",
+    questionText: "The final couplet ('So time wheels on, a circle never done, / From frozen stars to burning summer sun') resolves the poem’s tension by",
+    options: [
+      "suggesting that winter is superior to summer.",
+      "accepting the cyclical nature of existence as infinite and inevitable.",
+      "complaining about the harshness of the weather.",
+      "offering a religious prayer for salvation.",
+      "denying that death exists."
+    ],
+    correctAnswer: 1,
+    explanation: "The tension between the life of spring and the death of winter is resolved by acknowledging they are part of a 'circle never done,' accepting the cycle as a permanent state of nature."
+  },
 
 ];
