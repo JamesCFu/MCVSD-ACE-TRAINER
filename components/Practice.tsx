@@ -1,10 +1,7 @@
-import React, { useState, useEffect, useRef, useCallback, useLayoutEffect, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react';
 import { Category, Question, PracticeSession } from '../types';
 import { 
   generateQuestions, 
-  generateReadingTest,
-  generateMockPart1_ELA,
-  generateMockPart2_Math
 } from '../geminiService';
 
 interface PracticeProps {
@@ -35,7 +32,6 @@ const Practice: React.FC<PracticeProps> = ({
   onUpdateSession, 
   onCompleteSession,
   onClearSession,
-  onFinish, 
   onRecordOnly, 
   onLogMistake, 
   onExit,
@@ -59,7 +55,6 @@ const Practice: React.FC<PracticeProps> = ({
 
   // Constants
   const isReadingLab = category === Category.READING;
-  const isMock = category === Category.MOCK;
 
   // --- Scroll Restoration Logic ---
   useLayoutEffect(() => {
@@ -131,7 +126,6 @@ const Practice: React.FC<PracticeProps> = ({
       interval = setInterval(() => {
         setTimeLeft((prev) => {
           const newItem = prev - 1;
-          // Auto-save time every 5 seconds or so? Ideally done less frequently
           if (newItem % 5 === 0) onSaveTime(category, newItem);
           return newItem;
         });
@@ -143,7 +137,8 @@ const Practice: React.FC<PracticeProps> = ({
   }, [isTimerActive, timeLeft, showResults]);
 
   const handleAnswerSelect = (qId: string, optionIndex: number) => {
-    const newAnswers = { ...userAnswers, [qId: string]: optionIndex };
+    // FIX: Removed incorrect type annotation inside object literal
+    const newAnswers = { ...userAnswers, [qId]: optionIndex };
     setUserAnswers(newAnswers);
     onUpdateSession(category, newAnswers, highlights);
   };
@@ -166,8 +161,6 @@ const Practice: React.FC<PracticeProps> = ({
 
     const score = Math.round((correctCount / questions.length) * 100);
     
-    // For MOCK, we just record data, we don't clear it immediately usually, 
-    // but here we follow standard flow
     if (category === Category.MOCK) {
        onRecordOnly(category, score, questions.length, mistakes, questions);
     } else {
@@ -186,7 +179,7 @@ const Practice: React.FC<PracticeProps> = ({
 
      const newHighlight: Highlight = {
         id: Date.now().toString(),
-        start: 0, // Simplified for demo; real implementation needs offset mapping
+        start: 0, 
         end: 0,
         text: text
      };
@@ -287,9 +280,6 @@ const Practice: React.FC<PracticeProps> = ({
 
   // 2. Standard List View (Mock, Vocab, Grammar)
   const renderListView = () => {
-    // Group questions by passage for Mock View aesthetics if needed, 
-    // but standard list is fine for now as per previous iterations.
-    
     return (
       <div className="max-w-4xl mx-auto space-y-8">
          <div className="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-200 sticky top-4 z-10">
@@ -303,18 +293,16 @@ const Practice: React.FC<PracticeProps> = ({
          </div>
 
          {questions.map((q, index) => {
-            // Check if this question starts a new passage context
             const isFirstOfPassage = index > 0 && q.passage && questions[index - 1].passage !== q.passage;
             const isVeryFirstPassage = index === 0 && q.passage;
             
             return (
                <div key={q.id} className="space-y-4">
-                  {/* Passage Header / Expand Button for MOCK */}
                   {(isVeryFirstPassage || isFirstOfPassage) && q.passage && (
                      <div className="bg-indigo-50 border border-indigo-100 p-4 rounded-lg flex justify-between items-center">
                         <span className="text-xs font-bold text-indigo-600 uppercase tracking-widest">Reading Passage</span>
                         <button 
-                          onClick={() => handleExpandPassage(q.passage!)} // Using passage text as ID for simplicity or generate specific ID
+                          onClick={() => handleExpandPassage(q.passage!)}
                           className="text-indigo-600 hover:text-indigo-800 text-sm font-bold underline decoration-2 underline-offset-2"
                         >
                           Read Full Passage
@@ -390,7 +378,6 @@ const Practice: React.FC<PracticeProps> = ({
            </div>
            <div className="flex-1 overflow-y-auto p-8 max-w-3xl mx-auto w-full">
               <div className="prose prose-lg prose-slate mx-auto font-serif">
-                 {/* Using the text itself as ID in this simple implementation */}
                  <div dangerouslySetInnerHTML={{ __html: expandedPassageId.replace(/\n/g, '<br/><br/>') }} />
               </div>
               <div className="h-20"></div>
@@ -450,7 +437,6 @@ const Practice: React.FC<PracticeProps> = ({
      );
   }
 
-  // Active Test View
   return (
     <div className="min-h-screen bg-slate-50 pt-6 pb-20 px-4">
        {isReadingLab ? renderReadingLab() : renderListView()}
