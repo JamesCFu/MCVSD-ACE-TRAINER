@@ -11,6 +11,7 @@ interface PracticeProps {
   category: Category;
   session: PracticeSession | null;
   onStartSession: (category: Category, questions: Question[], passage?: string | null) => void;
+  // Now accepts highlights as the 3rd argument
   onUpdateSession: (category: Category, userAnswers: Record<string, number>, highlights?: Highlight[]) => void;
   onCompleteSession: (category: Category, score: number) => void;
   onClearSession: (category: Category) => void;
@@ -64,30 +65,16 @@ const Practice: React.FC<PracticeProps> = ({
   const [currentPassageIndex, setCurrentPassageIndex] = useState(0);
 
   // --- MOCK READING POP-OUT STATE ---
-  // Added initialQuestionId to track which question triggered the expand
-  const [mockReadingMode, setMockReadingMode] = useState<{passage: string, questions: Question[], initialQuestionId?: string} | null>(null);
+  // Updated to include targetQuestionId for auto-scrolling
+  const [mockReadingMode, setMockReadingMode] = useState<{passage: string, questions: Question[], targetQuestionId?: string} | null>(null);
   
-  // Scroll Position Ref for Mock Mode (Main Window)
+  // Scroll Position Ref for Mock Mode
   const savedScrollPos = useRef(0);
 
   // Keep ref in sync for cleanup/saving
   useEffect(() => {
     timerRef.current = timer;
   }, [timer]);
-
-  // --- SCROLL TO TARGET QUESTION LOGIC ---
-  useEffect(() => {
-    if (mockReadingMode?.initialQuestionId) {
-      // Small timeout to ensure the DOM elements in the portal/split view are rendered
-      const timer = setTimeout(() => {
-        const targetEl = document.getElementById(`split-q-${mockReadingMode.initialQuestionId}`);
-        if (targetEl) {
-          targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [mockReadingMode]);
 
   // --- TIMER SYNCHRONIZATION ---
   useEffect(() => {
@@ -117,11 +104,25 @@ const Practice: React.FC<PracticeProps> = ({
     } else {
       setIsSubmitted(session.isSubmitted);
       setScore(session.score);
+      // RESTORE HIGHLIGHTS FROM SESSION
       if (session.highlights) {
         setHighlights(session.highlights);
       }
     }
   }, [session, category]);
+
+  // --- AUTO-SCROLL TO QUESTION IN SPLIT VIEW ---
+  useEffect(() => {
+    if (mockReadingMode?.targetQuestionId) {
+      // Small timeout to ensure DOM is rendered
+      setTimeout(() => {
+        const targetElement = document.getElementById(`split-view-question-${mockReadingMode.targetQuestionId}`);
+        if (targetElement) {
+          targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
+    }
+  }, [mockReadingMode]);
 
   // --- TIMER TICK LOGIC ---
   useEffect(() => {
@@ -171,6 +172,7 @@ const Practice: React.FC<PracticeProps> = ({
   // --- HELPER TO SAVE STATE (Answers + Highlights) ---
   const saveSessionState = (newHighlights: Highlight[]) => {
     if (!session) return;
+    // Pass both the current answers and the new highlights to the parent
     onUpdateSession(category, session.userAnswers, newHighlights);
   };
 
@@ -287,7 +289,9 @@ const Practice: React.FC<PracticeProps> = ({
       let passage: string | null = null;
       
       if (category === Category.READING) {
+         // This now returns questions for 3 unique passages
          data = await generateReadingTest();
+         // We do not set a single 'passage' here because it varies per question
       } else if (category === Category.MOCK) {
          data = await generateMockPart1_ELA();
       } else {
@@ -395,6 +399,7 @@ const Practice: React.FC<PracticeProps> = ({
     );
   }
 
+  // INITIALIZATION SCREEN
   if (!session) {
     return (
       <div className="max-w-4xl mx-auto py-20 px-6 text-center">
@@ -429,6 +434,7 @@ const Practice: React.FC<PracticeProps> = ({
       isPopOut: boolean, 
       uniquePassagesCount: number = 1
   ) => {
+    // Check if user has answered ALL questions in the entire session
     const allAnswered = questions.every(q => userAnswers[q.id] !== undefined);
 
     return (
@@ -471,8 +477,11 @@ const Practice: React.FC<PracticeProps> = ({
                     <button onClick={onExit} className="px-6 py-3 text-slate-400 font-bold hover:text-slate-600 text-xs uppercase tracking-wider">Exit</button>
                     {!isSubmitted ? (
                         uniquePassagesCount > 1 && currentPassageIndex < uniquePassagesCount - 1 ? (
+                           // NEXT PASSAGE BUTTON
                            <button 
                               onClick={() => {
+                                  // Clear highlights for the new passage view (optional, or persist per passage)
+                                  // For simplicity, we clear visualization but state is saved in session if needed
                                   setHighlights([]); 
                                   setCurrentPassageIndex(prev => prev + 1);
                               }}
@@ -481,6 +490,7 @@ const Practice: React.FC<PracticeProps> = ({
                              Next Passage &rarr;
                            </button>
                         ) : (
+                           // SUBMIT BUTTON (Only if all questions answered)
                            <button 
                               onClick={handleSubmit} 
                               disabled={!allAnswered}
@@ -556,6 +566,7 @@ const Practice: React.FC<PracticeProps> = ({
                   <div className="mb-8 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm sticky top-0 z-10">
                       <div className="flex justify-between items-end mb-3">
                           <span className="text-[10px] font-black uppercase text-indigo-400 tracking-widest">Lab Progress</span>
+                          {/* Show total progress across ALL questions, not just current passage */}
                           <span className="text-xs font-bold text-slate-700">{Object.keys(userAnswers).length} / {questions.length} Completed</span>
                       </div>
                       <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
@@ -570,12 +581,9 @@ const Practice: React.FC<PracticeProps> = ({
               <div className="space-y-8 pb-20">
                  {activeQuestions.map((q, idx) => {
                     const isCorrect = userAnswers[q.id] === q.correctAnswer;
+                    // Calculate absolute index if needed, but local index is fine for display
                     return (
-                       <div 
-                         key={q.id} 
-                         id={`split-q-${q.id}`} 
-                         className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm scroll-mt-24 transition-colors duration-500"
-                       >
+                       <div key={q.id} id={`split-view-question-${q.id}`} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                           <div className="flex gap-4 mb-4">
                              <span className="w-6 h-6 bg-slate-900 text-white rounded-md flex items-center justify-center font-bold text-xs shrink-0">
                                  {questions.findIndex(quest => quest.id === q.id) + 1}
@@ -622,11 +630,16 @@ const Practice: React.FC<PracticeProps> = ({
 
   // --- RENDER LOGIC ---
 
+  // 1. If in Mock Reading Pop-out Mode
   if (mockReadingMode) {
       return renderSplitView(mockReadingMode.passage, mockReadingMode.questions, true);
   }
 
+  // 2. If standard Reading Lab (Category.READING) - Handles Multiple Passages
   if (category === Category.READING && questions.length > 0) {
+      // Extract unique passages from the questions list
+      // We rely on the order of questions; usually grouped by passage from generator
+      // We can create a map or set to identify unique passages
       const uniquePassages = Array.from(new Set(questions.map(q => q.passage || ""))).filter(p => p !== "");
       
       if (uniquePassages.length > 0) {
@@ -637,6 +650,7 @@ const Practice: React.FC<PracticeProps> = ({
       }
   }
 
+  // 3. Standard Layout (Mock, Vocab, etc.)
   return (
     <div className="max-w-4xl mx-auto py-10 px-6 animate-in fade-in duration-500 pb-20">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4">
@@ -677,23 +691,25 @@ const Practice: React.FC<PracticeProps> = ({
           return (
             <div key={q.id} className={`bg-white p-8 rounded-[2rem] border-2 shadow-sm transition-all ${isWrong ? 'border-rose-100 ring-4 ring-rose-50' : isSubmitted && isCorrect ? 'border-emerald-100 ring-4 ring-emerald-50' : 'border-slate-100'}`}>
               
+              {/* READING PASSAGE EXPANDER FOR MOCK TEST */}
               {q.passage && (
                   <div className="mb-6 p-6 bg-indigo-50/50 rounded-2xl border border-indigo-100 text-slate-800 font-serif leading-relaxed text-sm">
                       <div className="flex justify-between items-center mb-4 border-b border-indigo-100 pb-2">
                           <span className="text-[10px] font-black uppercase text-indigo-400 tracking-widest">Reference Passage</span>
                           <button 
                              onClick={() => {
+                                 // Save scroll position
                                  const mainContainer = document.querySelector('main');
                                  if (mainContainer) savedScrollPos.current = mainContainer.scrollTop;
 
+                                 // Filter all questions in this session that share the same passage
                                  const relevantQs = questions.filter(quest => quest.passage === q.passage);
                                  setHighlights(session?.highlights || []); 
                                  setIsHighlightMode(false);
-                                 // PASSED q.id HERE
                                  setMockReadingMode({ 
                                     passage: q.passage!, 
-                                    questions: relevantQs, 
-                                    initialQuestionId: q.id 
+                                    questions: relevantQs,
+                                    targetQuestionId: q.id // Pass the question ID to scroll to
                                  });
                              }}
                              className="group flex items-center gap-2 bg-white border border-indigo-200 text-indigo-600 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-all shadow-sm"
@@ -771,6 +787,7 @@ const Practice: React.FC<PracticeProps> = ({
               </div>
               <button 
                 onClick={handleSubmit}
+                // STRICT CHECK: Disable if not all questions answered
                 disabled={Object.keys(userAnswers).length < questions.length}
                 className={`px-10 py-4 rounded-2xl font-black uppercase text-xs tracking-[0.2em] transition-all shadow-lg w-full md:w-auto ${Object.keys(userAnswers).length < questions.length ? 'bg-slate-700 text-slate-500 cursor-not-allowed' : 'bg-white text-indigo-900 hover:bg-indigo-50 hover:scale-105 active:scale-95'}`}
                 title={Object.keys(userAnswers).length < questions.length ? "Complete all questions to submit" : "Submit Exam"}
