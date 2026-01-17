@@ -1237,27 +1237,20 @@ export const generateVocabulary = async (): Promise<VocabularyWord[]> => {
 export const generateReadingTest = async (): Promise<Question[]> => {
   if (!fullReadingData || fullReadingData.length === 0) return [];
   
-  // 1. Shuffle and pick 3 unique passages
-  // (If data has fewer than 3, we take what we have)
-  const distinctPassages = shuffleArray(fullReadingData).slice(0, 3);
+  // 1. Randomly select ONE passage for the dedicated Reading Lab
+  const selectedPassage = fullReadingData[Math.floor(Math.random() * fullReadingData.length)];
   
-  const allQuestions: Question[] = [];
+  const questions = selectedPassage.questions.map((q: any, qIdx: number) => ({
+    id: `reading-${selectedPassage.id}-${qIdx}-${Date.now()}`,
+    category: Category.READING,
+    passage: selectedPassage.passage,
+    questionText: q.questionText || q.question,
+    options: q.options || [],
+    correctAnswer: q.correctAnswer,
+    explanation: q.explanation || ""
+  }));
 
-  // 2. Map questions from each passage
-  distinctPassages.forEach((passageObj, pIndex) => {
-      const passageQuestions = passageObj.questions.map((q: any, qIdx: number) => ({
-        id: `reading-${passageObj.id}-${pIndex}-${qIdx}-${Date.now()}`,
-        category: Category.READING,
-        passage: passageObj.passage, // Attach the specific passage to the question
-        questionText: q.questionText || q.question,
-        options: q.options || [],
-        correctAnswer: q.correctAnswer,
-        explanation: q.explanation || ""
-      }));
-      allQuestions.push(...passageQuestions);
-  });
-
-  return allQuestions;
+  return questions;
 };
 
 export const generateVocabTest = async (count: number): Promise<Question[]> => {
@@ -1314,18 +1307,21 @@ export const generateMockPart1_ELA = async (): Promise<Question[]> => {
     questions.push(...shuffleArray(LOCAL_GRAMMAR_POOL).slice(0, 15));
 
     if (fullReadingData && fullReadingData.length > 0) {
-        // Randomly select ONE passage for the mock (keeping mock somewhat shorter than full reading lab)
-        const selectedPassage = fullReadingData[Math.floor(Math.random() * fullReadingData.length)];
-        const readingQs = selectedPassage.questions.map((q: any, idx: number) => ({
-            id: `mock-reading-${selectedPassage.id}-${idx}`,
-            category: Category.READING,
-            passage: selectedPassage.passage,
-            questionText: q.questionText,
-            options: q.options,
-            correctAnswer: q.correctAnswer,
-            explanation: q.explanation
-        }));
-        questions.push(...readingQs);
+        // Shuffle and pick 3 unique passages for the mock
+        const distinctPassages = shuffleArray(fullReadingData).slice(0, 3);
+        
+        distinctPassages.forEach((passageObj) => {
+            const readingQs = passageObj.questions.map((q: any, idx: number) => ({
+                id: `mock-reading-${passageObj.id}-${idx}-${Date.now()}`,
+                category: Category.READING, // Keeps category as Reading for identification
+                passage: passageObj.passage,
+                questionText: q.questionText || q.question,
+                options: q.options || [],
+                correctAnswer: q.correctAnswer,
+                explanation: q.explanation || ""
+            }));
+            questions.push(...readingQs);
+        });
     }
 
     return questions;
