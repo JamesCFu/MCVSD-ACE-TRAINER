@@ -66,6 +66,9 @@ const Practice: React.FC<PracticeProps> = ({
 
   // --- MOCK READING POP-OUT STATE ---
   const [mockReadingMode, setMockReadingMode] = useState<{passage: string, questions: Question[]} | null>(null);
+  
+  // Scroll Position Ref for Mock Mode
+  const savedScrollPos = useRef(0);
 
   // Keep ref in sync for cleanup/saving
   useEffect(() => {
@@ -445,6 +448,11 @@ const Practice: React.FC<PracticeProps> = ({
                         setMockReadingMode(null);
                         setHighlights([]);
                         setIsHighlightMode(false);
+                        // Restore scroll position
+                        setTimeout(() => {
+                           const mainContainer = document.querySelector('main');
+                           if (mainContainer) mainContainer.scrollTop = savedScrollPos.current;
+                        }, 10);
                     }} 
                     className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-black uppercase text-xs tracking-widest hover:bg-indigo-700 transition-all shadow-lg flex items-center gap-2"
                   >
@@ -676,6 +684,10 @@ const Practice: React.FC<PracticeProps> = ({
                           <span className="text-[10px] font-black uppercase text-indigo-400 tracking-widest">Reference Passage</span>
                           <button 
                              onClick={() => {
+                                 // Save scroll position
+                                 const mainContainer = document.querySelector('main');
+                                 if (mainContainer) savedScrollPos.current = mainContainer.scrollTop;
+
                                  // Filter all questions in this session that share the same passage
                                  const relevantQs = questions.filter(quest => quest.passage === q.passage);
                                  setHighlights(session?.highlights || []); 
