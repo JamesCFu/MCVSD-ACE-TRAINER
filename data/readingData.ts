@@ -1460,10 +1460,6 @@ Although protected by the Australian government, Great Barrier Reef faces enviro
       { id: "q532", category: Category.READING, questionText: "The author uses the comparison to a light bulb (lines 11-13) to illustrate", options: ["how bright bioluminescence is.", "the efficiency of the chemical reaction.", "how much heat fireflies produce.", "the cost of electricity.", "the color of the light."], correctAnswer: 1, explanation: "It contrasts the 10% efficiency of a bulb with the nearly 100% efficiency of bioluminescence." }
     ]
   },
-  import { Category } from "../types";
-
-export const hardPoetryQuestions = [
-  // Questions for Passage 72: The Weaver's Song
   {
     id: "q502-hard",
     category: Category.READING,
