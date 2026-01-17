@@ -1233,16 +1233,21 @@ export const generateVocabulary = async (): Promise<VocabularyWord[]> => {
   return FULL_PREP_VOCAB;
 };
 
-// UPDATED: Now returns questions for 3 distinct passages
+// READING LAB: Returns Questions for EXACTLY ONE Passage
 export const generateReadingTest = async (): Promise<Question[]> => {
+    // 1. Shuffle passages
     const shuffledPassages = shuffleArray(fullReadingData);
+    
+    // 2. Select strictly the first ONE passage
     const selectedPassage = shuffledPassages[0];
     
+    // 3. Map questions for that single passage
     return selectedPassage.questions.map(q => ({
         ...q,
         id: `reading-${selectedPassage.id}-${q.id}-${Date.now()}`,
         category: Category.READING,
-        passage: selectedPassage.text // Attach passage to each question for UI pop-outs
+        // CRITICAL FIX: The property in readingData.ts is 'passage', not 'text'
+        passage: selectedPassage.passage 
     }));
 };
 
@@ -1292,8 +1297,7 @@ export const generateMathTest = async (count: number): Promise<Question[]> => {
     return shuffleArray(LOCAL_MATH_POOL).slice(0, count);
 };
 
-// MOCK PART 1: ELA
-
+// MOCK PART 1: ELA (Includes 3 Passages)
 export const generateMockPart1_ELA = async (): Promise<Question[]> => {
     const mockQuestions: Question[] = [];
 
@@ -1311,12 +1315,14 @@ export const generateMockPart1_ELA = async (): Promise<Question[]> => {
 
     // 4. Add 3 Passages with all their questions
     const shuffledPassages = shuffleArray(fullReadingData).slice(0, 3);
+    
     shuffledPassages.forEach((passage) => {
         const passageQs = passage.questions.map(q => ({
             ...q,
             id: `mock-ela-${passage.id}-${q.id}-${Date.now()}`,
-            category: Category.MOCK,
-            passage: passage.text // Critical for "pop out" functionality
+            category: Category.MOCK, // MOCK category keeps it independent from Reading Lab logic
+            // CRITICAL FIX: Ensures the full text is available for the pop-out modal
+            passage: passage.passage 
         }));
         mockQuestions.push(...passageQs);
     });
@@ -1330,9 +1336,9 @@ export const generateMockPart1_ELA = async (): Promise<Question[]> => {
 export const generateQuestions = async (category: Category, count: number): Promise<Question[]> => {
     switch (category) {
         case Category.READING:
-            return generateReadingTest();
+            return generateReadingTest(); // Returns 1 passage
         case Category.MOCK:
-            return generateMockPart1_ELA();
+            return generateMockPart1_ELA(); // Returns 3 passages + Mixed ELA
         case Category.VOCABULARY:
             return generateVocabTest(count);
         case Category.GRAMMAR:
@@ -1354,9 +1360,6 @@ export const generateMockPart2_Math = async (): Promise<Question[]> => {
     }));
     return mathQuestions;
 };
-
-// --- MAIN GENERATOR SWITCH ---
-
 
 export const generateMockTest = async () => generateMockPart1_ELA(); 
 
