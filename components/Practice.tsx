@@ -143,7 +143,8 @@ const Practice: React.FC<PracticeProps> = ({
   }, [isTimerActive, timeLeft, showResults]);
 
   const handleAnswerSelect = (qId: string, optionIndex: number) => {
-    const newAnswers = { ...userAnswers, [qId]: string: optionIndex };
+    // Remove the ": string" - qId is already typed in the arguments
+    const newAnswers = { ...userAnswers, [qId]: optionIndex };
     setUserAnswers(newAnswers);
     onUpdateSession(category, newAnswers, highlights);
   };
