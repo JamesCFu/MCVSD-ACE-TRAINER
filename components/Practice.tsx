@@ -65,8 +65,7 @@ const Practice: React.FC<PracticeProps> = ({
   const [currentPassageIndex, setCurrentPassageIndex] = useState(0);
 
   // --- MOCK READING POP-OUT STATE ---
-  // Updated to include targetQuestionId for auto-scrolling
-  const [mockReadingMode, setMockReadingMode] = useState<{passage: string, questions: Question[], targetQuestionId?: string} | null>(null);
+  const [mockReadingMode, setMockReadingMode] = useState<{passage: string, questions: Question[]} | null>(null);
   
   // Scroll Position Ref for Mock Mode
   const savedScrollPos = useRef(0);
@@ -110,19 +109,6 @@ const Practice: React.FC<PracticeProps> = ({
       }
     }
   }, [session, category]);
-
-  // --- AUTO-SCROLL TO QUESTION IN SPLIT VIEW ---
-  useEffect(() => {
-    if (mockReadingMode?.targetQuestionId) {
-      // Small timeout to ensure DOM is rendered
-      setTimeout(() => {
-        const targetElement = document.getElementById(`split-view-question-${mockReadingMode.targetQuestionId}`);
-        if (targetElement) {
-          targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }, 100);
-    }
-  }, [mockReadingMode]);
 
   // --- TIMER TICK LOGIC ---
   useEffect(() => {
@@ -583,7 +569,7 @@ const Practice: React.FC<PracticeProps> = ({
                     const isCorrect = userAnswers[q.id] === q.correctAnswer;
                     // Calculate absolute index if needed, but local index is fine for display
                     return (
-                       <div key={q.id} id={`split-view-question-${q.id}`} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                       <div key={q.id} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                           <div className="flex gap-4 mb-4">
                              <span className="w-6 h-6 bg-slate-900 text-white rounded-md flex items-center justify-center font-bold text-xs shrink-0">
                                  {questions.findIndex(quest => quest.id === q.id) + 1}
@@ -706,11 +692,7 @@ const Practice: React.FC<PracticeProps> = ({
                                  const relevantQs = questions.filter(quest => quest.passage === q.passage);
                                  setHighlights(session?.highlights || []); 
                                  setIsHighlightMode(false);
-                                 setMockReadingMode({ 
-                                    passage: q.passage!, 
-                                    questions: relevantQs,
-                                    targetQuestionId: q.id // Pass the question ID to scroll to
-                                 });
+                                 setMockReadingMode({ passage: q.passage!, questions: relevantQs });
                              }}
                              className="group flex items-center gap-2 bg-white border border-indigo-200 text-indigo-600 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-all shadow-sm"
                           >
