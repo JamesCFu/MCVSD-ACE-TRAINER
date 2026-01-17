@@ -143,7 +143,7 @@ const Practice: React.FC<PracticeProps> = ({
   }, [isTimerActive, timeLeft, showResults]);
 
   const handleAnswerSelect = (qId: string, optionIndex: number) => {
-    const newAnswers = { ...userAnswers, [qId: string]: optionIndex };
+    const newAnswers = { ...userAnswers, [qId]: string: optionIndex };
     setUserAnswers(newAnswers);
     onUpdateSession(category, newAnswers, highlights);
   };
