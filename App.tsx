@@ -14,7 +14,7 @@ const getInitialStats = (): UserStats => ({
   username: 'Guest Candidate',
   email: '',
   isLoggedIn: false,
-  
+  starredWords: [],
   completedQuizzes: 0,
   averageScore: 0,
   categoryScores: {
