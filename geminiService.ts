@@ -36,1759 +36,3048 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
   {
     "word": "Abject",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Extremely bad, unpleasant, or degrading. [cite: 11]",
-    [cite_start]"example Sentence": "They lived in abject poverty. [cite: 11]",
-    "synonyms": ["Wretched", "base"],
-    "antonyms": ["Magnificent", "noble"]
+    "definition": "Extremely bad, unpleasant, or degrading.",
+    "example Sentence": "They lived in abject poverty.",
+    "synonyms": [
+      "Wretched",
+      "base"
+    ],
+    "antonyms": [
+      "Magnificent",
+      "noble"
+    ]
   },
   {
     "word": "Abortive",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Failing to produce intended results. [cite: 14]",
-    [cite_start]"example Sentence": "The rescue mission proved abortive. [cite: 14]",
-    "synonyms": ["Futile", "vain"],
-    "antonyms": ["Productive", "successful"]
+    "definition": "Failing to produce intended results.",
+    "example Sentence": "The rescue mission proved abortive.",
+    "synonyms": [
+      "Futile",
+      "vain"
+    ],
+    "antonyms": [
+      "Productive",
+      "successful"
+    ]
   },
   {
     "word": "Abstemious",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Not self-indulgent in food or drink. [cite: 20]",
-    [cite_start]"example Sentence": "He was abstemious at the buffet. [cite: 20]",
-    "synonyms": ["Temperate", "ascetic"],
-    "antonyms": ["Gluttonous", "greedy"]
+    "definition": "Not self-indulgent in food or drink.",
+    "example Sentence": "He was abstemious at the buffet.",
+    "synonyms": [
+      "Temperate",
+      "ascetic"
+    ],
+    "antonyms": [
+      "Gluttonous",
+      "greedy"
+    ]
   },
   {
     "word": "Abstruse",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Difficult to understand; obscure. [cite: 21]",
-    [cite_start]"example Sentence": "The theory was too abstruse. [cite: 21]",
-    "synonyms": ["Recondite", "arcane"],
-    "antonyms": ["Lucid", "simple"]
+    "definition": "Difficult to understand; obscure.",
+    "example Sentence": "The theory was too abstruse.",
+    "synonyms": [
+      "Recondite",
+      "arcane"
+    ],
+    "antonyms": [
+      "Lucid",
+      "simple"
+    ]
   },
   {
     "word": "Abundant",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Existing in large quantities. [cite: 22]",
-    [cite_start]"example Sentence": "An abundant supply of food. [cite: 22]",
-    "synonyms": ["Plentiful", "ample"],
-    "antonyms": ["Scarce", "sparse"]
+    "definition": "Existing in large quantities.",
+    "example Sentence": "An abundant supply of food.",
+    "synonyms": [
+      "Plentiful",
+      "ample"
+    ],
+    "antonyms": [
+      "Scarce",
+      "sparse"
+    ]
   },
   {
     "word": "Abstract",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Existing in thought, but not physical. [cite: 23]",
-    [cite_start]"example Sentence": "Justice is an abstract concept. [cite: 23]",
-    "synonyms": ["Conceptual", "theoretical"],
-    "antonyms": ["Concrete", "tangible"]
+    "definition": "Existing in thought, but not physical.",
+    "example Sentence": "Justice is an abstract concept.",
+    "synonyms": [
+      "Conceptual",
+      "theoretical"
+    ],
+    "antonyms": [
+      "Concrete",
+      "tangible"
+    ]
   },
   {
     "word": "Acerbic",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Sharp and forthright in speech. [cite: 28]",
-    [cite_start]"example Sentence": "She is known for her acerbic wit. [cite: 28]",
-    "synonyms": ["Caustic", "biting"],
-    "antonyms": ["Mild", "kind"]
+    "definition": "Sharp and forthright in speech.",
+    "example Sentence": "She is known for her acerbic wit.",
+    "synonyms": [
+      "Caustic",
+      "biting"
+    ],
+    "antonyms": [
+      "Mild",
+      "kind"
+    ]
   },
   {
     "word": "Acrimonious",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Angry and bitter. [cite: 29]",
-    [cite_start]"example Sentence": "It was an acrimonious divorce. [cite: 29]",
-    "synonyms": ["Rancorous", "vitriolic"],
-    "antonyms": ["Harmonious", "gentle"]
+    "definition": "Angry and bitter.",
+    "example Sentence": "It was an acrimonious divorce.",
+    "synonyms": [
+      "Rancorous",
+      "vitriolic"
+    ],
+    "antonyms": [
+      "Harmonious",
+      "gentle"
+    ]
   },
   {
     "word": "Acute",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Perceptive understanding or insight. [cite: 31]",
-    [cite_start]"example Sentence": "She has an acute sense of hearing. [cite: 31]",
-    "synonyms": ["Sharp", "keen"],
-    "antonyms": ["Dull", "obtuse"]
+    "definition": "Perceptive understanding or insight.",
+    "example Sentence": "She has an acute sense of hearing.",
+    "synonyms": [
+      "Sharp",
+      "keen"
+    ],
+    "antonyms": [
+      "Dull",
+      "obtuse"
+    ]
   },
   {
     "word": "Adamant",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Refusing to be persuaded. [cite: 32]",
-    [cite_start]"example Sentence": "He was adamant about not going. [cite: 32]",
-    "synonyms": ["Inflexible", "resolute"],
-    "antonyms": ["Yielding", "soft"]
+    "definition": "Refusing to be persuaded.",
+    "example Sentence": "He was adamant about not going.",
+    "synonyms": [
+      "Inflexible",
+      "resolute"
+    ],
+    "antonyms": [
+      "Yielding",
+      "soft"
+    ]
   },
   {
     "word": "Adroit",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Skillful in using hands or mind. [cite: 38]",
-    [cite_start]"example Sentence": "He was adroit at tax avoidance. [cite: 38]",
-    "synonyms": ["Deft", "adept"],
-    "antonyms": ["Clumsy", "inept"]
+    "definition": "Skillful in using hands or mind.",
+    "example Sentence": "He was adroit at tax avoidance.",
+    "synonyms": [
+      "Deft",
+      "adept"
+    ],
+    "antonyms": [
+      "Clumsy",
+      "inept"
+    ]
   },
   {
     "word": "Adulatory",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Excessively praising. [cite: 39]",
-    [cite_start]"example Sentence": "The adulatory reviews were suspicious. [cite: 39]",
-    "synonyms": ["Fawning", "sycophantic"],
-    "antonyms": ["Critical", "disparaging"]
+    "definition": "Excessively praising.",
+    "example Sentence": "The adulatory reviews were suspicious.",
+    "synonyms": [
+      "Fawning",
+      "sycophantic"
+    ],
+    "antonyms": [
+      "Critical",
+      "disparaging"
+    ]
   },
   {
     "word": "Aesthetic",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Concerned with beauty. [cite: 43]",
-    [cite_start]"example Sentence": "The building has aesthetic appeal. [cite: 43]",
-    "synonyms": ["Artistic", "visual"],
-    "antonyms": ["Ugly", "tasteless"]
+    "definition": "Concerned with beauty.",
+    "example Sentence": "The building has aesthetic appeal.",
+    "synonyms": [
+      "Artistic",
+      "visual"
+    ],
+    "antonyms": [
+      "Ugly",
+      "tasteless"
+    ]
   },
   {
     "word": "Affable",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Friendly and easy to talk to. [cite: 44]",
-    [cite_start]"example Sentence": "She was an affable host. [cite: 44]",
-    "synonyms": ["Amiable", "genial"],
-    "antonyms": ["Surly", "unfriendly"]
+    "definition": "Friendly and easy to talk to.",
+    "example Sentence": "She was an affable host.",
+    "synonyms": [
+      "Amiable",
+      "genial"
+    ],
+    "antonyms": [
+      "Surly",
+      "unfriendly"
+    ]
   },
   {
     "word": "Agrarian",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Relating to cultivated land. [cite: 56]",
-    [cite_start]"example Sentence": "It was an agrarian society. [cite: 57]",
-    "synonyms": ["Rural", "farming"],
-    "antonyms": ["Urban", "industrial"]
+    "definition": "Relating to cultivated land.",
+    "example Sentence": "It was an agrarian society.",
+    "synonyms": [
+      "Rural",
+      "farming"
+    ],
+    "antonyms": [
+      "Urban",
+      "industrial"
+    ]
   },
   {
     "word": "Alacritous",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Brisk and cheerful readiness. [cite: 59]",
-    [cite_start]"example Sentence": "He responded with alacritous speed. [cite: 59]",
-    "synonyms": ["Eager", "prompt"],
-    "antonyms": ["Lethargic", "slow"]
+    "definition": "Brisk and cheerful readiness.",
+    "example Sentence": "He responded with alacritous speed.",
+    "synonyms": [
+      "Eager",
+      "prompt"
+    ],
+    "antonyms": [
+      "Lethargic",
+      "slow"
+    ]
   },
   {
     "word": "Alien",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Belonging to a foreign country. [cite: 62]",
-    [cite_start]"example Sentence": "The customs were alien. [cite: 62]",
-    "synonyms": ["Exotic", "strange"],
-    "antonyms": ["Native", "familiar"]
+    "definition": "Belonging to a foreign country.",
+    "example Sentence": "The customs were alien.",
+    "synonyms": [
+      "Exotic",
+      "strange"
+    ],
+    "antonyms": [
+      "Native",
+      "familiar"
+    ]
   },
   {
     "word": "Aloof",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Not friendly or forthcoming; cool. [cite: 65]",
-    [cite_start]"example Sentence": "He stood aloof from the group. [cite: 65]",
-    "synonyms": ["Detached", "distant"],
-    "antonyms": ["Friendly", "social"]
+    "definition": "Not friendly or forthcoming; cool.",
+    "example Sentence": "He stood aloof from the group.",
+    "synonyms": [
+      "Detached",
+      "distant"
+    ],
+    "antonyms": [
+      "Friendly",
+      "social"
+    ]
   },
   {
     "word": "Altruistic",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Selfless concern for others. [cite: 66]",
-    [cite_start]"example Sentence": "A benevolent altruistic donor. [cite: 66]",
-    "synonyms": ["Unselfish", "kind"],
-    "antonyms": ["Selfish", "greedy"]
+    "definition": "Selfless concern for others.",
+    "example Sentence": "A benevolent altruistic donor.",
+    "synonyms": [
+      "Unselfish",
+      "kind"
+    ],
+    "antonyms": [
+      "Selfish",
+      "greedy"
+    ]
   },
   {
     "word": "Ambiguous",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Open to more than one interpretation. [cite: 68]",
-    [cite_start]"example Sentence": "The ending was ambiguous. [cite: 68]",
-    "synonyms": ["Vague", "equivocal"],
-    "antonyms": ["Clear", "explicit"]
+    "definition": "Open to more than one interpretation.",
+    "example Sentence": "The ending was ambiguous.",
+    "synonyms": [
+      "Vague",
+      "equivocal"
+    ],
+    "antonyms": [
+      "Clear",
+      "explicit"
+    ]
   },
   {
     "word": "Ambivalent",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Having mixed or contradictory feelings. [cite: 69]",
-    [cite_start]"example Sentence": "She felt ambivalent about the promotion. [cite: 69]",
-    "synonyms": ["Uncertain", "equivocal"],
-    "antonyms": ["Certain", "resolute"]
+    "definition": "Having mixed or contradictory feelings.",
+    "example Sentence": "She felt ambivalent about the promotion.",
+    "synonyms": [
+      "Uncertain",
+      "equivocal"
+    ],
+    "antonyms": [
+      "Certain",
+      "resolute"
+    ]
   },
   {
     "word": "Amenable",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Responsive to suggestion. [cite: 71]",
-    [cite_start]"example Sentence": "They were amenable to the changes. [cite: 71]",
-    "synonyms": ["Compliant", "docile"],
-    "antonyms": ["Stubborn", "obstinate"]
+    "definition": "Responsive to suggestion.",
+    "example Sentence": "They were amenable to the changes.",
+    "synonyms": [
+      "Compliant",
+      "docile"
+    ],
+    "antonyms": [
+      "Stubborn",
+      "obstinate"
+    ]
   },
   {
     "word": "Amicable",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Characterized by friendliness. [cite: 72]",
-    [cite_start]"example Sentence": "The meeting ended on an amicable note. [cite: 72]",
-    "synonyms": ["Harmonious", "friendly"],
-    "antonyms": ["Hostile", "bitter"]
+    "definition": "Characterized by friendliness.",
+    "example Sentence": "The meeting ended on an amicable note.",
+    "synonyms": [
+      "Harmonious",
+      "friendly"
+    ],
+    "antonyms": [
+      "Hostile",
+      "bitter"
+    ]
   },
   {
     "word": "Amorphous",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Without a clearly defined shape. [cite: 74]",
-    [cite_start]"example Sentence": "An amorphous cloud of smoke. [cite: 74]",
-    "synonyms": ["Shapeless", "vague"],
-    "antonyms": ["Structured", "distinct"]
+    "definition": "Without a clearly defined shape.",
+    "example Sentence": "An amorphous cloud of smoke.",
+    "synonyms": [
+      "Shapeless",
+      "vague"
+    ],
+    "antonyms": [
+      "Structured",
+      "distinct"
+    ]
   },
   {
     "word": "Anachronistic",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Out of its proper time. [cite: 78]",
-    [cite_start]"example Sentence": "A typewriter is anachronistic today. [cite: 78]",
-    "synonyms": ["Antiquated", "archaic"],
-    "antonyms": ["Modern", "current"]
+    "definition": "Out of its proper time.",
+    "example Sentence": "A typewriter is anachronistic today.",
+    "synonyms": [
+      "Antiquated",
+      "archaic"
+    ],
+    "antonyms": [
+      "Modern",
+      "current"
+    ]
   },
   {
     "word": "Analogous",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Comparable in a way that clarifies. [cite: 80]",
-    [cite_start]"example Sentence": "Brain is analogous to a processor. [cite: 80]",
-    "synonyms": ["Comparable", "parallel"],
-    "antonyms": ["Dissimilar", "unrelated"]
+    "definition": "Comparable in a way that clarifies.",
+    "example Sentence": "Brain is analogous to a processor.",
+    "synonyms": [
+      "Comparable",
+      "parallel"
+    ],
+    "antonyms": [
+      "Dissimilar",
+      "unrelated"
+    ]
   },
   {
     "word": "Anomalous",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Deviating from what is standard. [cite: 84]",
-    [cite_start]"example Sentence": "The lab result was anomalous. [cite: 84]",
-    "synonyms": ["Abnormal", "atypical"],
-    "antonyms": ["Standard", "normal"]
+    "definition": "Deviating from what is standard.",
+    "example Sentence": "The lab result was anomalous.",
+    "synonyms": [
+      "Abnormal",
+      "atypical"
+    ],
+    "antonyms": [
+      "Standard",
+      "normal"
+    ]
   },
   {
     "word": "Antagonist",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Active opposition or hostility. [cite: 85]",
-    [cite_start]"example Sentence": "He had an antagonistic relationship. [cite: 85]",
-    "synonyms": ["Hostile", "clashing"],
-    "antonyms": ["Friendly", "kind"]
+    "definition": "Active opposition or hostility.",
+    "example Sentence": "He had an antagonistic relationship.",
+    "synonyms": [
+      "Hostile",
+      "clashing"
+    ],
+    "antonyms": [
+      "Friendly",
+      "kind"
+    ]
   },
   {
     "word": "Antediluvian",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Prehistoric or extremely old. [cite: 87]",
-    [cite_start]"example Sentence": "Museum displayed antediluvian tools. [cite: 87]",
-    "synonyms": ["Ancient", "archaic"],
-    "antonyms": ["Modern", "fresh"]
+    "definition": "Prehistoric or extremely old.",
+    "example Sentence": "Museum displayed antediluvian tools.",
+    "synonyms": [
+      "Ancient",
+      "archaic"
+    ],
+    "antonyms": [
+      "Modern",
+      "fresh"
+    ]
   },
   {
     "word": "Antithetical",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Directly opposed or contrasted. [cite: 89]",
-    [cite_start]"example Sentence": "Greed is antithetical to charity. [cite: 89]",
-    "synonyms": ["Contrary", "inverse"],
-    "antonyms": ["Identical", "same"]
+    "definition": "Directly opposed or contrasted.",
+    "example Sentence": "Greed is antithetical to charity.",
+    "synonyms": [
+      "Contrary",
+      "inverse"
+    ],
+    "antonyms": [
+      "Identical",
+      "same"
+    ]
   },
   {
     "word": "Apathetic",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Showing no interest or concern. [cite: 91]",
-    [cite_start]"example Sentence": "Citizens had grown apathetic toward politics. [cite: 91]",
-    "synonyms": ["Indifferent", "unmoved"],
-    "antonyms": ["Enthusiastic", "eager"]
+    "definition": "Showing no interest or concern.",
+    "example Sentence": "Citizens had grown apathetic toward politics.",
+    "synonyms": [
+      "Indifferent",
+      "unmoved"
+    ],
+    "antonyms": [
+      "Enthusiastic",
+      "eager"
+    ]
   },
   {
     "word": "Apposite",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Apt in the circumstances. [cite: 97]",
-    [cite_start]"example Sentence": "The quote was apposite. [cite: 98]",
-    "synonyms": ["Pertinent", "germane"],
-    "antonyms": ["Irrelevant", "inept"]
+    "definition": "Apt in the circumstances.",
+    "example Sentence": "The quote was apposite.",
+    "synonyms": [
+      "Pertinent",
+      "germane"
+    ],
+    "antonyms": [
+      "Irrelevant",
+      "inept"
+    ]
   },
   {
     "word": "Arbitrary",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Based on random choice. [cite: 100]",
-    [cite_start]"example Sentence": "An arbitrary decision. [cite: 100]",
-    "synonyms": ["Random", "erratic"],
-    "antonyms": ["Logical", "consistent"]
+    "definition": "Based on random choice.",
+    "example Sentence": "An arbitrary decision.",
+    "synonyms": [
+      "Random",
+      "erratic"
+    ],
+    "antonyms": [
+      "Logical",
+      "consistent"
+    ]
   },
   {
     "word": "Archaic",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Very old or old-fashioned. [cite: 101]",
-    [cite_start]"example Sentence": "The company's archaic computer system. [cite: 101]",
-    "synonyms": ["Obsolete", "ancient"],
-    "antonyms": ["Modern", "current"]
+    "definition": "Very old or old-fashioned.",
+    "example Sentence": "The company's archaic computer system.",
+    "synonyms": [
+      "Obsolete",
+      "ancient"
+    ],
+    "antonyms": [
+      "Modern",
+      "current"
+    ]
   },
   {
     "word": "Ardent",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Enthusiastic or passionate. [cite: 102]",
-    [cite_start]"example Sentence": "An ardent supporter of causes. [cite: 102]",
-    "synonyms": ["Fervent", "zealous"],
-    "antonyms": ["Apathetic", "cold"]
+    "definition": "Enthusiastic or passionate.",
+    "example Sentence": "An ardent supporter of causes.",
+    "synonyms": [
+      "Fervent",
+      "zealous"
+    ],
+    "antonyms": [
+      "Apathetic",
+      "cold"
+    ]
   },
   {
     "word": "Arduous",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Involving strenuous effort. [cite: 103]",
-    [cite_start]"example Sentence": "It was an arduous climb. [cite: 104]",
-    "synonyms": ["Laborious", "taxing"],
-    "antonyms": ["Effortless", "easy"]
+    "definition": "Involving strenuous effort.",
+    "example Sentence": "It was an arduous climb.",
+    "synonyms": [
+      "Laborious",
+      "taxing"
+    ],
+    "antonyms": [
+      "Effortless",
+      "easy"
+    ]
   },
   {
     "word": "Arid",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Too dry to support vegetation. [cite: 105]",
-    [cite_start]"example Sentence": "The arid desert landscape. [cite: 105]",
-    "synonyms": ["Parched", "dry"],
-    "antonyms": ["Humid", "fertile"]
+    "definition": "Too dry to support vegetation.",
+    "example Sentence": "The arid desert landscape.",
+    "synonyms": [
+      "Parched",
+      "dry"
+    ],
+    "antonyms": [
+      "Humid",
+      "fertile"
+    ]
   },
   {
     "word": "Ascetic",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Suggesting severe self-discipline. [cite: 110]",
-    [cite_start]"example Sentence": "The monk led an ascetic life. [cite: 110]",
-    "synonyms": ["Austere", "frugal"],
-    "antonyms": ["Hedonistic", "lush"]
+    "definition": "Suggesting severe self-discipline.",
+    "example Sentence": "The monk led an ascetic life.",
+    "synonyms": [
+      "Austere",
+      "frugal"
+    ],
+    "antonyms": [
+      "Hedonistic",
+      "lush"
+    ]
   },
   {
     "word": "Assiduous",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Showing great care and perseverance. [cite: 112]",
-    [cite_start]"example Sentence": "Mastered concepts through assiduous study. [cite: 112]",
-    "synonyms": ["Diligent", "meticulous"],
-    "antonyms": ["Lazy", "negligent"]
+    "definition": "Showing great care and perseverance.",
+    "example Sentence": "Mastered concepts through assiduous study.",
+    "synonyms": [
+      "Diligent",
+      "meticulous"
+    ],
+    "antonyms": [
+      "Lazy",
+      "negligent"
+    ]
   },
   {
     "word": "Astute",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Ability to accurately assess situations. [cite: 114]",
-    [cite_start]"example Sentence": "The astute investor bought stocks. [cite: 114]",
-    "synonyms": ["Shrewd", "perceptive"],
-    "antonyms": ["Gullible", "naive"]
+    "definition": "Ability to accurately assess situations.",
+    "example Sentence": "The astute investor bought stocks.",
+    "synonyms": [
+      "Shrewd",
+      "perceptive"
+    ],
+    "antonyms": [
+      "Gullible",
+      "naive"
+    ]
   },
   {
     "word": "Atrophied",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Wasted away or rudimentary. [cite: 117]",
-    [cite_start]"example Sentence": "Muscles were atrophied from bedrest. [cite: 117]",
-    "synonyms": ["Shriveled", "withered"],
-    "antonyms": ["Robust", "healthy"]
+    "definition": "Wasted away or rudimentary.",
+    "example Sentence": "Muscles were atrophied from bedrest.",
+    "synonyms": [
+      "Shriveled",
+      "withered"
+    ],
+    "antonyms": [
+      "Robust",
+      "healthy"
+    ]
   },
   {
     "word": "Audacious",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Willingness to take bold risks. [cite: 118]",
-    [cite_start]"example Sentence": "An audacious plan to escape. [cite: 118]",
-    "synonyms": ["Bold", "intrepid"],
-    "antonyms": ["Timid", "cowardly"]
+    "definition": "Willingness to take bold risks.",
+    "example Sentence": "An audacious plan to escape.",
+    "synonyms": [
+      "Bold",
+      "intrepid"
+    ],
+    "antonyms": [
+      "Timid",
+      "cowardly"
+    ]
   },
   {
     "word": "Austere",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Severe or strict in manner. [cite: 124]",
-    [cite_start]"example Sentence": "The room was austere and cold. [cite: 125]",
-    "synonyms": ["Stark", "spartan"],
-    "antonyms": ["Ornate", "lavish"]
+    "definition": "Severe or strict in manner.",
+    "example Sentence": "The room was austere and cold.",
+    "synonyms": [
+      "Stark",
+      "spartan"
+    ],
+    "antonyms": [
+      "Ornate",
+      "lavish"
+    ]
   },
   {
     "word": "Authentic",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Of undisputed origin; genuine. [cite: 126]",
-    [cite_start]"example Sentence": "Authentic Roman sword. [cite: 126]",
-    "synonyms": ["Real", "valid"],
-    "antonyms": ["Fake", "false"]
+    "definition": "Of undisputed origin; genuine.",
+    "example Sentence": "Authentic Roman sword.",
+    "synonyms": [
+      "Real",
+      "valid"
+    ],
+    "antonyms": [
+      "Fake",
+      "false"
+    ]
   },
   {
     "word": "Authoritative",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Trusted as being accurate. [cite: 127]",
-    [cite_start]"example Sentence": "Authoritative account of the event. [cite: 127]",
-    "synonyms": ["Reliable", "valid"],
-    "antonyms": ["Doubtful", "weak"]
+    "definition": "Trusted as being accurate.",
+    "example Sentence": "Authoritative account of the event.",
+    "synonyms": [
+      "Reliable",
+      "valid"
+    ],
+    "antonyms": [
+      "Doubtful",
+      "weak"
+    ]
   },
   {
     "word": "Avaricious",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Having extreme greed for wealth. [cite: 130]",
-    [cite_start]"example Sentence": "The avaricious banker stole funds. [cite: 130]",
-    "synonyms": ["Rapacious", "greedy"],
-    "antonyms": ["Generous", "giving"]
+    "definition": "Having extreme greed for wealth.",
+    "example Sentence": "The avaricious banker stole funds.",
+    "synonyms": [
+      "Rapacious",
+      "greedy"
+    ],
+    "antonyms": [
+      "Generous",
+      "giving"
+    ]
   },
   {
     "word": "Avuncular",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Like an uncle; kind and friendly. [cite: 132]",
-    [cite_start]"example Sentence": "He gave us avuncular advice. [cite: 132]",
-    "synonyms": ["Kind", "benevolent"],
-    "antonyms": ["Hostile", "cold"]
+    "definition": "Like an uncle; kind and friendly.",
+    "example Sentence": "He gave us avuncular advice.",
+    "synonyms": [
+      "Kind",
+      "benevolent"
+    ],
+    "antonyms": [
+      "Hostile",
+      "cold"
+    ]
   },
   {
     "word": "Baleful",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Threatening harm; menacing. [cite: 135]",
-    [cite_start]"example Sentence": "He shot a baleful glance. [cite: 136]",
-    "synonyms": ["Sinister", "malign"],
-    "antonyms": ["Benign", "friendly"]
+    "definition": "Threatening harm; menacing.",
+    "example Sentence": "He shot a baleful glance.",
+    "synonyms": [
+      "Sinister",
+      "malign"
+    ],
+    "antonyms": [
+      "Benign",
+      "friendly"
+    ]
   },
   {
     "word": "Banal",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Lacking in originality; boring. [cite: 137]",
-    [cite_start]"example Sentence": "The plot was banal and predictable. [cite: 138]",
-    "synonyms": ["Trite", "hackneyed"],
-    "antonyms": ["Original", "unique"]
+    "definition": "Lacking in originality; boring.",
+    "example Sentence": "The plot was banal and predictable.",
+    "synonyms": [
+      "Trite",
+      "hackneyed"
+    ],
+    "antonyms": [
+      "Original",
+      "unique"
+    ]
   },
   {
     "word": "Barbarous",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Savagely cruel; brutal. [cite: 140]",
-    [cite_start]"example Sentence": "Treatment was barbarous. [cite: 140]",
-    "synonyms": ["Vicious", "crude"],
-    "antonyms": ["Civilized", "humane"]
+    "definition": "Savagely cruel; brutal.",
+    "example Sentence": "Treatment was barbarous.",
+    "synonyms": [
+      "Vicious",
+      "crude"
+    ],
+    "antonyms": [
+      "Civilized",
+      "humane"
+    ]
   },
   {
     "word": "Baroque",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Highly ornate and extravagant. [cite: 141]",
-    [cite_start]"example Sentence": "Church decorated in baroque style. [cite: 141]",
-    "synonyms": ["Ornate", "florid"],
-    "antonyms": ["Plain", "simple"]
+    "definition": "Highly ornate and extravagant.",
+    "example Sentence": "Church decorated in baroque style.",
+    "synonyms": [
+      "Ornate",
+      "florid"
+    ],
+    "antonyms": [
+      "Plain",
+      "simple"
+    ]
   },
   {
     "word": "Barren",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Too poor to produce vegetation. [cite: 142]",
-    [cite_start]"example Sentence": "Barren soil could not support crops. [cite: 142]",
-    "synonyms": ["Desolate", "sterile"],
-    "antonyms": ["Fertile", "lush"]
+    "definition": "Too poor to produce vegetation.",
+    "example Sentence": "Barren soil could not support crops.",
+    "synonyms": [
+      "Desolate",
+      "sterile"
+    ],
+    "antonyms": [
+      "Fertile",
+      "lush"
+    ]
   },
   {
     "word": "Bellicose",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Willingness to fight. [cite: 145]",
-    [cite_start]"example Sentence": "The bellicose tribe attacked. [cite: 146]",
-    "synonyms": ["Pugnacious", "hostile"],
-    "antonyms": ["Pacific", "calm"]
+    "definition": "Willingness to fight.",
+    "example Sentence": "The bellicose tribe attacked.",
+    "synonyms": [
+      "Pugnacious",
+      "hostile"
+    ],
+    "antonyms": [
+      "Pacific",
+      "calm"
+    ]
   },
   {
     "word": "Belligerent",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Hostile and aggressive. [cite: 148]",
-    [cite_start]"example Sentence": "He became belligerent. [cite: 148]",
-    "synonyms": ["Pugnacious", "bellicose"],
-    "antonyms": ["Peaceful", "friendly"]
+    "definition": "Hostile and aggressive.",
+    "example Sentence": "He became belligerent.",
+    "synonyms": [
+      "Pugnacious",
+      "bellicose"
+    ],
+    "antonyms": [
+      "Peaceful",
+      "friendly"
+    ]
   },
   {
     "word": "Benevolent",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Well-meaning and kindly. [cite: 151]",
-    [cite_start]"example Sentence": "A benevolent billionaire donated millions. [cite: 151]",
-    "synonyms": ["Altruistic", "kind"],
-    "antonyms": ["Malevolent", "cruel"]
+    "definition": "Well-meaning and kindly.",
+    "example Sentence": "A benevolent billionaire donated millions.",
+    "synonyms": [
+      "Altruistic",
+      "kind"
+    ],
+    "antonyms": [
+      "Malevolent",
+      "cruel"
+    ]
   },
   {
     "word": "Benign",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Gentle and kindly; not harmful. [cite: 152]",
-    [cite_start]"example Sentence": "The tumor was benign. [cite: 153]",
-    "synonyms": ["Harmless", "mild"],
-    "antonyms": ["Malignant", "toxic"]
+    "definition": "Gentle and kindly; not harmful.",
+    "example Sentence": "The tumor was benign.",
+    "synonyms": [
+      "Harmless",
+      "mild"
+    ],
+    "antonyms": [
+      "Malignant",
+      "toxic"
+    ]
   },
   {
     "word": "Bilious",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Spiteful; bad-tempered. [cite: 156]",
-    [cite_start]"example Sentence": "He was in a bilious mood. [cite: 157]",
-    "synonyms": ["Irascible", "peevish"],
-    "antonyms": ["Genial", "pleasant"]
+    "definition": "Spiteful; bad-tempered.",
+    "example Sentence": "He was in a bilious mood.",
+    "synonyms": [
+      "Irascible",
+      "peevish"
+    ],
+    "antonyms": [
+      "Genial",
+      "pleasant"
+    ]
   },
   {
     "word": "Blase",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Unimpressed or indifferent. [cite: 161]",
-    [cite_start]"example Sentence": "Blase about luxury hotels. [cite: 161]",
-    "synonyms": ["Unimpressed"],
-    "antonyms": ["Anticipation"]
+    "definition": "Unimpressed or indifferent.",
+    "example Sentence": "Blase about luxury hotels.",
+    "synonyms": [
+      "Unimpressed"
+    ],
+    "antonyms": [
+      "Anticipation"
+    ]
   },
   {
     "word": "Boisterous",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Noisy, energetic, and rowdy. [cite: 162]",
-    [cite_start]"example Sentence": "The boisterous crowd cheered. [cite: 162]",
-    "synonyms": ["Rowdy", "loud"],
-    "antonyms": ["Quiet", "calm"]
+    "definition": "Noisy, energetic, and rowdy.",
+    "example Sentence": "The boisterous crowd cheered.",
+    "synonyms": [
+      "Rowdy",
+      "loud"
+    ],
+    "antonyms": [
+      "Quiet",
+      "calm"
+    ]
   },
   {
     "word": "Bona Fide",
     "partOfSpeech": "adj.",
     "definition": "Genuine or true.",
     "example Sentence": "The signature was bona fide.",
-    "synonyms": ["Genuine", "true"],
-    "antonyms": ["Fake"]
+    "synonyms": [
+      "Genuine",
+      "true"
+    ],
+    "antonyms": [
+      "Fake"
+    ]
   },
   {
     "word": "Boorish",
     "partOfSpeech": "adj.",
     "definition": "Rough and bad-mannered.",
     "example Sentence": "Boorish behavior ruined dinner.",
-    "synonyms": ["Loutish", "uncouth"],
-    "antonyms": ["Refined", "polite"]
+    "synonyms": [
+      "Loutish",
+      "uncouth"
+    ],
+    "antonyms": [
+      "Refined",
+      "polite"
+    ]
   },
   {
     "word": "Brusque",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Abrupt or offhand. [cite: 165]",
-    [cite_start]"example Sentence": "The receptionist was brusque. [cite: 165]",
-    "synonyms": ["Abrupt"],
-    "antonyms": ["Polite"]
+    "definition": "Abrupt or offhand.",
+    "example Sentence": "The receptionist was brusque.",
+    "synonyms": [
+      "Abrupt"
+    ],
+    "antonyms": [
+      "Polite"
+    ]
   },
   {
     "word": "Bucolic",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Relating to the countryside. [cite: 166]",
-    [cite_start]"example Sentence": "We enjoyed the bucolic scenery. [cite: 166]",
-    "synonyms": ["Pastoral", "rustic"],
-    "antonyms": ["Urban", "city"]
+    "definition": "Relating to the countryside.",
+    "example Sentence": "We enjoyed the bucolic scenery.",
+    "synonyms": [
+      "Pastoral",
+      "rustic"
+    ],
+    "antonyms": [
+      "Urban",
+      "city"
+    ]
   },
   {
     "word": "Burgeoning",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Flourishing; growing quickly. [cite: 169]",
-    [cite_start]"example Sentence": "Burgeoning market for EVs. [cite: 169]",
-    "synonyms": ["Expanding", "thriving"],
-    "antonyms": ["Shrinking", "dying"]
+    "definition": "Flourishing; growing quickly.",
+    "example Sentence": "Burgeoning market for EVs.",
+    "synonyms": [
+      "Expanding",
+      "thriving"
+    ],
+    "antonyms": [
+      "Shrinking",
+      "dying"
+    ]
   },
   {
     "word": "Callous",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Insensitive and cruel disregard. [cite: 173]",
-    [cite_start]"example Sentence": "Dictator's callous treatment. [cite: 174]",
-    "synonyms": ["Heartless", "cold"],
-    "antonyms": ["Compassionate", "kind"]
+    "definition": "Insensitive and cruel disregard.",
+    "example Sentence": "Dictator's callous treatment.",
+    "synonyms": [
+      "Heartless",
+      "cold"
+    ],
+    "antonyms": [
+      "Compassionate",
+      "kind"
+    ]
   },
   {
     "word": "Callow",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Inexperienced and immature. [cite: 175]",
-    [cite_start]"example Sentence": "A callow youth started the job. [cite: 175]",
-    "synonyms": ["Naive", "green"],
-    "antonyms": ["Mature", "seasoned"]
+    "definition": "Inexperienced and immature.",
+    "example Sentence": "A callow youth started the job.",
+    "synonyms": [
+      "Naive",
+      "green"
+    ],
+    "antonyms": [
+      "Mature",
+      "seasoned"
+    ]
   },
   {
     "word": "Calumnious",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "False and defamatory. [cite: 176]",
-    [cite_start]"example Sentence": "The article was a calumnious attack. [cite: 176]",
-    "synonyms": ["Slanderous", "libelous"],
-    "antonyms": ["Laudatory", "true"]
+    "definition": "False and defamatory.",
+    "example Sentence": "The article was a calumnious attack.",
+    "synonyms": [
+      "Slanderous",
+      "libelous"
+    ],
+    "antonyms": [
+      "Laudatory",
+      "true"
+    ]
   },
   {
     "word": "Cantankerous",
     "partOfSpeech": "adj.",
     "definition": "Cranky or grumpy.",
     "example Sentence": "The cantankerous old man.",
-    "synonyms": ["Cranky", "grumpy"],
-    "antonyms": ["Pleasant"]
+    "synonyms": [
+      "Cranky",
+      "grumpy"
+    ],
+    "antonyms": [
+      "Pleasant"
+    ]
   },
   {
     "word": "Capricious",
     "partOfSpeech": "adj.",
     "definition": "Sudden changes of mood.",
     "example Sentence": "Capricious child changed her mind.",
-    "synonyms": ["Fickle", "erratic"],
-    "antonyms": ["Constant", "steady"]
+    "synonyms": [
+      "Fickle",
+      "erratic"
+    ],
+    "antonyms": [
+      "Constant",
+      "steady"
+    ]
   },
   {
     "word": "Captious",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Tending to find fault. [cite: 177]",
-    [cite_start]"example Sentence": "Captious boss hates everything. [cite: 177]",
-    "synonyms": ["Carping", "nitpicking"],
-    "antonyms": ["Encouraging"]
+    "definition": "Tending to find fault.",
+    "example Sentence": "Captious boss hates everything.",
+    "synonyms": [
+      "Carping",
+      "nitpicking"
+    ],
+    "antonyms": [
+      "Encouraging"
+    ]
   },
   {
     "word": "Circumspect",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Wary and unwilling to take risks. [cite: 178]",
-    [cite_start]"example Sentence": "Circumspect about sharing opinions. [cite: 178]",
-    "synonyms": ["Cautious", "prudent"],
-    "antonyms": ["Reckless", "rash"]
+    "definition": "Wary and unwilling to take risks.",
+    "example Sentence": "Circumspect about sharing opinions.",
+    "synonyms": [
+      "Cautious",
+      "prudent"
+    ],
+    "antonyms": [
+      "Reckless",
+      "rash"
+    ]
   },
   {
     "word": "Clamorous",
     "partOfSpeech": "adj.",
     "definition": "Loud and confused noise.",
     "example Sentence": "The clamorous crowd waited.",
-    "synonyms": ["Noisy", "vociferous"],
-    "antonyms": ["Quiet", "silent"]
+    "synonyms": [
+      "Noisy",
+      "vociferous"
+    ],
+    "antonyms": [
+      "Quiet",
+      "silent"
+    ]
   },
   {
     "word": "Clandestine",
     "partOfSpeech": "adj.",
     "definition": "Kept secret or done secretively.",
     "example Sentence": "They had a clandestine meeting.",
-    "synonyms": ["Covert", "furtive"],
-    "antonyms": ["Public", "open"]
+    "synonyms": [
+      "Covert",
+      "furtive"
+    ],
+    "antonyms": [
+      "Public",
+      "open"
+    ]
   },
   {
     "word": "Cogent",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Clear, logical, and convincing. [cite: 179]",
-    [cite_start]"example Sentence": "A cogent argument for peace. [cite: 179]",
-    "synonyms": ["Compelling"]
+    "definition": "Clear, logical, and convincing.",
+    "example Sentence": "A cogent argument for peace.",
+    "synonyms": [
+      "Compelling"
+    ]
   },
   {
     "word": "Confluent",
     "partOfSpeech": "adj.",
     "definition": "Flowing together or merging.",
     "example Sentence": "Confluent streams formed a river.",
-    "synonyms": ["Merged", "united"],
-    "antonyms": ["Divergent", "separate"]
+    "synonyms": [
+      "Merged",
+      "united"
+    ],
+    "antonyms": [
+      "Divergent",
+      "separate"
+    ]
   },
   {
     "word": "Conspicuous",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Standing out to be clearly visible. [cite: 181]",
-    [cite_start]"example Sentence": "The bird's feathers were conspicuous. [cite: 181]",
-    "synonyms": ["Noticeable"]
+    "definition": "Standing out to be clearly visible.",
+    "example Sentence": "The bird's feathers were conspicuous.",
+    "synonyms": [
+      "Noticeable"
+    ]
   },
   {
     "word": "Cryptic",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Having mysterious meaning. [cite: 182]",
-    [cite_start]"example Sentence": "He left a cryptic message. [cite: 182]",
-    "synonyms": ["Enigmatic", "puzzling"],
-    "antonyms": ["Clear", "obvious"]
+    "definition": "Having mysterious meaning.",
+    "example Sentence": "He left a cryptic message.",
+    "synonyms": [
+      "Enigmatic",
+      "puzzling"
+    ],
+    "antonyms": [
+      "Clear",
+      "obvious"
+    ]
   },
   {
     "word": "Culpable",
     "partOfSpeech": "adj.",
     "definition": "Deserving blame.",
     "example Sentence": "Driver was found culpable.",
-    "synonyms": ["Guilty", "blameworthy"],
-    "antonyms": ["Innocent", "blameless"]
+    "synonyms": [
+      "Guilty",
+      "blameworthy"
+    ],
+    "antonyms": [
+      "Innocent",
+      "blameless"
+    ]
   },
   {
     "word": "Cursory",
     "partOfSpeech": "adj.",
     "definition": "Hasty and not thorough.",
     "example Sentence": "A cursory glance at the paper.",
-    "synonyms": ["Perfunctory", "brief"],
-    "antonyms": ["Thorough", "detailed"]
+    "synonyms": [
+      "Perfunctory",
+      "brief"
+    ],
+    "antonyms": [
+      "Thorough",
+      "detailed"
+    ]
   },
   {
     "word": "Deleterious",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Causing harm or damage. [cite: 184]",
-    [cite_start]"example Sentence": "Stress is deleterious to health. [cite: 184]",
-    "synonyms": ["Pernicious", "harmful"],
-    "antonyms": ["Beneficial", "helpful"]
+    "definition": "Causing harm or damage.",
+    "example Sentence": "Stress is deleterious to health.",
+    "synonyms": [
+      "Pernicious",
+      "harmful"
+    ],
+    "antonyms": [
+      "Beneficial",
+      "helpful"
+    ]
   },
   {
     "word": "Demure",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Reserved, modest, and shy. [cite: 185]",
-    [cite_start]"example Sentence": "She gave a demure smile. [cite: 185]",
-    "synonyms": ["Modest"]
+    "definition": "Reserved, modest, and shy.",
+    "example Sentence": "She gave a demure smile.",
+    "synonyms": [
+      "Modest"
+    ]
   },
   {
     "word": "Despondent",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Low spirits from loss of hope. [cite: 186]",
-    [cite_start]"example Sentence": "Grew despondent after failure. [cite: 186]",
-    "synonyms": ["Dejected", "forlorn"],
-    "antonyms": ["Cheerful", "elated"]
+    "definition": "Low spirits from loss of hope.",
+    "example Sentence": "Grew despondent after failure.",
+    "synonyms": [
+      "Dejected",
+      "forlorn"
+    ],
+    "antonyms": [
+      "Cheerful",
+      "elated"
+    ]
   },
   {
     "word": "Destitute",
     "partOfSpeech": "adj.",
     "definition": "Without basic necessities.",
     "example Sentence": "Charity helps the destitute.",
-    "synonyms": ["Impoverished", "poor"],
-    "antonyms": ["Wealthy", "rich"]
+    "synonyms": [
+      "Impoverished",
+      "poor"
+    ],
+    "antonyms": [
+      "Wealthy",
+      "rich"
+    ]
   },
   {
     "word": "Desultory",
     "partOfSpeech": "adj.",
     "definition": "Lacking a plan or purpose.",
     "example Sentence": "A desultory conversation.",
-    "synonyms": ["Haphazard", "aimless"],
-    "antonyms": ["Focused", "systematic"]
+    "synonyms": [
+      "Haphazard",
+      "aimless"
+    ],
+    "antonyms": [
+      "Focused",
+      "systematic"
+    ]
   },
   {
     "word": "Detached",
     "partOfSpeech": "adj.",
     "definition": "Aloof or objective.",
     "example Sentence": "Judge remained detached.",
-    "synonyms": ["Unbiased", "disinterested"],
-    "antonyms": ["Biased", "involved"]
+    "synonyms": [
+      "Unbiased",
+      "disinterested"
+    ],
+    "antonyms": [
+      "Biased",
+      "involved"
+    ]
   },
   {
     "word": "Diminutive",
     "partOfSpeech": "adj.",
     "definition": "Extremely or unusually small.",
     "example Sentence": "Diminutive puppy fit in his hand.",
-    "synonyms": ["Tiny", "petite"],
-    "antonyms": ["Huge", "enormous"]
+    "synonyms": [
+      "Tiny",
+      "petite"
+    ],
+    "antonyms": [
+      "Huge",
+      "enormous"
+    ]
   },
   {
     "word": "Discerning",
     "partOfSpeech": "adj.",
     "definition": "Having or showing good judgment.",
     "example Sentence": "Discerning customer can tell the difference.",
-    "synonyms": ["Perceptive", "sharp"],
-    "antonyms": ["Ignorant", "obtuse"]
+    "synonyms": [
+      "Perceptive",
+      "sharp"
+    ],
+    "antonyms": [
+      "Ignorant",
+      "obtuse"
+    ]
   },
   {
     "word": "Distant",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Far away in space or time. [cite: 190]",
-    [cite_start]"example Sentence": "Distant sound of thunder. [cite: 190]",
-    "synonyms": ["Far", "remote"],
-    "antonyms": ["Near", "close"]
+    "definition": "Far away in space or time.",
+    "example Sentence": "Distant sound of thunder.",
+    "synonyms": [
+      "Far",
+      "remote"
+    ],
+    "antonyms": [
+      "Near",
+      "close"
+    ]
   },
   {
     "word": "Divergent",
     "partOfSpeech": "adj.",
     "definition": "Tending to be different or go apart.",
     "example Sentence": "Friends had divergent opinions.",
-    "synonyms": ["Differing", "clashing"],
-    "antonyms": ["Similar", "matching"]
+    "synonyms": [
+      "Differing",
+      "clashing"
+    ],
+    "antonyms": [
+      "Similar",
+      "matching"
+    ]
   },
   {
     "word": "Docile",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Ready to accept control; submissive. [cite: 191]",
-    [cite_start]"example Sentence": "The docile elephant followed commands. [cite: 191]",
-    "synonyms": ["Compliant", "gentle"],
-    "antonyms": ["Stubborn", "wild"]
+    "definition": "Ready to accept control; submissive.",
+    "example Sentence": "The docile elephant followed commands.",
+    "synonyms": [
+      "Compliant",
+      "gentle"
+    ],
+    "antonyms": [
+      "Stubborn",
+      "wild"
+    ]
   },
   {
     "word": "Dogmatic",
     "partOfSpeech": "adj.",
     "definition": "Principles laid down as incontrovertibly true.",
     "example Sentence": "Very dogmatic about his beliefs.",
-    "synonyms": ["Opinonated"],
-    "antonyms": ["Open-minded"]
+    "synonyms": [
+      "Opinonated"
+    ],
+    "antonyms": [
+      "Open-minded"
+    ]
   },
   {
     "word": "Edifying",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Providing moral instruction. [cite: 192]",
-    [cite_start]"example Sentence": "It was an edifying experience. [cite: 192]",
-    "synonyms": ["Enlightening", "didactic"],
-    "antonyms": ["Corrupting", "dark"]
+    "definition": "Providing moral instruction.",
+    "example Sentence": "It was an edifying experience.",
+    "synonyms": [
+      "Enlightening",
+      "didactic"
+    ],
+    "antonyms": [
+      "Corrupting",
+      "dark"
+    ]
   },
   {
     "word": "Effete",
     "partOfSpeech": "adj.",
     "definition": "Worn out; no longer effective.",
     "example Sentence": "The effete aristocracy declined.",
-    "synonyms": ["Enfeebled", "decadent"],
-    "antonyms": ["Vigorous", "strong"]
+    "synonyms": [
+      "Enfeebled",
+      "decadent"
+    ],
+    "antonyms": [
+      "Vigorous",
+      "strong"
+    ]
   },
   {
     "word": "Emollient",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Softening or soothing effect. [cite: 194]",
-    [cite_start]"example Sentence": "His emollient words helped. [cite: 194]",
-    "synonyms": ["Conciliatory", "soothing"],
-    "antonyms": ["Abrasive", "harsh"]
+    "definition": "Softening or soothing effect.",
+    "example Sentence": "His emollient words helped.",
+    "synonyms": [
+      "Conciliatory",
+      "soothing"
+    ],
+    "antonyms": [
+      "Abrasive",
+      "harsh"
+    ]
   },
   {
     "word": "Empirical",
     "partOfSpeech": "adj.",
     "definition": "Based on observation rather than theory.",
     "example Sentence": "Empirical evidence is needed.",
-    "synonyms": ["Factual", "observed"],
-    "antonyms": ["Theoretical", "vague"]
+    "synonyms": [
+      "Factual",
+      "observed"
+    ],
+    "antonyms": [
+      "Theoretical",
+      "vague"
+    ]
   },
   {
     "word": "Enervated",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Drained of energy. [cite: 195]",
-    [cite_start]"example Sentence": "Felt enervated by the heat. [cite: 195]",
-    "synonyms": ["Exhausted", "weak"],
-    "antonyms": ["Energetic", "fresh"]
+    "definition": "Drained of energy.",
+    "example Sentence": "Felt enervated by the heat.",
+    "synonyms": [
+      "Exhausted",
+      "weak"
+    ],
+    "antonyms": [
+      "Energetic",
+      "fresh"
+    ]
   },
   {
     "word": "Erroneous",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Wrong; incorrect. [cite: 196]",
-    [cite_start]"example Sentence": "Report contained several erroneous assumptions. [cite: 196]",
-    "synonyms": ["False", "mistaken"],
-    "antonyms": ["Correct", "true"]
+    "definition": "Wrong; incorrect.",
+    "example Sentence": "Report contained several erroneous assumptions.",
+    "synonyms": [
+      "False",
+      "mistaken"
+    ],
+    "antonyms": [
+      "Correct",
+      "true"
+    ]
   },
   {
     "word": "Erudite",
     "partOfSpeech": "adj.",
     "definition": "Having or showing great knowledge.",
     "example Sentence": "An erudite professor.",
-    "synonyms": ["Scholarly", "learned"],
-    "antonyms": ["Ignorant", "uneducated"]
+    "synonyms": [
+      "Scholarly",
+      "learned"
+    ],
+    "antonyms": [
+      "Ignorant",
+      "uneducated"
+    ]
   },
   {
     "word": "Esoteric",
     "partOfSpeech": "adj.",
     "definition": "Understood by only a small number.",
     "example Sentence": "Esoteric knowledge of symbols.",
-    "synonyms": ["Abstruse", "arcane"],
-    "antonyms": ["Common", "known"]
+    "synonyms": [
+      "Abstruse",
+      "arcane"
+    ],
+    "antonyms": [
+      "Common",
+      "known"
+    ]
   },
   {
     "word": "Ethereal",
     "partOfSpeech": "adj.",
     "definition": "Extremely delicate and light.",
     "example Sentence": "Her ethereal beauty was haunting.",
-    "synonyms": ["Heavenly", "fragile"],
-    "antonyms": ["Earthly", "heavy"]
+    "synonyms": [
+      "Heavenly",
+      "fragile"
+    ],
+    "antonyms": [
+      "Earthly",
+      "heavy"
+    ]
   },
   {
     "word": "Exiguous",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Very small in size or amount. [cite: 198]",
-    [cite_start]"example Sentence": "An exiguous income. [cite: 198]",
-    "synonyms": ["Meager", "scanty"],
-    "antonyms": ["Ample", "large"]
+    "definition": "Very small in size or amount.",
+    "example Sentence": "An exiguous income.",
+    "synonyms": [
+      "Meager",
+      "scanty"
+    ],
+    "antonyms": [
+      "Ample",
+      "large"
+    ]
   },
   {
     "word": "Exorbitant",
     "partOfSpeech": "adj.",
     "definition": "Unreasonably high price.",
     "example Sentence": "The rent was exorbitant.",
-    "synonyms": ["Excessive", "steep"],
-    "antonyms": ["Cheap", "low"]
+    "synonyms": [
+      "Excessive",
+      "steep"
+    ],
+    "antonyms": [
+      "Cheap",
+      "low"
+    ]
   },
   {
     "word": "Exotic",
     "partOfSpeech": "adj.",
     "definition": "Originating in a distant country.",
     "example Sentence": "Saw many exotic birds.",
-    "synonyms": ["Unusual", "foreign"],
-    "antonyms": ["Common", "local"]
+    "synonyms": [
+      "Unusual",
+      "foreign"
+    ],
+    "antonyms": [
+      "Common",
+      "local"
+    ]
   },
   {
     "word": "Expedient",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Convenient and practical; possibly improper. [cite: 199]",
-    [cite_start]"example Sentence": "It was politically expedient. [cite: 199]",
-    "synonyms": ["Practical", "useful"],
-    "antonyms": ["Unwise"]
+    "definition": "Convenient and practical; possibly improper.",
+    "example Sentence": "It was politically expedient.",
+    "synonyms": [
+      "Practical",
+      "useful"
+    ],
+    "antonyms": [
+      "Unwise"
+    ]
   },
   {
     "word": "Fallible",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Capable of making mistakes. [cite: 200]",
-    [cite_start]"example Sentence": "Even experts are fallible. [cite: 200]",
-    "synonyms": ["Imperfect", "errant"],
-    "antonyms": ["Infallible", "perfect"]
+    "definition": "Capable of making mistakes.",
+    "example Sentence": "Even experts are fallible.",
+    "synonyms": [
+      "Imperfect",
+      "errant"
+    ],
+    "antonyms": [
+      "Infallible",
+      "perfect"
+    ]
   },
   {
     "word": "Fastidious",
     "partOfSpeech": "adj.",
     "definition": "Very attentive to accuracy and detail.",
     "example Sentence": "Fastidious about cleaning.",
-    "synonyms": ["Scrupulous", "picky"],
-    "antonyms": ["Careless", "sloppy"]
+    "synonyms": [
+      "Scrupulous",
+      "picky"
+    ],
+    "antonyms": [
+      "Careless",
+      "sloppy"
+    ]
   },
   {
     "word": "Feasible",
     "partOfSpeech": "adj.",
     "definition": "Possible to do easily.",
     "example Sentence": "Not feasible to build in two weeks.",
-    "synonyms": ["Achievable", "viable"],
-    "antonyms": ["Impossible", "impractical"]
+    "synonyms": [
+      "Achievable",
+      "viable"
+    ],
+    "antonyms": [
+      "Impossible",
+      "impractical"
+    ]
   },
   {
     "word": "Fervent",
     "partOfSpeech": "adj.",
     "definition": "Passionate intensity.",
     "example Sentence": "Fervent believer in education.",
-    "synonyms": ["Passionate", "ardent"],
-    "antonyms": ["Apathetic", "cold"]
+    "synonyms": [
+      "Passionate",
+      "ardent"
+    ],
+    "antonyms": [
+      "Apathetic",
+      "cold"
+    ]
   },
   {
     "word": "Fickle",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Changing frequently. [cite: 201]",
-    [cite_start]"example Sentence": "The fickle public forgot him. [cite: 201]",
-    "synonyms": ["Inconstant", "erratic"],
-    "antonyms": ["Stable", "steady"]
+    "definition": "Changing frequently.",
+    "example Sentence": "The fickle public forgot him.",
+    "synonyms": [
+      "Inconstant",
+      "erratic"
+    ],
+    "antonyms": [
+      "Stable",
+      "steady"
+    ]
   },
   {
     "word": "Fractious",
     "partOfSpeech": "adj.",
     "definition": "Irritable and quarrelsome.",
     "example Sentence": "The fractious toddler.",
-    "synonyms": ["Refractory", "unruly"],
-    "antonyms": ["Docile", "calm"]
+    "synonyms": [
+      "Refractory",
+      "unruly"
+    ],
+    "antonyms": [
+      "Docile",
+      "calm"
+    ]
   },
   {
     "word": "Fragile",
     "partOfSpeech": "adj.",
     "definition": "Easily broken or damaged.",
     "example Sentence": "Fragile glass vase.",
-    "synonyms": ["Delicate", "frail"],
-    "antonyms": ["Strong", "tough"]
+    "synonyms": [
+      "Delicate",
+      "frail"
+    ],
+    "antonyms": [
+      "Strong",
+      "tough"
+    ]
   },
   {
     "word": "Fraudulent",
     "partOfSpeech": "adj.",
     "definition": "Obtained by involving deception.",
     "example Sentence": "Arrested for fraudulent activities.",
-    "synonyms": ["Deceitful", "fake"],
-    "antonyms": ["Honest", "genuine"]
+    "synonyms": [
+      "Deceitful",
+      "fake"
+    ],
+    "antonyms": [
+      "Honest",
+      "genuine"
+    ]
   },
   {
     "word": "Genial",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Friendly and cheerful. [cite: 204]",
-    [cite_start]"example Sentence": "The host was a genial man. [cite: 204]",
-    "synonyms": ["Amiable", "affable"],
-    "antonyms": ["Grumpy", "cold"]
+    "definition": "Friendly and cheerful.",
+    "example Sentence": "The host was a genial man.",
+    "synonyms": [
+      "Amiable",
+      "affable"
+    ],
+    "antonyms": [
+      "Grumpy",
+      "cold"
+    ]
   },
   {
     "word": "Germane",
     "partOfSpeech": "adj.",
     "definition": "Relevant to a subject.",
     "example Sentence": "That point is not germane.",
-    "synonyms": ["Pertinent", "apposite"],
-    "antonyms": ["Irrelevant"]
+    "synonyms": [
+      "Pertinent",
+      "apposite"
+    ],
+    "antonyms": [
+      "Irrelevant"
+    ]
   },
   {
     "word": "Giddy",
     "partOfSpeech": "adj.",
     "definition": "Sensation of whirling; excitement.",
     "example Sentence": "She felt giddy with excitement.",
-    "synonyms": ["Dizzy", "lightheaded"],
-    "antonyms": ["Serious", "steady"]
+    "synonyms": [
+      "Dizzy",
+      "lightheaded"
+    ],
+    "antonyms": [
+      "Serious",
+      "steady"
+    ]
   },
   {
     "word": "Gleeful",
     "partOfSpeech": "adj.",
     "definition": "Exuberantly happy.",
     "example Sentence": "Gleeful children opened presents.",
-    "synonyms": ["Joyful", "merry"],
-    "antonyms": ["Sad", "morose"]
+    "synonyms": [
+      "Joyful",
+      "merry"
+    ],
+    "antonyms": [
+      "Sad",
+      "morose"
+    ]
   },
   {
     "word": "Glib",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Fluent but shallow and insincere. [cite: 205]",
-    [cite_start]"example Sentence": "Glib answer to the question. [cite: 205]",
-    "synonyms": ["Slick", "smooth"],
-    "antonyms": ["Sincere", "deep"]
+    "definition": "Fluent but shallow and insincere.",
+    "example Sentence": "Glib answer to the question.",
+    "synonyms": [
+      "Slick",
+      "smooth"
+    ],
+    "antonyms": [
+      "Sincere",
+      "deep"
+    ]
   },
   {
     "word": "Gullible",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Easily persuaded to believe something. [cite: 206]",
-    [cite_start]"example Sentence": "Targeting gullible consumers. [cite: 206]",
-    "synonyms": ["Naive", "trustful"],
-    "antonyms": ["Skeptical", "astute"]
+    "definition": "Easily persuaded to believe something.",
+    "example Sentence": "Targeting gullible consumers.",
+    "synonyms": [
+      "Naive",
+      "trustful"
+    ],
+    "antonyms": [
+      "Skeptical",
+      "astute"
+    ]
   },
   {
     "word": "Hackneyed",
     "partOfSpeech": "adj.",
     "definition": "Lacking significance; overused.",
     "example Sentence": "A hackneyed slogan.",
-    "synonyms": ["Banal", "trite"],
-    "antonyms": ["Fresh", "new"]
+    "synonyms": [
+      "Banal",
+      "trite"
+    ],
+    "antonyms": [
+      "Fresh",
+      "new"
+    ]
   },
   {
     "word": "Haggard",
     "partOfSpeech": "adj.",
     "definition": "Looking exhausted and unwell.",
     "example Sentence": "He looked haggard after shifts.",
-    "synonyms": ["Gaunt", "drained"],
-    "antonyms": ["Healthy", "robust"]
+    "synonyms": [
+      "Gaunt",
+      "drained"
+    ],
+    "antonyms": [
+      "Healthy",
+      "robust"
+    ]
   },
   {
     "word": "Halcyon",
     "partOfSpeech": "adj.",
     "definition": "Idyllically happy and peaceful.",
     "example Sentence": "Halcyon summer days.",
-    "synonyms": ["Serene", "tranquil"],
-    "antonyms": ["Chaotic", "stormy"]
+    "synonyms": [
+      "Serene",
+      "tranquil"
+    ],
+    "antonyms": [
+      "Chaotic",
+      "stormy"
+    ]
   },
   {
     "word": "Heinous",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Utterly wicked or abominable. [cite: 208]",
-    [cite_start]"example Sentence": "A heinous crime. [cite: 208]",
-    "synonyms": ["Atrocious", "odious"],
-    "antonyms": ["Noble", "good"]
+    "definition": "Utterly wicked or abominable.",
+    "example Sentence": "A heinous crime.",
+    "synonyms": [
+      "Atrocious",
+      "odious"
+    ],
+    "antonyms": [
+      "Noble",
+      "good"
+    ]
   },
   {
     "word": "Hermetic",
     "partOfSpeech": "adj.",
     "definition": "Airtight; insulated from influence.",
     "example Sentence": "A hermetic seal.",
-    "synonyms": ["Sealed", "reclusive"],
-    "antonyms": ["Open", "exposed"]
+    "synonyms": [
+      "Sealed",
+      "reclusive"
+    ],
+    "antonyms": [
+      "Open",
+      "exposed"
+    ]
   },
   {
     "word": "Ignominious",
     "partOfSpeech": "adj.",
     "definition": "Deserving public disgrace.",
     "example Sentence": "An ignominious defeat.",
-    "synonyms": ["Shameful", "disgraceful"],
-    "antonyms": ["Glorious", "honorable"]
+    "synonyms": [
+      "Shameful",
+      "disgraceful"
+    ],
+    "antonyms": [
+      "Glorious",
+      "honorable"
+    ]
   },
   {
     "word": "Illicit",
     "partOfSpeech": "adj.",
     "definition": "Forbidden by law or custom.",
     "example Sentence": "Large supply of illicit drugs.",
-    "synonyms": ["Illegal", "forbidden"],
-    "antonyms": ["Legal", "lawful"]
+    "synonyms": [
+      "Illegal",
+      "forbidden"
+    ],
+    "antonyms": [
+      "Legal",
+      "lawful"
+    ]
   },
   {
     "word": "Imperative",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Of vital importance; crucial. [cite: 212]",
-    [cite_start]"example Sentence": "Imperative that you finish on time. [cite: 212]",
-    "synonyms": ["Essential", "vital"],
-    "antonyms": ["Trivial", "optional"]
+    "definition": "Of vital importance; crucial.",
+    "example Sentence": "Imperative that you finish on time.",
+    "synonyms": [
+      "Essential",
+      "vital"
+    ],
+    "antonyms": [
+      "Trivial",
+      "optional"
+    ]
   },
   {
     "word": "Imperceptible",
     "partOfSpeech": "adj.",
     "definition": "Impossible to perceive.",
     "example Sentence": "Change was almost imperceptible.",
-    "synonyms": ["Subtle", "faint"],
-    "antonyms": ["Obvious", "clear"]
+    "synonyms": [
+      "Subtle",
+      "faint"
+    ],
+    "antonyms": [
+      "Obvious",
+      "clear"
+    ]
   },
   {
     "word": "Imperious",
     "partOfSpeech": "adj.",
     "definition": "Assuming power without justification.",
     "example Sentence": "An imperious gesture.",
-    "synonyms": ["Domineering", "bossy"],
-    "antonyms": ["Submissive"]
+    "synonyms": [
+      "Domineering",
+      "bossy"
+    ],
+    "antonyms": [
+      "Submissive"
+    ]
   },
   {
     "word": "Imperturable",
     "partOfSpeech": "adj.",
     "definition": "Unable to be upset; calm.",
     "example Sentence": "An imperturbable calm.",
-    "synonyms": ["Placid", "serene"],
-    "antonyms": ["Excitable", "wild"]
+    "synonyms": [
+      "Placid",
+      "serene"
+    ],
+    "antonyms": [
+      "Excitable",
+      "wild"
+    ]
   },
   {
     "word": "Impervious",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Not allowing fluid to pass; unaffected. [cite: 213]",
-    [cite_start]"example Sentence": "Impervious to criticism. [cite: 213]",
-    "synonyms": ["Unaffected", "resistant"],
-    "antonyms": ["Porous", "vulnerable"]
+    "definition": "Not allowing fluid to pass; unaffected.",
+    "example Sentence": "Impervious to criticism.",
+    "synonyms": [
+      "Unaffected",
+      "resistant"
+    ],
+    "antonyms": [
+      "Porous",
+      "vulnerable"
+    ]
   },
   {
     "word": "Imprudent",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Not showing care for consequences. [cite: 214]",
-    [cite_start]"example Sentence": "Imprudent to leave keys in car. [cite: 214]",
-    "synonyms": ["Unwise", "reckless"],
-    "antonyms": ["Prudent", "wise"]
+    "definition": "Not showing care for consequences.",
+    "example Sentence": "Imprudent to leave keys in car.",
+    "synonyms": [
+      "Unwise",
+      "reckless"
+    ],
+    "antonyms": [
+      "Prudent",
+      "wise"
+    ]
   },
   {
     "word": "Inadvertent",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Not resulting from deliberate planning. [cite: 215]",
-    [cite_start]"example Sentence": "The deletion was purely inadvertent. [cite: 215]",
-    "synonyms": ["Unintentional", "accidental"],
-    "antonyms": ["Deliberate", "planned"]
+    "definition": "Not resulting from deliberate planning.",
+    "example Sentence": "The deletion was purely inadvertent.",
+    "synonyms": [
+      "Unintentional",
+      "accidental"
+    ],
+    "antonyms": [
+      "Deliberate",
+      "planned"
+    ]
   },
   {
     "word": "Incoherent",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Expressed in confusing way. [cite: 216]",
-    [cite_start]"example Sentence": "Patient was incoherent. [cite: 216]",
-    "synonyms": ["Confused", "muddled"],
-    "antonyms": ["Coherent", "clear"]
+    "definition": "Expressed in confusing way.",
+    "example Sentence": "Patient was incoherent.",
+    "synonyms": [
+      "Confused",
+      "muddled"
+    ],
+    "antonyms": [
+      "Coherent",
+      "clear"
+    ]
   },
   {
     "word": "Incompatible",
     "partOfSpeech": "adj.",
     "definition": "So opposed as to be unable to coexist.",
     "example Sentence": "Personalities were incompatible.",
-    "synonyms": ["Conflicting", "clashing"],
-    "antonyms": ["Harmonious", "matching"]
+    "synonyms": [
+      "Conflicting",
+      "clashing"
+    ],
+    "antonyms": [
+      "Harmonious",
+      "matching"
+    ]
   },
   {
     "word": "Incongruous",
     "partOfSpeech": "adj.",
     "definition": "Not in harmony or keeping with.",
     "example Sentence": "Modern skyscraper looked incongruous.",
-    "synonyms": ["Out of place"],
-    "antonyms": ["Harmonious"]
+    "synonyms": [
+      "Out of place"
+    ],
+    "antonyms": [
+      "Harmonious"
+    ]
   },
   {
     "word": "Inconspicuous",
     "partOfSpeech": "adj.",
     "definition": "Not clearly visible or attracting attention.",
     "example Sentence": "Remain inconspicuous in back of room.",
-    "synonyms": ["Unobtrusive", "hidden"],
-    "antonyms": ["Conspicuous", "obvious"]
+    "synonyms": [
+      "Unobtrusive",
+      "hidden"
+    ],
+    "antonyms": [
+      "Conspicuous",
+      "obvious"
+    ]
   },
   {
     "word": "Incorrigible",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Not able to be corrected or reformed. [cite: 217]",
+    "definition": "Not able to be corrected or reformed.",
     "example Sentence": "An incorrigible liar.",
-    "synonyms": ["Inveterate", "habitual"],
-    "antonyms": ["Reformable", "obedient"]
+    "synonyms": [
+      "Inveterate",
+      "habitual"
+    ],
+    "antonyms": [
+      "Reformable",
+      "obedient"
+    ]
   },
   {
     "word": "Ineffable",
     "partOfSpeech": "adj.",
     "definition": "Too great to be expressed.",
     "example Sentence": "Ineffable joy.",
-    "synonyms": ["Indescribable", "vast"],
-    "antonyms": ["Utterable", "small"]
+    "synonyms": [
+      "Indescribable",
+      "vast"
+    ],
+    "antonyms": [
+      "Utterable",
+      "small"
+    ]
   },
   {
     "word": "Inept",
     "partOfSpeech": "adj.",
     "definition": "Having or showing no skill.",
     "example Sentence": "He was an inept cook.",
-    "synonyms": ["Incompetent", "clumsy"],
-    "antonyms": ["Skillful", "adept"]
+    "synonyms": [
+      "Incompetent",
+      "clumsy"
+    ],
+    "antonyms": [
+      "Skillful",
+      "adept"
+    ]
   },
   {
     "word": "Inevitable",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Certain to happen; unavoidable. [cite: 219]",
-    [cite_start]"example Sentence": "Death is an inevitable part of life. [cite: 219]",
-    "synonyms": ["Unavoidable", "assured"],
-    "antonyms": ["Avoidable", "uncertain"]
+    "definition": "Certain to happen; unavoidable.",
+    "example Sentence": "Death is an inevitable part of life.",
+    "synonyms": [
+      "Unavoidable",
+      "assured"
+    ],
+    "antonyms": [
+      "Avoidable",
+      "uncertain"
+    ]
   },
   {
     "word": "Inordinate",
     "partOfSpeech": "adj.",
     "definition": "Unusually large; excessive.",
     "example Sentence": "Spent an inordinate amount of time.",
-    "synonyms": ["Excessive", "undue"],
-    "antonyms": ["Moderate", "reasonable"]
+    "synonyms": [
+      "Excessive",
+      "undue"
+    ],
+    "antonyms": [
+      "Moderate",
+      "reasonable"
+    ]
   },
   {
     "word": "Inscrutable",
     "partOfSpeech": "adj.",
     "definition": "Impossible to understand or interpret.",
     "example Sentence": "Face remained inscrutable.",
-    "synonyms": ["Enigmatic", "cryptic"],
-    "antonyms": ["Transparent", "clear"]
+    "synonyms": [
+      "Enigmatic",
+      "cryptic"
+    ],
+    "antonyms": [
+      "Transparent",
+      "clear"
+    ]
   },
   {
     "word": "Insidious",
     "partOfSpeech": "adj.",
     "definition": "Proceeding in gradual subtle way with harm.",
     "example Sentence": "The disease is insidious.",
-    "synonyms": ["Stealthy", "treacherous"],
-    "antonyms": ["Obvious", "open"]
+    "synonyms": [
+      "Stealthy",
+      "treacherous"
+    ],
+    "antonyms": [
+      "Obvious",
+      "open"
+    ]
   },
   {
     "word": "Intrepid",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Fearless; adventurous. [cite: 222]",
-    [cite_start]"example Sentence": "Explorer trekked through the Amazon. [cite: 222]",
-    "synonyms": ["Bold", "dauntless"],
-    "antonyms": ["Cowardly", "timid"]
+    "definition": "Fearless; adventurous.",
+    "example Sentence": "Explorer trekked through the Amazon.",
+    "synonyms": [
+      "Bold",
+      "dauntless"
+    ],
+    "antonyms": [
+      "Cowardly",
+      "timid"
+    ]
   },
   {
     "word": "Intrinsic",
     "partOfSpeech": "adj.",
     "definition": "Belonging naturally; essential.",
     "example Sentence": "Quality is an intrinsic part of the brand.",
-    "synonyms": ["Inherent", "innate"],
-    "antonyms": ["Extrinsic", "external"]
+    "synonyms": [
+      "Inherent",
+      "innate"
+    ],
+    "antonyms": [
+      "Extrinsic",
+      "external"
+    ]
   },
   {
     "word": "Invaluable",
     "partOfSpeech": "adj.",
     "definition": "Extremely useful; indispensable.",
     "example Sentence": "Help was invaluable during crisis.",
-    "synonyms": ["Priceless", "precious"],
-    "antonyms": ["Worthless", "cheap"]
+    "synonyms": [
+      "Priceless",
+      "precious"
+    ],
+    "antonyms": [
+      "Worthless",
+      "cheap"
+    ]
   },
   {
     "word": "Inured",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Accustomed to something unpleasant. [cite: 223]",
-    [cite_start]"example Sentence": "Inured to the cold. [cite: 223]",
-    "synonyms": ["Hardened", "seasoned"],
-    "antonyms": ["Sensitive"]
+    "definition": "Accustomed to something unpleasant.",
+    "example Sentence": "Inured to the cold.",
+    "synonyms": [
+      "Hardened",
+      "seasoned"
+    ],
+    "antonyms": [
+      "Sensitive"
+    ]
   },
   {
     "word": "Jaded",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Tired or bored after too much. [cite: 224]",
-    [cite_start]"example Sentence": "Jaded by years of same office. [cite: 224]",
-    "synonyms": ["Bored", "weary"],
-    "antonyms": ["Fresh", "eager"]
+    "definition": "Tired or bored after too much.",
+    "example Sentence": "Jaded by years of same office.",
+    "synonyms": [
+      "Bored",
+      "weary"
+    ],
+    "antonyms": [
+      "Fresh",
+      "eager"
+    ]
   },
   {
     "word": "Jejune",
     "partOfSpeech": "adj.",
     "definition": "Naive and simplistic.",
     "example Sentence": "A jejune argument.",
-    "synonyms": ["Puerile", "shallow"],
-    "antonyms": ["Profound", "wise"]
+    "synonyms": [
+      "Puerile",
+      "shallow"
+    ],
+    "antonyms": [
+      "Profound",
+      "wise"
+    ]
   },
   {
     "word": "Jocund",
     "partOfSpeech": "adj.",
     "definition": "Cheerful and happy.",
     "example Sentence": "Jocund atmosphere of festival.",
-    "synonyms": ["Cheerful", "happy"],
-    "antonyms": ["Gloomy"]
+    "synonyms": [
+      "Cheerful",
+      "happy"
+    ],
+    "antonyms": [
+      "Gloomy"
+    ]
   },
   {
     "word": "Jovial",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Cheerful and friendly. [cite: 225]",
-    [cite_start]"example Sentence": "A jovial host. [cite: 225]",
-    "synonyms": ["Merry", "gleeful"],
-    "antonyms": ["Gloomy", "somber"]
+    "definition": "Cheerful and friendly.",
+    "example Sentence": "A jovial host.",
+    "synonyms": [
+      "Merry",
+      "gleeful"
+    ],
+    "antonyms": [
+      "Gloomy",
+      "somber"
+    ]
   },
   {
     "word": "Judicious",
     "partOfSpeech": "adj.",
     "definition": "Done with good judgment.",
     "example Sentence": "Judicious use of resources.",
-    "synonyms": ["Wise", "sensible"],
-    "antonyms": ["Foolish", "rash"]
+    "synonyms": [
+      "Wise",
+      "sensible"
+    ],
+    "antonyms": [
+      "Foolish",
+      "rash"
+    ]
   },
   {
     "word": "Lavish",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Sumptuously rich or luxurious. [cite: 226]",
-    [cite_start]"example Sentence": "Threw a lavish party. [cite: 226]",
-    "synonyms": ["Opulent", "extravagant"],
-    "antonyms": ["Frugal", "meager"]
+    "definition": "Sumptuously rich or luxurious.",
+    "example Sentence": "Threw a lavish party.",
+    "synonyms": [
+      "Opulent",
+      "extravagant"
+    ],
+    "antonyms": [
+      "Frugal",
+      "meager"
+    ]
   },
   {
     "word": "Lethargic",
     "partOfSpeech": "adj.",
     "definition": "Sluggish and apathetic.",
     "example Sentence": "Felt lethargic all day.",
-    "synonyms": ["Listless", "slow"],
-    "antonyms": ["Vivacious", "fast"]
+    "synonyms": [
+      "Listless",
+      "slow"
+    ],
+    "antonyms": [
+      "Vivacious",
+      "fast"
+    ]
   },
   {
     "word": "Limpid",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Completely clear; transparent. [cite: 227]",
-    [cite_start]"example Sentence": "Limpid pools of water. [cite: 227]",
-    "synonyms": ["Pellucid", "lucid"],
-    "antonyms": ["Murky", "opaque"]
+    "definition": "Completely clear; transparent.",
+    "example Sentence": "Limpid pools of water.",
+    "synonyms": [
+      "Pellucid",
+      "lucid"
+    ],
+    "antonyms": [
+      "Murky",
+      "opaque"
+    ]
   },
   {
     "word": "Maudlin",
     "partOfSpeech": "adj.",
     "definition": "Self-pitying or sentimental.",
     "example Sentence": "A maudlin drunk.",
-    "synonyms": ["Mushy", "weepy"],
-    "antonyms": ["Stoic", "dry"]
+    "synonyms": [
+      "Mushy",
+      "weepy"
+    ],
+    "antonyms": [
+      "Stoic",
+      "dry"
+    ]
   },
   {
     "word": "Meager",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Lacking in quantity or quality. [cite: 229]",
-    [cite_start]"example Sentence": "Meager rations of water. [cite: 229]",
-    "synonyms": ["Scanty", "sparse"],
-    "antonyms": ["Ample", "abundant"]
+    "definition": "Lacking in quantity or quality.",
+    "example Sentence": "Meager rations of water.",
+    "synonyms": [
+      "Scanty",
+      "sparse"
+    ],
+    "antonyms": [
+      "Ample",
+      "abundant"
+    ]
   },
   {
     "word": "Mordant",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Sharp, critical humor. [cite: 230]",
-    [cite_start]"example Sentence": "Mordant wit. [cite: 230]",
-    "synonyms": ["Acerbic", "caustic"],
-    "antonyms": ["Kind", "gentle"]
+    "definition": "Sharp, critical humor.",
+    "example Sentence": "Mordant wit.",
+    "synonyms": [
+      "Acerbic",
+      "caustic"
+    ],
+    "antonyms": [
+      "Kind",
+      "gentle"
+    ]
   },
   {
     "word": "Morose",
     "partOfSpeech": "adj.",
     "definition": "Sullen and ill-tempered.",
     "example Sentence": "A morose teenager.",
-    "synonyms": ["Gloomy", "moody"],
-    "antonyms": ["Cheerful", "happy"]
+    "synonyms": [
+      "Gloomy",
+      "moody"
+    ],
+    "antonyms": [
+      "Cheerful",
+      "happy"
+    ]
   },
   {
     "word": "Mundane",
     "partOfSpeech": "adj.",
     "definition": "Lacking interest; dull.",
     "example Sentence": "Mundane daily chores.",
-    "synonyms": ["Humdrum", "prosaic"],
-    "antonyms": ["Extraordinary", "exotic"]
+    "synonyms": [
+      "Humdrum",
+      "prosaic"
+    ],
+    "antonyms": [
+      "Extraordinary",
+      "exotic"
+    ]
   },
   {
     "word": "Munificent",
     "partOfSpeech": "adj.",
     "definition": "More generous than usual.",
     "example Sentence": "A munificent donor.",
-    "synonyms": ["Magnanimous", "lavish"],
-    "antonyms": ["Stingy", "greedy"]
+    "synonyms": [
+      "Magnanimous",
+      "lavish"
+    ],
+    "antonyms": [
+      "Stingy",
+      "greedy"
+    ]
   },
   {
     "word": "Myopic",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Nearsighted; lacking foresight. [cite: 231]",
-    [cite_start]"example Sentence": "A myopic strategy. [cite: 231]",
-    "synonyms": ["Narrow-minded"],
-    "antonyms": ["Far-sighted"]
+    "definition": "Nearsighted; lacking foresight.",
+    "example Sentence": "A myopic strategy.",
+    "synonyms": [
+      "Narrow-minded"
+    ],
+    "antonyms": [
+      "Far-sighted"
+    ]
   },
   {
     "word": "Naïve",
     "partOfSpeech": "adj.",
     "definition": "Showing lack of experience or judgment.",
     "example Sentence": "So naïve to believe that.",
-    "synonyms": ["Innocent", "unsophisticated"],
-    "antonyms": ["Worldly", "cynical"]
+    "synonyms": [
+      "Innocent",
+      "unsophisticated"
+    ],
+    "antonyms": [
+      "Worldly",
+      "cynical"
+    ]
   },
   {
     "word": "Notorious",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Famous for bad quality. [cite: 232]",
-    [cite_start]"example Sentence": "Notorious gambler. [cite: 232]",
-    "synonyms": ["Infamous", "ill-famed"],
-    "antonyms": ["Reputable", "unknown"]
+    "definition": "Famous for bad quality.",
+    "example Sentence": "Notorious gambler.",
+    "synonyms": [
+      "Infamous",
+      "ill-famed"
+    ],
+    "antonyms": [
+      "Reputable",
+      "unknown"
+    ]
   },
   {
     "word": "Novel",
     "partOfSpeech": "adj.",
     "definition": "New or unusual in interesting way.",
     "example Sentence": "A novel solution to energy.",
-    "synonyms": ["Innovative", "fresh"],
-    "antonyms": ["Trite", "commonplace"]
+    "synonyms": [
+      "Innovative",
+      "fresh"
+    ],
+    "antonyms": [
+      "Trite",
+      "commonplace"
+    ]
   },
   {
     "word": "Noxious",
     "partOfSpeech": "adj.",
     "definition": "Harmful or poisonous.",
     "example Sentence": "Noxious fumes from factory.",
-    "synonyms": ["Toxic", "harmful"],
-    "antonyms": ["Wholesome", "safe"]
+    "synonyms": [
+      "Toxic",
+      "harmful"
+    ],
+    "antonyms": [
+      "Wholesome",
+      "safe"
+    ]
   },
   {
     "word": "Obdurate",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Stubbornly refusing to change. [cite: 233]",
-    [cite_start]"example Sentence": "Obdurate in his belief. [cite: 233]",
-    "synonyms": ["Intransigent", "rigid"],
-    "antonyms": ["Pliable", "soft"]
+    "definition": "Stubbornly refusing to change.",
+    "example Sentence": "Obdurate in his belief.",
+    "synonyms": [
+      "Intransigent",
+      "rigid"
+    ],
+    "antonyms": [
+      "Pliable",
+      "soft"
+    ]
   },
   {
     "word": "Opaque",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Not able to be seen through. [cite: 234]",
-    [cite_start]"example Sentence": "Opaque windows. [cite: 234]",
-    "synonyms": ["Murky", "blurred"],
-    "antonyms": ["Transparent", "clear"]
+    "definition": "Not able to be seen through.",
+    "example Sentence": "Opaque windows.",
+    "synonyms": [
+      "Murky",
+      "blurred"
+    ],
+    "antonyms": [
+      "Transparent",
+      "clear"
+    ]
   },
   {
     "word": "Opprobrious",
     "partOfSpeech": "adj.",
     "definition": "Expressing scorn or criticism.",
     "example Sentence": "Opprobrious language.",
-    "synonyms": ["Abusive", "vitriolic"],
-    "antonyms": ["Laudatory"]
+    "synonyms": [
+      "Abusive",
+      "vitriolic"
+    ],
+    "antonyms": [
+      "Laudatory"
+    ]
   },
   {
     "word": "Opulent",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Rich and luxurious. [cite: 235]",
-    [cite_start]"example Sentence": "Lived in an opulent palace. [cite: 235]",
-    "synonyms": ["Lavish", "wealthy"],
-    "antonyms": ["Poor", "destitute"]
+    "definition": "Rich and luxurious.",
+    "example Sentence": "Lived in an opulent palace.",
+    "synonyms": [
+      "Lavish",
+      "wealthy"
+    ],
+    "antonyms": [
+      "Poor",
+      "destitute"
+    ]
   },
   {
     "word": "Ornate",
     "partOfSpeech": "adj.",
     "definition": "Made in an intricate shape.",
     "example Sentence": "Ornate carvings.",
-    "synonyms": ["Elaborate", "decorated"],
-    "antonyms": ["Plain", "simple"]
+    "synonyms": [
+      "Elaborate",
+      "decorated"
+    ],
+    "antonyms": [
+      "Plain",
+      "simple"
+    ]
   },
   {
     "word": "Rapacious",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Aggressively greedy. [cite: 236]",
-    [cite_start]"example Sentence": "Rapacious landlords. [cite: 236]",
-    "synonyms": ["Avaricious", "greedy"],
-    "antonyms": ["Generous", "kind"]
+    "definition": "Aggressively greedy.",
+    "example Sentence": "Rapacious landlords.",
+    "synonyms": [
+      "Avaricious",
+      "greedy"
+    ],
+    "antonyms": [
+      "Generous",
+      "kind"
+    ]
   },
   {
     "word": "Raucous",
     "partOfSpeech": "adj.",
     "definition": "Harsh and loud noise.",
     "example Sentence": "Raucous laughter.",
-    "synonyms": ["Strident", "piercing"],
-    "antonyms": ["Soft", "quiet"]
+    "synonyms": [
+      "Strident",
+      "piercing"
+    ],
+    "antonyms": [
+      "Soft",
+      "quiet"
+    ]
   },
   {
     "word": "Reluctant",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Unwilling and hesitant. [cite: 238]",
-    [cite_start]"example Sentence": "Reluctant to leave chair. [cite: 238]",
-    "synonyms": ["Unwilling", "averse"],
-    "antonyms": ["Eager", "willing"]
+    "definition": "Unwilling and hesitant.",
+    "example Sentence": "Reluctant to leave chair.",
+    "synonyms": [
+      "Unwilling",
+      "averse"
+    ],
+    "antonyms": [
+      "Eager",
+      "willing"
+    ]
   },
   {
     "word": "Remiss",
     "partOfSpeech": "adj.",
     "definition": "Lacking care or attention.",
     "example Sentence": "Remiss in his job.",
-    "synonyms": ["Negligent", "lax"],
-    "antonyms": ["Diligent", "careful"]
+    "synonyms": [
+      "Negligent",
+      "lax"
+    ],
+    "antonyms": [
+      "Diligent",
+      "careful"
+    ]
   },
   {
     "word": "Reticent",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Not revealing thoughts readily. [cite: 240]",
-    [cite_start]"example Sentence": "Reticent about her past. [cite: 240]",
-    "synonyms": ["Reserved", "quiet"],
-    "antonyms": ["Outspoken", "bold"]
+    "definition": "Not revealing thoughts readily.",
+    "example Sentence": "Reticent about her past.",
+    "synonyms": [
+      "Reserved",
+      "quiet"
+    ],
+    "antonyms": [
+      "Outspoken",
+      "bold"
+    ]
   },
   {
     "word": "Robust",
     "partOfSpeech": "adj.",
     "definition": "Strong and healthy; vigorous.",
     "example Sentence": "Still robust at age 90.",
-    "synonyms": ["Strong", "sturdy"],
-    "antonyms": ["Weak", "frail"]
+    "synonyms": [
+      "Strong",
+      "sturdy"
+    ],
+    "antonyms": [
+      "Weak",
+      "frail"
+    ]
   },
   {
     "word": "Rudimentary",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Limited to basic principles. [cite: 241]",
-    [cite_start]"example Sentence": "Rudimentary knowledge of subject. [cite: 241]",
-    "synonyms": ["Basic", "simple"],
-    "antonyms": ["Advanced", "complex"]
+    "definition": "Limited to basic principles.",
+    "example Sentence": "Rudimentary knowledge of subject.",
+    "synonyms": [
+      "Basic",
+      "simple"
+    ],
+    "antonyms": [
+      "Advanced",
+      "complex"
+    ]
   },
   {
     "word": "Sedentary",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Much time seated; inactive. [cite: 242]",
-    [cite_start]"example Sentence": "Lived a sedentary life. [cite: 242]",
-    "synonyms": ["Inactive", "idle"],
-    "antonyms": ["Active", "energetic"]
+    "definition": "Much time seated; inactive.",
+    "example Sentence": "Lived a sedentary life.",
+    "synonyms": [
+      "Inactive",
+      "idle"
+    ],
+    "antonyms": [
+      "Active",
+      "energetic"
+    ]
   },
   {
     "word": "Sedulous",
     "partOfSpeech": "adj.",
     "definition": "Showing dedication/diligence.",
     "example Sentence": "A sedulous student.",
-    "synonyms": ["Assiduous", "careful"],
-    "antonyms": ["Idle", "lazy"]
+    "synonyms": [
+      "Assiduous",
+      "careful"
+    ],
+    "antonyms": [
+      "Idle",
+      "lazy"
+    ]
   },
   {
     "word": "Serene",
     "partOfSpeech": "adj.",
     "definition": "Calm, peaceful, untroubled.",
     "example Sentence": "View of lake was serene.",
-    "synonyms": ["Placid", "quiet"],
-    "antonyms": ["Turbulent", "wild"]
+    "synonyms": [
+      "Placid",
+      "quiet"
+    ],
+    "antonyms": [
+      "Turbulent",
+      "wild"
+    ]
   },
   {
     "word": "Servile",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Excessive willingness to serve. [cite: 243]",
-    [cite_start]"example Sentence": "Gave a servile bow. [cite: 243]",
-    "synonyms": ["Submissive", "fawning"],
-    "antonyms": ["Arrogant", "haughty"]
+    "definition": "Excessive willingness to serve.",
+    "example Sentence": "Gave a servile bow.",
+    "synonyms": [
+      "Submissive",
+      "fawning"
+    ],
+    "antonyms": [
+      "Arrogant",
+      "haughty"
+    ]
   },
   {
     "word": "Sparse",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Thinly dispersed/scattered. [cite: 244]",
-    [cite_start]"example Sentence": "Vegetation was sparse. [cite: 244]",
-    "synonyms": ["Scanty", "meager"],
-    "antonyms": ["Dense", "lush"]
+    "definition": "Thinly dispersed/scattered.",
+    "example Sentence": "Vegetation was sparse.",
+    "synonyms": [
+      "Scanty",
+      "meager"
+    ],
+    "antonyms": [
+      "Dense",
+      "lush"
+    ]
   },
   {
     "word": "Specious",
     "partOfSpeech": "adj.",
     "definition": "Plausible but actually wrong.",
     "example Sentence": "A specious argument.",
-    "synonyms": ["Spurious", "misleading"],
-    "antonyms": ["Valid", "true"]
+    "synonyms": [
+      "Spurious",
+      "misleading"
+    ],
+    "antonyms": [
+      "Valid",
+      "true"
+    ]
   },
   {
     "word": "Spiteful",
     "partOfSpeech": "adj.",
     "definition": "Showing or caused by malice.",
     "example Sentence": "Made a spiteful comment.",
-    "synonyms": ["Malicious", "cruel"],
-    "antonyms": ["Kind", "friendly"]
+    "synonyms": [
+      "Malicious",
+      "cruel"
+    ],
+    "antonyms": [
+      "Kind",
+      "friendly"
+    ]
   },
   {
     "word": "Splenetic",
     "partOfSpeech": "adj.",
     "definition": "Bad-tempered; spiteful.",
     "example Sentence": "A splenetic outburst.",
-    "synonyms": ["Irascible", "bilious"],
-    "antonyms": ["Affable", "kind"]
+    "synonyms": [
+      "Irascible",
+      "bilious"
+    ],
+    "antonyms": [
+      "Affable",
+      "kind"
+    ]
   },
   {
     "word": "Spontaneous",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Sudden inner impulse. [cite: 245]",
-    [cite_start]"example Sentence": "Spontaneous applause. [cite: 245]",
-    "synonyms": ["Impromptu", "rash"],
-    "antonyms": ["Planned", "forced"]
+    "definition": "Sudden inner impulse.",
+    "example Sentence": "Spontaneous applause.",
+    "synonyms": [
+      "Impromptu",
+      "rash"
+    ],
+    "antonyms": [
+      "Planned",
+      "forced"
+    ]
   },
   {
     "word": "Stupefied",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Unable to think properly. [cite: 246]",
-    [cite_start]"example Sentence": "Stupefied by the news. [cite: 246]",
-    "synonyms": ["Dazed", "stunned"],
-    "antonyms": ["Aware", "alert"]
+    "definition": "Unable to think properly.",
+    "example Sentence": "Stupefied by the news.",
+    "synonyms": [
+      "Dazed",
+      "stunned"
+    ],
+    "antonyms": [
+      "Aware",
+      "alert"
+    ]
   },
   {
     "word": "Submissive",
     "partOfSpeech": "adj.",
     "definition": "Ready to conform to authority.",
     "example Sentence": "Expected to be submissive.",
-    "synonyms": ["Compliant", "docile"],
-    "antonyms": ["Defiant", "unruly"]
+    "synonyms": [
+      "Compliant",
+      "docile"
+    ],
+    "antonyms": [
+      "Defiant",
+      "unruly"
+    ]
   },
   {
     "word": "Subservient",
     "partOfSpeech": "adj.",
     "definition": "Prepared to obey unquestioningly.",
     "example Sentence": "Subservient to boss's whim.",
-    "synonyms": ["Servile", "docile"],
-    "antonyms": ["Independent", "bold"]
+    "synonyms": [
+      "Servile",
+      "docile"
+    ],
+    "antonyms": [
+      "Independent",
+      "bold"
+    ]
   },
   {
     "word": "Subtle",
     "partOfSpeech": "adj.",
     "definition": "So delicate as to be difficult to analyze.",
     "example Sentence": "Subtle difference in color.",
-    "synonyms": ["Slight", "faint"],
-    "antonyms": ["Obvious", "blatant"]
+    "synonyms": [
+      "Slight",
+      "faint"
+    ],
+    "antonyms": [
+      "Obvious",
+      "blatant"
+    ]
   },
   {
     "word": "Succinct",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Briefly and clearly expressed. [cite: 247]",
-    [cite_start]"example Sentence": "Keep answer succinct. [cite: 247]",
-    "synonyms": ["Concise", "brief"],
-    "antonyms": ["Verbose", "long"]
+    "definition": "Briefly and clearly expressed.",
+    "example Sentence": "Keep answer succinct.",
+    "synonyms": [
+      "Concise",
+      "brief"
+    ],
+    "antonyms": [
+      "Verbose",
+      "long"
+    ]
   },
   {
     "word": "Sycophantic",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Behaving in obsequious way. [cite: 248]",
-    [cite_start]"example Sentence": "Sycophantic flatterers. [cite: 248]",
-    "synonyms": ["Fawning", "servile"],
-    "antonyms": ["Bold", "honest"]
+    "definition": "Behaving in obsequious way.",
+    "example Sentence": "Sycophantic flatterers.",
+    "synonyms": [
+      "Fawning",
+      "servile"
+    ],
+    "antonyms": [
+      "Bold",
+      "honest"
+    ]
   },
   {
     "word": "Tacit",
     "partOfSpeech": "adj.",
     "definition": "Understood without being stated.",
     "example Sentence": "There was a tacit agreement.",
-    "synonyms": ["Implicit", "inferred"],
-    "antonyms": ["Explicit", "stated"]
+    "synonyms": [
+      "Implicit",
+      "inferred"
+    ],
+    "antonyms": [
+      "Explicit",
+      "stated"
+    ]
   },
   {
     "word": "Taciturn",
     "partOfSpeech": "adj.",
     "definition": "Saying little.",
     "example Sentence": "Taciturn man rarely spoke.",
-    "synonyms": ["Silent", "reserved"],
-    "antonyms": ["Loquacious", "talkative"]
+    "synonyms": [
+      "Silent",
+      "reserved"
+    ],
+    "antonyms": [
+      "Loquacious",
+      "talkative"
+    ]
   },
   {
     "word": "Tactful",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Skill and sensitivity in dealing with others. [cite: 249]",
-    [cite_start]"example Sentence": "Gave a tactful critique. [cite: 249]",
-    "synonyms": ["Diplomatic", "polite"],
-    "antonyms": ["Rude", "tactless"]
+    "definition": "Skill and sensitivity in dealing with others.",
+    "example Sentence": "Gave a tactful critique.",
+    "synonyms": [
+      "Diplomatic",
+      "polite"
+    ],
+    "antonyms": [
+      "Rude",
+      "tactless"
+    ]
   },
   {
     "word": "Thrifty",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Using resources carefully. [cite: 250]",
-    [cite_start]"example Sentence": "Very thrifty using coupons. [cite: 250]",
-    "synonyms": ["Frugal", "stingy"],
-    "antonyms": ["Extravagant", "lavish"]
+    "definition": "Using resources carefully.",
+    "example Sentence": "Very thrifty using coupons.",
+    "synonyms": [
+      "Frugal",
+      "stingy"
+    ],
+    "antonyms": [
+      "Extravagant",
+      "lavish"
+    ]
   },
   {
     "word": "Timid",
     "partOfSpeech": "adj.",
     "definition": "Lack of courage/confidence.",
     "example Sentence": "Timid child hid behind mother.",
-    "synonyms": ["Shy", "fearful"],
-    "antonyms": ["Bold", "brave"]
+    "synonyms": [
+      "Shy",
+      "fearful"
+    ],
+    "antonyms": [
+      "Bold",
+      "brave"
+    ]
   },
   {
     "word": "Timorous",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Showing nervousness/fear. [cite: 251]",
-    [cite_start]"example Sentence": "A timorous mouse. [cite: 251]",
-    "synonyms": ["Fearful", "shy"],
-    "antonyms": ["Bold", "brave"]
+    "definition": "Showing nervousness/fear.",
+    "example Sentence": "A timorous mouse.",
+    "synonyms": [
+      "Fearful",
+      "shy"
+    ],
+    "antonyms": [
+      "Bold",
+      "brave"
+    ]
   },
   {
     "word": "Transparent",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Allowing light to pass through. [cite: 252]",
-    [cite_start]"example Sentence": "Water was transparent. [cite: 252]",
-    "synonyms": ["Clear", "obvious"],
-    "antonyms": ["Opaque", "murky"]
+    "definition": "Allowing light to pass through.",
+    "example Sentence": "Water was transparent.",
+    "synonyms": [
+      "Clear",
+      "obvious"
+    ],
+    "antonyms": [
+      "Opaque",
+      "murky"
+    ]
   },
   {
     "word": "Treacherous",
     "partOfSpeech": "adj.",
     "definition": "Guilty of betrayal/deception.",
     "example Sentence": "Mountain pass was treacherous.",
-    "synonyms": ["Dangerous", "perfidious"],
-    "antonyms": ["Safe", "loyal"]
+    "synonyms": [
+      "Dangerous",
+      "perfidious"
+    ],
+    "antonyms": [
+      "Safe",
+      "loyal"
+    ]
   },
   {
     "word": "Trenchant",
     "partOfSpeech": "adj.",
     "definition": "Vigorous or incisive in expression.",
     "example Sentence": "Trenchant criticism.",
-    "synonyms": ["Sharp", "biting"],
-    "antonyms": ["Weak", "vague"]
+    "synonyms": [
+      "Sharp",
+      "biting"
+    ],
+    "antonyms": [
+      "Weak",
+      "vague"
+    ]
   },
   {
     "word": "Unanimous",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Fully in agreement. [cite: 254]",
-    [cite_start]"example Sentence": "Jury reached unanimous verdict. [cite: 254]",
-    "synonyms": ["United", "agreed"],
-    "antonyms": ["Divided", "split"]
+    "definition": "Fully in agreement.",
+    "example Sentence": "Jury reached unanimous verdict.",
+    "synonyms": [
+      "United",
+      "agreed"
+    ],
+    "antonyms": [
+      "Divided",
+      "split"
+    ]
   },
   {
     "word": "Uncanny",
     "partOfSpeech": "adj.",
     "definition": "Strange or mysterious.",
     "example Sentence": "Uncanny ability to guess.",
-    "synonyms": ["Eerie", "weird"],
-    "antonyms": ["Normal", "typical"]
+    "synonyms": [
+      "Eerie",
+      "weird"
+    ],
+    "antonyms": [
+      "Normal",
+      "typical"
+    ]
   },
   {
     "word": "Unconscionable",
     "partOfSpeech": "adj.",
     "definition": "Not right or reasonable.",
     "example Sentence": "Unconscionable behavior.",
-    "synonyms": ["Unethical", "wrong"],
-    "antonyms": ["Moral", "fair"]
+    "synonyms": [
+      "Unethical",
+      "wrong"
+    ],
+    "antonyms": [
+      "Moral",
+      "fair"
+    ]
   },
   {
     "word": "Unctuous",
     "partOfSpeech": "adj.",
     "definition": "Excessively flattering; oily.",
     "example Sentence": "An unctuous greeting.",
-    "synonyms": ["Fawning", "greasy"],
-    "antonyms": ["Blunt", "sincere"]
+    "synonyms": [
+      "Fawning",
+      "greasy"
+    ],
+    "antonyms": [
+      "Blunt",
+      "sincere"
+    ]
   },
   {
     "word": "Underlying",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Significant cause; not obvious. [cite: 255]",
-    [cite_start]"example Sentence": "Underlying cause of problem. [cite: 255]",
-    "synonyms": ["Fundamental", "basic"],
-    "antonyms": ["Surface", "slight"]
+    "definition": "Significant cause; not obvious.",
+    "example Sentence": "Underlying cause of problem.",
+    "synonyms": [
+      "Fundamental",
+      "basic"
+    ],
+    "antonyms": [
+      "Surface",
+      "slight"
+    ]
   },
   {
     "word": "Vacuous",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Lack of thought; mindless. [cite: 256]",
-    [cite_start]"example Sentence": "Gave a vacuous smile. [cite: 256]",
-    "synonyms": ["Inane", "empty"],
-    "antonyms": ["Intelligent", "sharp"]
+    "definition": "Lack of thought; mindless.",
+    "example Sentence": "Gave a vacuous smile.",
+    "synonyms": [
+      "Inane",
+      "empty"
+    ],
+    "antonyms": [
+      "Intelligent",
+      "sharp"
+    ]
   },
   {
     "word": "Valid",
     "partOfSpeech": "adj.",
     "definition": "Sound basis in logic or fact.",
     "example Sentence": "Valid reason for absence.",
-    "synonyms": ["Logical", "sound"],
-    "antonyms": ["Invalid", "false"]
+    "synonyms": [
+      "Logical",
+      "sound"
+    ],
+    "antonyms": [
+      "Invalid",
+      "false"
+    ]
   },
   {
     "word": "Vapid",
     "partOfSpeech": "adj.",
     "definition": "Offering nothing challenging.",
     "example Sentence": "A vapid conversation.",
-    "synonyms": ["Insipid", "bland"],
-    "antonyms": ["Lively", "zesty"]
+    "synonyms": [
+      "Insipid",
+      "bland"
+    ],
+    "antonyms": [
+      "Lively",
+      "zesty"
+    ]
   },
   {
     "word": "Variable",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Not consistent; liable to change. [cite: 257]",
-    [cite_start]"example Sentence": "Weather is very variable. [cite: 257]",
-    "synonyms": ["Fickle", "shifting"],
-    "antonyms": ["Constant", "fixed"]
+    "definition": "Not consistent; liable to change.",
+    "example Sentence": "Weather is very variable.",
+    "synonyms": [
+      "Fickle",
+      "shifting"
+    ],
+    "antonyms": [
+      "Constant",
+      "fixed"
+    ]
   },
   {
     "word": "Vexatious",
     "partOfSpeech": "adj.",
     "definition": "Causing annoyance or worry.",
     "example Sentence": "A vexatious problem.",
-    "synonyms": ["Annoying", "irksome"],
-    "antonyms": ["Pleasing", "easy"]
+    "synonyms": [
+      "Annoying",
+      "irksome"
+    ],
+    "antonyms": [
+      "Pleasing",
+      "easy"
+    ]
   },
   {
     "word": "Viable",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Capable of working successfully. [cite: 259]",
-    [cite_start]"example Sentence": "Looking for viable solution. [cite: 259]",
-    "synonyms": ["Feasible", "possible"],
-    "antonyms": ["Impossible", "futile"]
+    "definition": "Capable of working successfully.",
+    "example Sentence": "Looking for viable solution.",
+    "synonyms": [
+      "Feasible",
+      "possible"
+    ],
+    "antonyms": [
+      "Impossible",
+      "futile"
+    ]
   },
   {
     "word": "Volatile",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Liable to change rapidly. [cite: 260]",
-    [cite_start]"example Sentence": "Political situation is volatile. [cite: 260]",
-    "synonyms": ["Unstable", "explosive"],
-    "antonyms": ["Stable", "calm"]
+    "definition": "Liable to change rapidly.",
+    "example Sentence": "Political situation is volatile.",
+    "synonyms": [
+      "Unstable",
+      "explosive"
+    ],
+    "antonyms": [
+      "Stable",
+      "calm"
+    ]
   },
   {
     "word": "Voluble",
     "partOfSpeech": "adj.",
     "definition": "Speaking incessantly/fluently.",
     "example Sentence": "Voluble speaker could talk for hours.",
-    "synonyms": ["Talkative", "loquacious"],
-    "antonyms": ["Taciturn", "silent"]
+    "synonyms": [
+      "Talkative",
+      "loquacious"
+    ],
+    "antonyms": [
+      "Taciturn",
+      "silent"
+    ]
   },
   {
     "word": "Voracious",
     "partOfSpeech": "adj.",
     "definition": "Wanting great quantities.",
     "example Sentence": "She is a voracious reader.",
-    "synonyms": ["Insatiable", "greedy"],
-    "antonyms": ["Satisfied", "full"]
+    "synonyms": [
+      "Insatiable",
+      "greedy"
+    ],
+    "antonyms": [
+      "Satisfied",
+      "full"
+    ]
   },
   {
     "word": "Vulnerable",
     "partOfSpeech": "adj.",
     "definition": "Susceptible to attack.",
     "example Sentence": "Defenses were vulnerable.",
-    "synonyms": ["Weak", "exposed"],
-    "antonyms": ["Secure", "strong"]
+    "synonyms": [
+      "Weak",
+      "exposed"
+    ],
+    "antonyms": [
+      "Secure",
+      "strong"
+    ]
   },
   {
     "word": "Wry",
     "partOfSpeech": "adj.",
     "definition": "Expressing dry mocking humor.",
     "example Sentence": "Gave a wry smile.",
-    "synonyms": ["Droll", "mocking"],
-    "antonyms": ["Sincere", "direct"]
+    "synonyms": [
+      "Droll",
+      "mocking"
+    ],
+    "antonyms": [
+      "Sincere",
+      "direct"
+    ]
   },
   {
     "word": "Zealous",
     "partOfSpeech": "adj.",
     "definition": "Showing great energy/zeal.",
     "example Sentence": "A zealous supporter.",
-    "synonyms": ["Ardent", "fervent"],
-    "antonyms": ["Apathetic", "lazy"]
+    "synonyms": [
+      "Ardent",
+      "fervent"
+    ],
+    "antonyms": [
+      "Apathetic",
+      "lazy"
+    ]
   },
   {
     "word": "Zenith",
     "partOfSpeech": "adj.",
-    [cite_start]"definition": "Time at which something is peak. [cite: 263]",
-    [cite_start]"example Sentence": "The zenith of her fame. [cite: 263]",
-    "synonyms": ["Peak", "summit"],
-    "antonyms": ["Nadir", "bottom"]
+    "definition": "Time at which something is peak.",
+    "example Sentence": "The zenith of her fame.",
+    "synonyms": [
+      "Peak",
+      "summit"
+    ],
+    "antonyms": [
+      "Nadir",
+      "bottom"
+    ]
   }
 ];
 
