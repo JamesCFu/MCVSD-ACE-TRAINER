@@ -37,7 +37,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Abject",
     "partOfSpeech": "adj.",
     "definition": "Extremely bad, unpleasant, or degrading.",
-    "example Sentence": "They lived in abject poverty.",
+    "exampleSentence": "They lived in abject poverty.",
     "synonyms": [
       "Wretched",
       "base"
@@ -51,7 +51,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Abortive",
     "partOfSpeech": "adj.",
     "definition": "Failing to produce intended results.",
-    "example Sentence": "The rescue mission proved abortive.",
+    "exampleSentence": "The rescue mission proved abortive.",
     "synonyms": [
       "Futile",
       "vain"
@@ -65,7 +65,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Abstemious",
     "partOfSpeech": "adj.",
     "definition": "Not self-indulgent in food or drink.",
-    "example Sentence": "He was abstemious at the buffet.",
+    "exampleSentence": "He was abstemious at the buffet.",
     "synonyms": [
       "Temperate",
       "ascetic"
@@ -79,7 +79,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Abstruse",
     "partOfSpeech": "adj.",
     "definition": "Difficult to understand; obscure.",
-    "example Sentence": "The theory was too abstruse.",
+    "exampleSentence": "The theory was too abstruse.",
     "synonyms": [
       "Recondite",
       "arcane"
@@ -93,7 +93,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Abundant",
     "partOfSpeech": "adj.",
     "definition": "Existing in large quantities.",
-    "example Sentence": "An abundant supply of food.",
+    "exampleSentence": "An abundant supply of food.",
     "synonyms": [
       "Plentiful",
       "ample"
@@ -107,7 +107,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Abstract",
     "partOfSpeech": "adj.",
     "definition": "Existing in thought, but not physical.",
-    "example Sentence": "Justice is an abstract concept.",
+    "exampleSentence": "Justice is an abstract concept.",
     "synonyms": [
       "Conceptual",
       "theoretical"
@@ -121,7 +121,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Acerbic",
     "partOfSpeech": "adj.",
     "definition": "Sharp and forthright in speech.",
-    "example Sentence": "She is known for her acerbic wit.",
+    "exampleSentence": "She is known for her acerbic wit.",
     "synonyms": [
       "Caustic",
       "biting"
@@ -135,7 +135,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Acrimonious",
     "partOfSpeech": "adj.",
     "definition": "Angry and bitter.",
-    "example Sentence": "It was an acrimonious divorce.",
+    "exampleSentence": "It was an acrimonious divorce.",
     "synonyms": [
       "Rancorous",
       "vitriolic"
@@ -149,7 +149,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Acute",
     "partOfSpeech": "adj.",
     "definition": "Perceptive understanding or insight.",
-    "example Sentence": "She has an acute sense of hearing.",
+    "exampleSentence": "She has an acute sense of hearing.",
     "synonyms": [
       "Sharp",
       "keen"
@@ -163,7 +163,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Adamant",
     "partOfSpeech": "adj.",
     "definition": "Refusing to be persuaded.",
-    "example Sentence": "He was adamant about not going.",
+    "exampleSentence": "He was adamant about not going.",
     "synonyms": [
       "Inflexible",
       "resolute"
@@ -177,7 +177,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Adroit",
     "partOfSpeech": "adj.",
     "definition": "Skillful in using hands or mind.",
-    "example Sentence": "He was adroit at tax avoidance.",
+    "exampleSentence": "He was adroit at tax avoidance.",
     "synonyms": [
       "Deft",
       "adept"
@@ -191,7 +191,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Adulatory",
     "partOfSpeech": "adj.",
     "definition": "Excessively praising.",
-    "example Sentence": "The adulatory reviews were suspicious.",
+    "exampleSentence": "The adulatory reviews were suspicious.",
     "synonyms": [
       "Fawning",
       "sycophantic"
@@ -205,7 +205,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Aesthetic",
     "partOfSpeech": "adj.",
     "definition": "Concerned with beauty.",
-    "example Sentence": "The building has aesthetic appeal.",
+    "exampleSentence": "The building has aesthetic appeal.",
     "synonyms": [
       "Artistic",
       "visual"
@@ -219,7 +219,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Affable",
     "partOfSpeech": "adj.",
     "definition": "Friendly and easy to talk to.",
-    "example Sentence": "She was an affable host.",
+    "exampleSentence": "She was an affable host.",
     "synonyms": [
       "Amiable",
       "genial"
@@ -233,7 +233,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Agrarian",
     "partOfSpeech": "adj.",
     "definition": "Relating to cultivated land.",
-    "example Sentence": "It was an agrarian society.",
+    "exampleSentence": "It was an agrarian society.",
     "synonyms": [
       "Rural",
       "farming"
@@ -247,7 +247,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Alacritous",
     "partOfSpeech": "adj.",
     "definition": "Brisk and cheerful readiness.",
-    "example Sentence": "He responded with alacritous speed.",
+    "exampleSentence": "He responded with alacritous speed.",
     "synonyms": [
       "Eager",
       "prompt"
@@ -261,7 +261,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Alien",
     "partOfSpeech": "adj.",
     "definition": "Belonging to a foreign country.",
-    "example Sentence": "The customs were alien.",
+    "exampleSentence": "The customs were alien.",
     "synonyms": [
       "Exotic",
       "strange"
@@ -275,7 +275,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Aloof",
     "partOfSpeech": "adj.",
     "definition": "Not friendly or forthcoming; cool.",
-    "example Sentence": "He stood aloof from the group.",
+    "exampleSentence": "He stood aloof from the group.",
     "synonyms": [
       "Detached",
       "distant"
@@ -289,7 +289,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Altruistic",
     "partOfSpeech": "adj.",
     "definition": "Selfless concern for others.",
-    "example Sentence": "A benevolent altruistic donor.",
+    "exampleSentence": "A benevolent altruistic donor.",
     "synonyms": [
       "Unselfish",
       "kind"
@@ -303,7 +303,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Ambiguous",
     "partOfSpeech": "adj.",
     "definition": "Open to more than one interpretation.",
-    "example Sentence": "The ending was ambiguous.",
+    "exampleSentence": "The ending was ambiguous.",
     "synonyms": [
       "Vague",
       "equivocal"
@@ -317,7 +317,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Ambivalent",
     "partOfSpeech": "adj.",
     "definition": "Having mixed or contradictory feelings.",
-    "example Sentence": "She felt ambivalent about the promotion.",
+    "exampleSentence": "She felt ambivalent about the promotion.",
     "synonyms": [
       "Uncertain",
       "equivocal"
@@ -331,7 +331,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Amenable",
     "partOfSpeech": "adj.",
     "definition": "Responsive to suggestion.",
-    "example Sentence": "They were amenable to the changes.",
+    "exampleSentence": "They were amenable to the changes.",
     "synonyms": [
       "Compliant",
       "docile"
@@ -345,7 +345,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Amicable",
     "partOfSpeech": "adj.",
     "definition": "Characterized by friendliness.",
-    "example Sentence": "The meeting ended on an amicable note.",
+    "exampleSentence": "The meeting ended on an amicable note.",
     "synonyms": [
       "Harmonious",
       "friendly"
@@ -359,7 +359,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Amorphous",
     "partOfSpeech": "adj.",
     "definition": "Without a clearly defined shape.",
-    "example Sentence": "An amorphous cloud of smoke.",
+    "exampleSentence": "An amorphous cloud of smoke.",
     "synonyms": [
       "Shapeless",
       "vague"
@@ -373,7 +373,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Anachronistic",
     "partOfSpeech": "adj.",
     "definition": "Out of its proper time.",
-    "example Sentence": "A typewriter is anachronistic today.",
+    "exampleSentence": "A typewriter is anachronistic today.",
     "synonyms": [
       "Antiquated",
       "archaic"
@@ -387,7 +387,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Analogous",
     "partOfSpeech": "adj.",
     "definition": "Comparable in a way that clarifies.",
-    "example Sentence": "Brain is analogous to a processor.",
+    "exampleSentence": "Brain is analogous to a processor.",
     "synonyms": [
       "Comparable",
       "parallel"
@@ -401,7 +401,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Anomalous",
     "partOfSpeech": "adj.",
     "definition": "Deviating from what is standard.",
-    "example Sentence": "The lab result was anomalous.",
+    "exampleSentence": "The lab result was anomalous.",
     "synonyms": [
       "Abnormal",
       "atypical"
@@ -415,7 +415,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Antagonist",
     "partOfSpeech": "adj.",
     "definition": "Active opposition or hostility.",
-    "example Sentence": "He had an antagonistic relationship.",
+    "exampleSentence": "He had an antagonistic relationship.",
     "synonyms": [
       "Hostile",
       "clashing"
@@ -429,7 +429,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Antediluvian",
     "partOfSpeech": "adj.",
     "definition": "Prehistoric or extremely old.",
-    "example Sentence": "Museum displayed antediluvian tools.",
+    "exampleSentence": "Museum displayed antediluvian tools.",
     "synonyms": [
       "Ancient",
       "archaic"
@@ -443,7 +443,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Antithetical",
     "partOfSpeech": "adj.",
     "definition": "Directly opposed or contrasted.",
-    "example Sentence": "Greed is antithetical to charity.",
+    "exampleSentence": "Greed is antithetical to charity.",
     "synonyms": [
       "Contrary",
       "inverse"
@@ -457,7 +457,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Apathetic",
     "partOfSpeech": "adj.",
     "definition": "Showing no interest or concern.",
-    "example Sentence": "Citizens had grown apathetic toward politics.",
+    "exampleSentence": "Citizens had grown apathetic toward politics.",
     "synonyms": [
       "Indifferent",
       "unmoved"
@@ -471,7 +471,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Apposite",
     "partOfSpeech": "adj.",
     "definition": "Apt in the circumstances.",
-    "example Sentence": "The quote was apposite.",
+    "exampleSentence": "The quote was apposite.",
     "synonyms": [
       "Pertinent",
       "germane"
@@ -485,7 +485,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Arbitrary",
     "partOfSpeech": "adj.",
     "definition": "Based on random choice.",
-    "example Sentence": "An arbitrary decision.",
+    "exampleSentence": "An arbitrary decision.",
     "synonyms": [
       "Random",
       "erratic"
@@ -499,7 +499,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Archaic",
     "partOfSpeech": "adj.",
     "definition": "Very old or old-fashioned.",
-    "example Sentence": "The company's archaic computer system.",
+    "exampleSentence": "The company's archaic computer system.",
     "synonyms": [
       "Obsolete",
       "ancient"
@@ -513,7 +513,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Ardent",
     "partOfSpeech": "adj.",
     "definition": "Enthusiastic or passionate.",
-    "example Sentence": "An ardent supporter of causes.",
+    "exampleSentence": "An ardent supporter of causes.",
     "synonyms": [
       "Fervent",
       "zealous"
@@ -527,7 +527,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Arduous",
     "partOfSpeech": "adj.",
     "definition": "Involving strenuous effort.",
-    "example Sentence": "It was an arduous climb.",
+    "exampleSentence": "It was an arduous climb.",
     "synonyms": [
       "Laborious",
       "taxing"
@@ -541,7 +541,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Arid",
     "partOfSpeech": "adj.",
     "definition": "Too dry to support vegetation.",
-    "example Sentence": "The arid desert landscape.",
+    "exampleSentence": "The arid desert landscape.",
     "synonyms": [
       "Parched",
       "dry"
@@ -555,7 +555,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Ascetic",
     "partOfSpeech": "adj.",
     "definition": "Suggesting severe self-discipline.",
-    "example Sentence": "The monk led an ascetic life.",
+    "exampleSentence": "The monk led an ascetic life.",
     "synonyms": [
       "Austere",
       "frugal"
@@ -569,7 +569,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Assiduous",
     "partOfSpeech": "adj.",
     "definition": "Showing great care and perseverance.",
-    "example Sentence": "Mastered concepts through assiduous study.",
+    "exampleSentence": "Mastered concepts through assiduous study.",
     "synonyms": [
       "Diligent",
       "meticulous"
@@ -583,7 +583,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Astute",
     "partOfSpeech": "adj.",
     "definition": "Ability to accurately assess situations.",
-    "example Sentence": "The astute investor bought stocks.",
+    "exampleSentence": "The astute investor bought stocks.",
     "synonyms": [
       "Shrewd",
       "perceptive"
@@ -597,7 +597,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Atrophied",
     "partOfSpeech": "adj.",
     "definition": "Wasted away or rudimentary.",
-    "example Sentence": "Muscles were atrophied from bedrest.",
+    "exampleSentence": "Muscles were atrophied from bedrest.",
     "synonyms": [
       "Shriveled",
       "withered"
@@ -611,7 +611,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Audacious",
     "partOfSpeech": "adj.",
     "definition": "Willingness to take bold risks.",
-    "example Sentence": "An audacious plan to escape.",
+    "exampleSentence": "An audacious plan to escape.",
     "synonyms": [
       "Bold",
       "intrepid"
@@ -625,7 +625,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Austere",
     "partOfSpeech": "adj.",
     "definition": "Severe or strict in manner.",
-    "example Sentence": "The room was austere and cold.",
+    "exampleSentence": "The room was austere and cold.",
     "synonyms": [
       "Stark",
       "spartan"
@@ -639,7 +639,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Authentic",
     "partOfSpeech": "adj.",
     "definition": "Of undisputed origin; genuine.",
-    "example Sentence": "Authentic Roman sword.",
+    "exampleSentence": "Authentic Roman sword.",
     "synonyms": [
       "Real",
       "valid"
@@ -653,7 +653,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Authoritative",
     "partOfSpeech": "adj.",
     "definition": "Trusted as being accurate.",
-    "example Sentence": "Authoritative account of the event.",
+    "exampleSentence": "Authoritative account of the event.",
     "synonyms": [
       "Reliable",
       "valid"
@@ -667,7 +667,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Avaricious",
     "partOfSpeech": "adj.",
     "definition": "Having extreme greed for wealth.",
-    "example Sentence": "The avaricious banker stole funds.",
+    "exampleSentence": "The avaricious banker stole funds.",
     "synonyms": [
       "Rapacious",
       "greedy"
@@ -681,7 +681,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Avuncular",
     "partOfSpeech": "adj.",
     "definition": "Like an uncle; kind and friendly.",
-    "example Sentence": "He gave us avuncular advice.",
+    "exampleSentence": "He gave us avuncular advice.",
     "synonyms": [
       "Kind",
       "benevolent"
@@ -695,7 +695,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Baleful",
     "partOfSpeech": "adj.",
     "definition": "Threatening harm; menacing.",
-    "example Sentence": "He shot a baleful glance.",
+    "exampleSentence": "He shot a baleful glance.",
     "synonyms": [
       "Sinister",
       "malign"
@@ -709,7 +709,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Banal",
     "partOfSpeech": "adj.",
     "definition": "Lacking in originality; boring.",
-    "example Sentence": "The plot was banal and predictable.",
+    "exampleSentence": "The plot was banal and predictable.",
     "synonyms": [
       "Trite",
       "hackneyed"
@@ -723,7 +723,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Barbarous",
     "partOfSpeech": "adj.",
     "definition": "Savagely cruel; brutal.",
-    "example Sentence": "Treatment was barbarous.",
+    "exampleSentence": "Treatment was barbarous.",
     "synonyms": [
       "Vicious",
       "crude"
@@ -737,7 +737,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Baroque",
     "partOfSpeech": "adj.",
     "definition": "Highly ornate and extravagant.",
-    "example Sentence": "Church decorated in baroque style.",
+    "exampleSentence": "Church decorated in baroque style.",
     "synonyms": [
       "Ornate",
       "florid"
@@ -751,7 +751,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Barren",
     "partOfSpeech": "adj.",
     "definition": "Too poor to produce vegetation.",
-    "example Sentence": "Barren soil could not support crops.",
+    "exampleSentence": "Barren soil could not support crops.",
     "synonyms": [
       "Desolate",
       "sterile"
@@ -765,7 +765,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Bellicose",
     "partOfSpeech": "adj.",
     "definition": "Willingness to fight.",
-    "example Sentence": "The bellicose tribe attacked.",
+    "exampleSentence": "The bellicose tribe attacked.",
     "synonyms": [
       "Pugnacious",
       "hostile"
@@ -779,7 +779,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Belligerent",
     "partOfSpeech": "adj.",
     "definition": "Hostile and aggressive.",
-    "example Sentence": "He became belligerent.",
+    "exampleSentence": "He became belligerent.",
     "synonyms": [
       "Pugnacious",
       "bellicose"
@@ -793,7 +793,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Benevolent",
     "partOfSpeech": "adj.",
     "definition": "Well-meaning and kindly.",
-    "example Sentence": "A benevolent billionaire donated millions.",
+    "exampleSentence": "A benevolent billionaire donated millions.",
     "synonyms": [
       "Altruistic",
       "kind"
@@ -807,7 +807,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Benign",
     "partOfSpeech": "adj.",
     "definition": "Gentle and kindly; not harmful.",
-    "example Sentence": "The tumor was benign.",
+    "exampleSentence": "The tumor was benign.",
     "synonyms": [
       "Harmless",
       "mild"
@@ -821,7 +821,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Bilious",
     "partOfSpeech": "adj.",
     "definition": "Spiteful; bad-tempered.",
-    "example Sentence": "He was in a bilious mood.",
+    "exampleSentence": "He was in a bilious mood.",
     "synonyms": [
       "Irascible",
       "peevish"
@@ -835,7 +835,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Blase",
     "partOfSpeech": "adj.",
     "definition": "Unimpressed or indifferent.",
-    "example Sentence": "Blase about luxury hotels.",
+    "exampleSentence": "Blase about luxury hotels.",
     "synonyms": [
       "Unimpressed"
     ],
@@ -847,7 +847,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Boisterous",
     "partOfSpeech": "adj.",
     "definition": "Noisy, energetic, and rowdy.",
-    "example Sentence": "The boisterous crowd cheered.",
+    "exampleSentence": "The boisterous crowd cheered.",
     "synonyms": [
       "Rowdy",
       "loud"
@@ -861,7 +861,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Bona Fide",
     "partOfSpeech": "adj.",
     "definition": "Genuine or true.",
-    "example Sentence": "The signature was bona fide.",
+    "exampleSentence": "The signature was bona fide.",
     "synonyms": [
       "Genuine",
       "true"
@@ -874,7 +874,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Boorish",
     "partOfSpeech": "adj.",
     "definition": "Rough and bad-mannered.",
-    "example Sentence": "Boorish behavior ruined dinner.",
+    "exampleSentence": "Boorish behavior ruined dinner.",
     "synonyms": [
       "Loutish",
       "uncouth"
@@ -888,7 +888,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Brusque",
     "partOfSpeech": "adj.",
     "definition": "Abrupt or offhand.",
-    "example Sentence": "The receptionist was brusque.",
+    "exampleSentence": "The receptionist was brusque.",
     "synonyms": [
       "Abrupt"
     ],
@@ -900,7 +900,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Bucolic",
     "partOfSpeech": "adj.",
     "definition": "Relating to the countryside.",
-    "example Sentence": "We enjoyed the bucolic scenery.",
+    "exampleSentence": "We enjoyed the bucolic scenery.",
     "synonyms": [
       "Pastoral",
       "rustic"
@@ -914,7 +914,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Burgeoning",
     "partOfSpeech": "adj.",
     "definition": "Flourishing; growing quickly.",
-    "example Sentence": "Burgeoning market for EVs.",
+    "exampleSentence": "Burgeoning market for EVs.",
     "synonyms": [
       "Expanding",
       "thriving"
@@ -928,7 +928,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Callous",
     "partOfSpeech": "adj.",
     "definition": "Insensitive and cruel disregard.",
-    "example Sentence": "Dictator's callous treatment.",
+    "exampleSentence": "Dictator's callous treatment.",
     "synonyms": [
       "Heartless",
       "cold"
@@ -942,7 +942,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Callow",
     "partOfSpeech": "adj.",
     "definition": "Inexperienced and immature.",
-    "example Sentence": "A callow youth started the job.",
+    "exampleSentence": "A callow youth started the job.",
     "synonyms": [
       "Naive",
       "green"
@@ -956,7 +956,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Calumnious",
     "partOfSpeech": "adj.",
     "definition": "False and defamatory.",
-    "example Sentence": "The article was a calumnious attack.",
+    "exampleSentence": "The article was a calumnious attack.",
     "synonyms": [
       "Slanderous",
       "libelous"
@@ -970,7 +970,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Cantankerous",
     "partOfSpeech": "adj.",
     "definition": "Cranky or grumpy.",
-    "example Sentence": "The cantankerous old man.",
+    "exampleSentence": "The cantankerous old man.",
     "synonyms": [
       "Cranky",
       "grumpy"
@@ -983,7 +983,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Capricious",
     "partOfSpeech": "adj.",
     "definition": "Sudden changes of mood.",
-    "example Sentence": "Capricious child changed her mind.",
+    "exampleSentence": "Capricious child changed her mind.",
     "synonyms": [
       "Fickle",
       "erratic"
@@ -997,7 +997,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Captious",
     "partOfSpeech": "adj.",
     "definition": "Tending to find fault.",
-    "example Sentence": "Captious boss hates everything.",
+    "exampleSentence": "Captious boss hates everything.",
     "synonyms": [
       "Carping",
       "nitpicking"
@@ -1010,7 +1010,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Circumspect",
     "partOfSpeech": "adj.",
     "definition": "Wary and unwilling to take risks.",
-    "example Sentence": "Circumspect about sharing opinions.",
+    "exampleSentence": "Circumspect about sharing opinions.",
     "synonyms": [
       "Cautious",
       "prudent"
@@ -1024,7 +1024,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Clamorous",
     "partOfSpeech": "adj.",
     "definition": "Loud and confused noise.",
-    "example Sentence": "The clamorous crowd waited.",
+    "exampleSentence": "The clamorous crowd waited.",
     "synonyms": [
       "Noisy",
       "vociferous"
@@ -1038,7 +1038,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Clandestine",
     "partOfSpeech": "adj.",
     "definition": "Kept secret or done secretively.",
-    "example Sentence": "They had a clandestine meeting.",
+    "exampleSentence": "They had a clandestine meeting.",
     "synonyms": [
       "Covert",
       "furtive"
@@ -1052,7 +1052,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Cogent",
     "partOfSpeech": "adj.",
     "definition": "Clear, logical, and convincing.",
-    "example Sentence": "A cogent argument for peace.",
+    "exampleSentence": "A cogent argument for peace.",
     "synonyms": [
       "Compelling"
     ]
@@ -1061,7 +1061,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Confluent",
     "partOfSpeech": "adj.",
     "definition": "Flowing together or merging.",
-    "example Sentence": "Confluent streams formed a river.",
+    "exampleSentence": "Confluent streams formed a river.",
     "synonyms": [
       "Merged",
       "united"
@@ -1075,7 +1075,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Conspicuous",
     "partOfSpeech": "adj.",
     "definition": "Standing out to be clearly visible.",
-    "example Sentence": "The bird's feathers were conspicuous.",
+    "exampleSentence": "The bird's feathers were conspicuous.",
     "synonyms": [
       "Noticeable"
     ]
@@ -1084,7 +1084,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Cryptic",
     "partOfSpeech": "adj.",
     "definition": "Having mysterious meaning.",
-    "example Sentence": "He left a cryptic message.",
+    "exampleSentence": "He left a cryptic message.",
     "synonyms": [
       "Enigmatic",
       "puzzling"
@@ -1098,7 +1098,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Culpable",
     "partOfSpeech": "adj.",
     "definition": "Deserving blame.",
-    "example Sentence": "Driver was found culpable.",
+    "exampleSentence": "Driver was found culpable.",
     "synonyms": [
       "Guilty",
       "blameworthy"
@@ -1112,7 +1112,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Cursory",
     "partOfSpeech": "adj.",
     "definition": "Hasty and not thorough.",
-    "example Sentence": "A cursory glance at the paper.",
+    "exampleSentence": "A cursory glance at the paper.",
     "synonyms": [
       "Perfunctory",
       "brief"
@@ -1126,7 +1126,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Deleterious",
     "partOfSpeech": "adj.",
     "definition": "Causing harm or damage.",
-    "example Sentence": "Stress is deleterious to health.",
+    "exampleSentence": "Stress is deleterious to health.",
     "synonyms": [
       "Pernicious",
       "harmful"
@@ -1140,7 +1140,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Demure",
     "partOfSpeech": "adj.",
     "definition": "Reserved, modest, and shy.",
-    "example Sentence": "She gave a demure smile.",
+    "exampleSentence": "She gave a demure smile.",
     "synonyms": [
       "Modest"
     ]
@@ -1149,7 +1149,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Despondent",
     "partOfSpeech": "adj.",
     "definition": "Low spirits from loss of hope.",
-    "example Sentence": "Grew despondent after failure.",
+    "exampleSentence": "Grew despondent after failure.",
     "synonyms": [
       "Dejected",
       "forlorn"
@@ -1163,7 +1163,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Destitute",
     "partOfSpeech": "adj.",
     "definition": "Without basic necessities.",
-    "example Sentence": "Charity helps the destitute.",
+    "exampleSentence": "Charity helps the destitute.",
     "synonyms": [
       "Impoverished",
       "poor"
@@ -1177,7 +1177,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Desultory",
     "partOfSpeech": "adj.",
     "definition": "Lacking a plan or purpose.",
-    "example Sentence": "A desultory conversation.",
+    "exampleSentence": "A desultory conversation.",
     "synonyms": [
       "Haphazard",
       "aimless"
@@ -1191,7 +1191,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Detached",
     "partOfSpeech": "adj.",
     "definition": "Aloof or objective.",
-    "example Sentence": "Judge remained detached.",
+    "exampleSentence": "Judge remained detached.",
     "synonyms": [
       "Unbiased",
       "disinterested"
@@ -1205,7 +1205,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Diminutive",
     "partOfSpeech": "adj.",
     "definition": "Extremely or unusually small.",
-    "example Sentence": "Diminutive puppy fit in his hand.",
+    "exampleSentence": "Diminutive puppy fit in his hand.",
     "synonyms": [
       "Tiny",
       "petite"
@@ -1219,7 +1219,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Discerning",
     "partOfSpeech": "adj.",
     "definition": "Having or showing good judgment.",
-    "example Sentence": "Discerning customer can tell the difference.",
+    "exampleSentence": "Discerning customer can tell the difference.",
     "synonyms": [
       "Perceptive",
       "sharp"
@@ -1233,7 +1233,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Distant",
     "partOfSpeech": "adj.",
     "definition": "Far away in space or time.",
-    "example Sentence": "Distant sound of thunder.",
+    "exampleSentence": "Distant sound of thunder.",
     "synonyms": [
       "Far",
       "remote"
@@ -1247,7 +1247,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Divergent",
     "partOfSpeech": "adj.",
     "definition": "Tending to be different or go apart.",
-    "example Sentence": "Friends had divergent opinions.",
+    "exampleSentence": "Friends had divergent opinions.",
     "synonyms": [
       "Differing",
       "clashing"
@@ -1261,7 +1261,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Docile",
     "partOfSpeech": "adj.",
     "definition": "Ready to accept control; submissive.",
-    "example Sentence": "The docile elephant followed commands.",
+    "exampleSentence": "The docile elephant followed commands.",
     "synonyms": [
       "Compliant",
       "gentle"
@@ -1275,7 +1275,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Dogmatic",
     "partOfSpeech": "adj.",
     "definition": "Principles laid down as incontrovertibly true.",
-    "example Sentence": "Very dogmatic about his beliefs.",
+    "exampleSentence": "Very dogmatic about his beliefs.",
     "synonyms": [
       "Opinonated"
     ],
@@ -1287,7 +1287,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Edifying",
     "partOfSpeech": "adj.",
     "definition": "Providing moral instruction.",
-    "example Sentence": "It was an edifying experience.",
+    "exampleSentence": "It was an edifying experience.",
     "synonyms": [
       "Enlightening",
       "didactic"
@@ -1301,7 +1301,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Effete",
     "partOfSpeech": "adj.",
     "definition": "Worn out; no longer effective.",
-    "example Sentence": "The effete aristocracy declined.",
+    "exampleSentence": "The effete aristocracy declined.",
     "synonyms": [
       "Enfeebled",
       "decadent"
@@ -1315,7 +1315,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Emollient",
     "partOfSpeech": "adj.",
     "definition": "Softening or soothing effect.",
-    "example Sentence": "His emollient words helped.",
+    "exampleSentence": "His emollient words helped.",
     "synonyms": [
       "Conciliatory",
       "soothing"
@@ -1329,7 +1329,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Empirical",
     "partOfSpeech": "adj.",
     "definition": "Based on observation rather than theory.",
-    "example Sentence": "Empirical evidence is needed.",
+    "exampleSentence": "Empirical evidence is needed.",
     "synonyms": [
       "Factual",
       "observed"
@@ -1343,7 +1343,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Enervated",
     "partOfSpeech": "adj.",
     "definition": "Drained of energy.",
-    "example Sentence": "Felt enervated by the heat.",
+    "exampleSentence": "Felt enervated by the heat.",
     "synonyms": [
       "Exhausted",
       "weak"
@@ -1357,7 +1357,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Erroneous",
     "partOfSpeech": "adj.",
     "definition": "Wrong; incorrect.",
-    "example Sentence": "Report contained several erroneous assumptions.",
+    "exampleSentence": "Report contained several erroneous assumptions.",
     "synonyms": [
       "False",
       "mistaken"
@@ -1371,7 +1371,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Erudite",
     "partOfSpeech": "adj.",
     "definition": "Having or showing great knowledge.",
-    "example Sentence": "An erudite professor.",
+    "exampleSentence": "An erudite professor.",
     "synonyms": [
       "Scholarly",
       "learned"
@@ -1385,7 +1385,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Esoteric",
     "partOfSpeech": "adj.",
     "definition": "Understood by only a small number.",
-    "example Sentence": "Esoteric knowledge of symbols.",
+    "exampleSentence": "Esoteric knowledge of symbols.",
     "synonyms": [
       "Abstruse",
       "arcane"
@@ -1399,7 +1399,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Ethereal",
     "partOfSpeech": "adj.",
     "definition": "Extremely delicate and light.",
-    "example Sentence": "Her ethereal beauty was haunting.",
+    "exampleSentence": "Her ethereal beauty was haunting.",
     "synonyms": [
       "Heavenly",
       "fragile"
@@ -1413,7 +1413,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Exiguous",
     "partOfSpeech": "adj.",
     "definition": "Very small in size or amount.",
-    "example Sentence": "An exiguous income.",
+    "exampleSentence": "An exiguous income.",
     "synonyms": [
       "Meager",
       "scanty"
@@ -1427,7 +1427,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Exorbitant",
     "partOfSpeech": "adj.",
     "definition": "Unreasonably high price.",
-    "example Sentence": "The rent was exorbitant.",
+    "exampleSentence": "The rent was exorbitant.",
     "synonyms": [
       "Excessive",
       "steep"
@@ -1441,7 +1441,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Exotic",
     "partOfSpeech": "adj.",
     "definition": "Originating in a distant country.",
-    "example Sentence": "Saw many exotic birds.",
+    "exampleSentence": "Saw many exotic birds.",
     "synonyms": [
       "Unusual",
       "foreign"
@@ -1455,7 +1455,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Expedient",
     "partOfSpeech": "adj.",
     "definition": "Convenient and practical; possibly improper.",
-    "example Sentence": "It was politically expedient.",
+    "exampleSentence": "It was politically expedient.",
     "synonyms": [
       "Practical",
       "useful"
@@ -1468,7 +1468,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Fallible",
     "partOfSpeech": "adj.",
     "definition": "Capable of making mistakes.",
-    "example Sentence": "Even experts are fallible.",
+    "exampleSentence": "Even experts are fallible.",
     "synonyms": [
       "Imperfect",
       "errant"
@@ -1482,7 +1482,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Fastidious",
     "partOfSpeech": "adj.",
     "definition": "Very attentive to accuracy and detail.",
-    "example Sentence": "Fastidious about cleaning.",
+    "exampleSentence": "Fastidious about cleaning.",
     "synonyms": [
       "Scrupulous",
       "picky"
@@ -1496,7 +1496,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Feasible",
     "partOfSpeech": "adj.",
     "definition": "Possible to do easily.",
-    "example Sentence": "Not feasible to build in two weeks.",
+    "exampleSentence": "Not feasible to build in two weeks.",
     "synonyms": [
       "Achievable",
       "viable"
@@ -1510,7 +1510,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Fervent",
     "partOfSpeech": "adj.",
     "definition": "Passionate intensity.",
-    "example Sentence": "Fervent believer in education.",
+    "exampleSentence": "Fervent believer in education.",
     "synonyms": [
       "Passionate",
       "ardent"
@@ -1524,7 +1524,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Fickle",
     "partOfSpeech": "adj.",
     "definition": "Changing frequently.",
-    "example Sentence": "The fickle public forgot him.",
+    "exampleSentence": "The fickle public forgot him.",
     "synonyms": [
       "Inconstant",
       "erratic"
@@ -1538,7 +1538,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Fractious",
     "partOfSpeech": "adj.",
     "definition": "Irritable and quarrelsome.",
-    "example Sentence": "The fractious toddler.",
+    "exampleSentence": "The fractious toddler.",
     "synonyms": [
       "Refractory",
       "unruly"
@@ -1552,7 +1552,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Fragile",
     "partOfSpeech": "adj.",
     "definition": "Easily broken or damaged.",
-    "example Sentence": "Fragile glass vase.",
+    "exampleSentence": "Fragile glass vase.",
     "synonyms": [
       "Delicate",
       "frail"
@@ -1566,7 +1566,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Fraudulent",
     "partOfSpeech": "adj.",
     "definition": "Obtained by involving deception.",
-    "example Sentence": "Arrested for fraudulent activities.",
+    "exampleSentence": "Arrested for fraudulent activities.",
     "synonyms": [
       "Deceitful",
       "fake"
@@ -1580,7 +1580,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Genial",
     "partOfSpeech": "adj.",
     "definition": "Friendly and cheerful.",
-    "example Sentence": "The host was a genial man.",
+    "exampleSentence": "The host was a genial man.",
     "synonyms": [
       "Amiable",
       "affable"
@@ -1594,7 +1594,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Germane",
     "partOfSpeech": "adj.",
     "definition": "Relevant to a subject.",
-    "example Sentence": "That point is not germane.",
+    "exampleSentence": "That point is not germane.",
     "synonyms": [
       "Pertinent",
       "apposite"
@@ -1607,7 +1607,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Giddy",
     "partOfSpeech": "adj.",
     "definition": "Sensation of whirling; excitement.",
-    "example Sentence": "She felt giddy with excitement.",
+    "exampleSentence": "She felt giddy with excitement.",
     "synonyms": [
       "Dizzy",
       "lightheaded"
@@ -1621,7 +1621,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Gleeful",
     "partOfSpeech": "adj.",
     "definition": "Exuberantly happy.",
-    "example Sentence": "Gleeful children opened presents.",
+    "exampleSentence": "Gleeful children opened presents.",
     "synonyms": [
       "Joyful",
       "merry"
@@ -1635,7 +1635,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Glib",
     "partOfSpeech": "adj.",
     "definition": "Fluent but shallow and insincere.",
-    "example Sentence": "Glib answer to the question.",
+    "exampleSentence": "Glib answer to the question.",
     "synonyms": [
       "Slick",
       "smooth"
@@ -1649,7 +1649,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Gullible",
     "partOfSpeech": "adj.",
     "definition": "Easily persuaded to believe something.",
-    "example Sentence": "Targeting gullible consumers.",
+    "exampleSentence": "Targeting gullible consumers.",
     "synonyms": [
       "Naive",
       "trustful"
@@ -1663,7 +1663,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Hackneyed",
     "partOfSpeech": "adj.",
     "definition": "Lacking significance; overused.",
-    "example Sentence": "A hackneyed slogan.",
+    "exampleSentence": "A hackneyed slogan.",
     "synonyms": [
       "Banal",
       "trite"
@@ -1677,7 +1677,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Haggard",
     "partOfSpeech": "adj.",
     "definition": "Looking exhausted and unwell.",
-    "example Sentence": "He looked haggard after shifts.",
+    "exampleSentence": "He looked haggard after shifts.",
     "synonyms": [
       "Gaunt",
       "drained"
@@ -1691,7 +1691,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Halcyon",
     "partOfSpeech": "adj.",
     "definition": "Idyllically happy and peaceful.",
-    "example Sentence": "Halcyon summer days.",
+    "exampleSentence": "Halcyon summer days.",
     "synonyms": [
       "Serene",
       "tranquil"
@@ -1705,7 +1705,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Heinous",
     "partOfSpeech": "adj.",
     "definition": "Utterly wicked or abominable.",
-    "example Sentence": "A heinous crime.",
+    "exampleSentence": "A heinous crime.",
     "synonyms": [
       "Atrocious",
       "odious"
@@ -1719,7 +1719,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Hermetic",
     "partOfSpeech": "adj.",
     "definition": "Airtight; insulated from influence.",
-    "example Sentence": "A hermetic seal.",
+    "exampleSentence": "A hermetic seal.",
     "synonyms": [
       "Sealed",
       "reclusive"
@@ -1733,7 +1733,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Ignominious",
     "partOfSpeech": "adj.",
     "definition": "Deserving public disgrace.",
-    "example Sentence": "An ignominious defeat.",
+    "exampleSentence": "An ignominious defeat.",
     "synonyms": [
       "Shameful",
       "disgraceful"
@@ -1747,7 +1747,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Illicit",
     "partOfSpeech": "adj.",
     "definition": "Forbidden by law or custom.",
-    "example Sentence": "Large supply of illicit drugs.",
+    "exampleSentence": "Large supply of illicit drugs.",
     "synonyms": [
       "Illegal",
       "forbidden"
@@ -1761,7 +1761,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Imperative",
     "partOfSpeech": "adj.",
     "definition": "Of vital importance; crucial.",
-    "example Sentence": "Imperative that you finish on time.",
+    "exampleSentence": "Imperative that you finish on time.",
     "synonyms": [
       "Essential",
       "vital"
@@ -1775,7 +1775,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Imperceptible",
     "partOfSpeech": "adj.",
     "definition": "Impossible to perceive.",
-    "example Sentence": "Change was almost imperceptible.",
+    "exampleSentence": "Change was almost imperceptible.",
     "synonyms": [
       "Subtle",
       "faint"
@@ -1789,7 +1789,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Imperious",
     "partOfSpeech": "adj.",
     "definition": "Assuming power without justification.",
-    "example Sentence": "An imperious gesture.",
+    "exampleSentence": "An imperious gesture.",
     "synonyms": [
       "Domineering",
       "bossy"
@@ -1802,7 +1802,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Imperturable",
     "partOfSpeech": "adj.",
     "definition": "Unable to be upset; calm.",
-    "example Sentence": "An imperturbable calm.",
+    "exampleSentence": "An imperturbable calm.",
     "synonyms": [
       "Placid",
       "serene"
@@ -1816,7 +1816,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Impervious",
     "partOfSpeech": "adj.",
     "definition": "Not allowing fluid to pass; unaffected.",
-    "example Sentence": "Impervious to criticism.",
+    "exampleSentence": "Impervious to criticism.",
     "synonyms": [
       "Unaffected",
       "resistant"
@@ -1830,7 +1830,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Imprudent",
     "partOfSpeech": "adj.",
     "definition": "Not showing care for consequences.",
-    "example Sentence": "Imprudent to leave keys in car.",
+    "exampleSentence": "Imprudent to leave keys in car.",
     "synonyms": [
       "Unwise",
       "reckless"
@@ -1844,7 +1844,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Inadvertent",
     "partOfSpeech": "adj.",
     "definition": "Not resulting from deliberate planning.",
-    "example Sentence": "The deletion was purely inadvertent.",
+    "exampleSentence": "The deletion was purely inadvertent.",
     "synonyms": [
       "Unintentional",
       "accidental"
@@ -1858,7 +1858,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Incoherent",
     "partOfSpeech": "adj.",
     "definition": "Expressed in confusing way.",
-    "example Sentence": "Patient was incoherent.",
+    "exampleSentence": "Patient was incoherent.",
     "synonyms": [
       "Confused",
       "muddled"
@@ -1872,7 +1872,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Incompatible",
     "partOfSpeech": "adj.",
     "definition": "So opposed as to be unable to coexist.",
-    "example Sentence": "Personalities were incompatible.",
+    "exampleSentence": "Personalities were incompatible.",
     "synonyms": [
       "Conflicting",
       "clashing"
@@ -1886,7 +1886,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Incongruous",
     "partOfSpeech": "adj.",
     "definition": "Not in harmony or keeping with.",
-    "example Sentence": "Modern skyscraper looked incongruous.",
+    "exampleSentence": "Modern skyscraper looked incongruous.",
     "synonyms": [
       "Out of place"
     ],
@@ -1898,7 +1898,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Inconspicuous",
     "partOfSpeech": "adj.",
     "definition": "Not clearly visible or attracting attention.",
-    "example Sentence": "Remain inconspicuous in back of room.",
+    "exampleSentence": "Remain inconspicuous in back of room.",
     "synonyms": [
       "Unobtrusive",
       "hidden"
@@ -1912,7 +1912,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Incorrigible",
     "partOfSpeech": "adj.",
     "definition": "Not able to be corrected or reformed.",
-    "example Sentence": "An incorrigible liar.",
+    "exampleSentence": "An incorrigible liar.",
     "synonyms": [
       "Inveterate",
       "habitual"
@@ -1926,7 +1926,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Ineffable",
     "partOfSpeech": "adj.",
     "definition": "Too great to be expressed.",
-    "example Sentence": "Ineffable joy.",
+    "exampleSentence": "Ineffable joy.",
     "synonyms": [
       "Indescribable",
       "vast"
@@ -1940,7 +1940,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Inept",
     "partOfSpeech": "adj.",
     "definition": "Having or showing no skill.",
-    "example Sentence": "He was an inept cook.",
+    "exampleSentence": "He was an inept cook.",
     "synonyms": [
       "Incompetent",
       "clumsy"
@@ -1954,7 +1954,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Inevitable",
     "partOfSpeech": "adj.",
     "definition": "Certain to happen; unavoidable.",
-    "example Sentence": "Death is an inevitable part of life.",
+    "exampleSentence": "Death is an inevitable part of life.",
     "synonyms": [
       "Unavoidable",
       "assured"
@@ -1968,7 +1968,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Inordinate",
     "partOfSpeech": "adj.",
     "definition": "Unusually large; excessive.",
-    "example Sentence": "Spent an inordinate amount of time.",
+    "exampleSentence": "Spent an inordinate amount of time.",
     "synonyms": [
       "Excessive",
       "undue"
@@ -1982,7 +1982,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Inscrutable",
     "partOfSpeech": "adj.",
     "definition": "Impossible to understand or interpret.",
-    "example Sentence": "Face remained inscrutable.",
+    "exampleSentence": "Face remained inscrutable.",
     "synonyms": [
       "Enigmatic",
       "cryptic"
@@ -1996,7 +1996,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Insidious",
     "partOfSpeech": "adj.",
     "definition": "Proceeding in gradual subtle way with harm.",
-    "example Sentence": "The disease is insidious.",
+    "exampleSentence": "The disease is insidious.",
     "synonyms": [
       "Stealthy",
       "treacherous"
@@ -2010,7 +2010,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Intrepid",
     "partOfSpeech": "adj.",
     "definition": "Fearless; adventurous.",
-    "example Sentence": "Explorer trekked through the Amazon.",
+    "exampleSentence": "Explorer trekked through the Amazon.",
     "synonyms": [
       "Bold",
       "dauntless"
@@ -2024,7 +2024,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Intrinsic",
     "partOfSpeech": "adj.",
     "definition": "Belonging naturally; essential.",
-    "example Sentence": "Quality is an intrinsic part of the brand.",
+    "exampleSentence": "Quality is an intrinsic part of the brand.",
     "synonyms": [
       "Inherent",
       "innate"
@@ -2038,7 +2038,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Invaluable",
     "partOfSpeech": "adj.",
     "definition": "Extremely useful; indispensable.",
-    "example Sentence": "Help was invaluable during crisis.",
+    "exampleSentence": "Help was invaluable during crisis.",
     "synonyms": [
       "Priceless",
       "precious"
@@ -2052,7 +2052,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Inured",
     "partOfSpeech": "adj.",
     "definition": "Accustomed to something unpleasant.",
-    "example Sentence": "Inured to the cold.",
+    "exampleSentence": "Inured to the cold.",
     "synonyms": [
       "Hardened",
       "seasoned"
@@ -2065,7 +2065,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Jaded",
     "partOfSpeech": "adj.",
     "definition": "Tired or bored after too much.",
-    "example Sentence": "Jaded by years of same office.",
+    "exampleSentence": "Jaded by years of same office.",
     "synonyms": [
       "Bored",
       "weary"
@@ -2079,7 +2079,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Jejune",
     "partOfSpeech": "adj.",
     "definition": "Naive and simplistic.",
-    "example Sentence": "A jejune argument.",
+    "exampleSentence": "A jejune argument.",
     "synonyms": [
       "Puerile",
       "shallow"
@@ -2093,7 +2093,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Jocund",
     "partOfSpeech": "adj.",
     "definition": "Cheerful and happy.",
-    "example Sentence": "Jocund atmosphere of festival.",
+    "exampleSentence": "Jocund atmosphere of festival.",
     "synonyms": [
       "Cheerful",
       "happy"
@@ -2106,7 +2106,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Jovial",
     "partOfSpeech": "adj.",
     "definition": "Cheerful and friendly.",
-    "example Sentence": "A jovial host.",
+    "exampleSentence": "A jovial host.",
     "synonyms": [
       "Merry",
       "gleeful"
@@ -2120,7 +2120,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Judicious",
     "partOfSpeech": "adj.",
     "definition": "Done with good judgment.",
-    "example Sentence": "Judicious use of resources.",
+    "exampleSentence": "Judicious use of resources.",
     "synonyms": [
       "Wise",
       "sensible"
@@ -2134,7 +2134,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Lavish",
     "partOfSpeech": "adj.",
     "definition": "Sumptuously rich or luxurious.",
-    "example Sentence": "Threw a lavish party.",
+    "exampleSentence": "Threw a lavish party.",
     "synonyms": [
       "Opulent",
       "extravagant"
@@ -2148,7 +2148,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Lethargic",
     "partOfSpeech": "adj.",
     "definition": "Sluggish and apathetic.",
-    "example Sentence": "Felt lethargic all day.",
+    "exampleSentence": "Felt lethargic all day.",
     "synonyms": [
       "Listless",
       "slow"
@@ -2162,7 +2162,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Limpid",
     "partOfSpeech": "adj.",
     "definition": "Completely clear; transparent.",
-    "example Sentence": "Limpid pools of water.",
+    "exampleSentence": "Limpid pools of water.",
     "synonyms": [
       "Pellucid",
       "lucid"
@@ -2176,7 +2176,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Maudlin",
     "partOfSpeech": "adj.",
     "definition": "Self-pitying or sentimental.",
-    "example Sentence": "A maudlin drunk.",
+    "exampleSentence": "A maudlin drunk.",
     "synonyms": [
       "Mushy",
       "weepy"
@@ -2190,7 +2190,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Meager",
     "partOfSpeech": "adj.",
     "definition": "Lacking in quantity or quality.",
-    "example Sentence": "Meager rations of water.",
+    "exampleSentence": "Meager rations of water.",
     "synonyms": [
       "Scanty",
       "sparse"
@@ -2204,7 +2204,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Mordant",
     "partOfSpeech": "adj.",
     "definition": "Sharp, critical humor.",
-    "example Sentence": "Mordant wit.",
+    "exampleSentence": "Mordant wit.",
     "synonyms": [
       "Acerbic",
       "caustic"
@@ -2218,7 +2218,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Morose",
     "partOfSpeech": "adj.",
     "definition": "Sullen and ill-tempered.",
-    "example Sentence": "A morose teenager.",
+    "exampleSentence": "A morose teenager.",
     "synonyms": [
       "Gloomy",
       "moody"
@@ -2232,7 +2232,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Mundane",
     "partOfSpeech": "adj.",
     "definition": "Lacking interest; dull.",
-    "example Sentence": "Mundane daily chores.",
+    "exampleSentence": "Mundane daily chores.",
     "synonyms": [
       "Humdrum",
       "prosaic"
@@ -2246,7 +2246,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Munificent",
     "partOfSpeech": "adj.",
     "definition": "More generous than usual.",
-    "example Sentence": "A munificent donor.",
+    "exampleSentence": "A munificent donor.",
     "synonyms": [
       "Magnanimous",
       "lavish"
@@ -2260,7 +2260,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Myopic",
     "partOfSpeech": "adj.",
     "definition": "Nearsighted; lacking foresight.",
-    "example Sentence": "A myopic strategy.",
+    "exampleSentence": "A myopic strategy.",
     "synonyms": [
       "Narrow-minded"
     ],
@@ -2272,7 +2272,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Naïve",
     "partOfSpeech": "adj.",
     "definition": "Showing lack of experience or judgment.",
-    "example Sentence": "So naïve to believe that.",
+    "exampleSentence": "So naïve to believe that.",
     "synonyms": [
       "Innocent",
       "unsophisticated"
@@ -2286,7 +2286,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Notorious",
     "partOfSpeech": "adj.",
     "definition": "Famous for bad quality.",
-    "example Sentence": "Notorious gambler.",
+    "exampleSentence": "Notorious gambler.",
     "synonyms": [
       "Infamous",
       "ill-famed"
@@ -2300,7 +2300,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Novel",
     "partOfSpeech": "adj.",
     "definition": "New or unusual in interesting way.",
-    "example Sentence": "A novel solution to energy.",
+    "exampleSentence": "A novel solution to energy.",
     "synonyms": [
       "Innovative",
       "fresh"
@@ -2314,7 +2314,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Noxious",
     "partOfSpeech": "adj.",
     "definition": "Harmful or poisonous.",
-    "example Sentence": "Noxious fumes from factory.",
+    "exampleSentence": "Noxious fumes from factory.",
     "synonyms": [
       "Toxic",
       "harmful"
@@ -2328,7 +2328,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Obdurate",
     "partOfSpeech": "adj.",
     "definition": "Stubbornly refusing to change.",
-    "example Sentence": "Obdurate in his belief.",
+    "exampleSentence": "Obdurate in his belief.",
     "synonyms": [
       "Intransigent",
       "rigid"
@@ -2342,7 +2342,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Opaque",
     "partOfSpeech": "adj.",
     "definition": "Not able to be seen through.",
-    "example Sentence": "Opaque windows.",
+    "exampleSentence": "Opaque windows.",
     "synonyms": [
       "Murky",
       "blurred"
@@ -2356,7 +2356,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Opprobrious",
     "partOfSpeech": "adj.",
     "definition": "Expressing scorn or criticism.",
-    "example Sentence": "Opprobrious language.",
+    "exampleSentence": "Opprobrious language.",
     "synonyms": [
       "Abusive",
       "vitriolic"
@@ -2369,7 +2369,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Opulent",
     "partOfSpeech": "adj.",
     "definition": "Rich and luxurious.",
-    "example Sentence": "Lived in an opulent palace.",
+    "exampleSentence": "Lived in an opulent palace.",
     "synonyms": [
       "Lavish",
       "wealthy"
@@ -2383,7 +2383,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Ornate",
     "partOfSpeech": "adj.",
     "definition": "Made in an intricate shape.",
-    "example Sentence": "Ornate carvings.",
+    "exampleSentence": "Ornate carvings.",
     "synonyms": [
       "Elaborate",
       "decorated"
@@ -2397,7 +2397,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Rapacious",
     "partOfSpeech": "adj.",
     "definition": "Aggressively greedy.",
-    "example Sentence": "Rapacious landlords.",
+    "exampleSentence": "Rapacious landlords.",
     "synonyms": [
       "Avaricious",
       "greedy"
@@ -2411,7 +2411,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Raucous",
     "partOfSpeech": "adj.",
     "definition": "Harsh and loud noise.",
-    "example Sentence": "Raucous laughter.",
+    "exampleSentence": "Raucous laughter.",
     "synonyms": [
       "Strident",
       "piercing"
@@ -2425,7 +2425,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Reluctant",
     "partOfSpeech": "adj.",
     "definition": "Unwilling and hesitant.",
-    "example Sentence": "Reluctant to leave chair.",
+    "exampleSentence": "Reluctant to leave chair.",
     "synonyms": [
       "Unwilling",
       "averse"
@@ -2439,7 +2439,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Remiss",
     "partOfSpeech": "adj.",
     "definition": "Lacking care or attention.",
-    "example Sentence": "Remiss in his job.",
+    "exampleSentence": "Remiss in his job.",
     "synonyms": [
       "Negligent",
       "lax"
@@ -2453,7 +2453,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Reticent",
     "partOfSpeech": "adj.",
     "definition": "Not revealing thoughts readily.",
-    "example Sentence": "Reticent about her past.",
+    "exampleSentence": "Reticent about her past.",
     "synonyms": [
       "Reserved",
       "quiet"
@@ -2467,7 +2467,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Robust",
     "partOfSpeech": "adj.",
     "definition": "Strong and healthy; vigorous.",
-    "example Sentence": "Still robust at age 90.",
+    "exampleSentence": "Still robust at age 90.",
     "synonyms": [
       "Strong",
       "sturdy"
@@ -2481,7 +2481,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Rudimentary",
     "partOfSpeech": "adj.",
     "definition": "Limited to basic principles.",
-    "example Sentence": "Rudimentary knowledge of subject.",
+    "exampleSentence": "Rudimentary knowledge of subject.",
     "synonyms": [
       "Basic",
       "simple"
@@ -2495,7 +2495,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Sedentary",
     "partOfSpeech": "adj.",
     "definition": "Much time seated; inactive.",
-    "example Sentence": "Lived a sedentary life.",
+    "exampleSentence": "Lived a sedentary life.",
     "synonyms": [
       "Inactive",
       "idle"
@@ -2509,7 +2509,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Sedulous",
     "partOfSpeech": "adj.",
     "definition": "Showing dedication/diligence.",
-    "example Sentence": "A sedulous student.",
+    "exampleSentence": "A sedulous student.",
     "synonyms": [
       "Assiduous",
       "careful"
@@ -2523,7 +2523,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Serene",
     "partOfSpeech": "adj.",
     "definition": "Calm, peaceful, untroubled.",
-    "example Sentence": "View of lake was serene.",
+    "exampleSentence": "View of lake was serene.",
     "synonyms": [
       "Placid",
       "quiet"
@@ -2537,7 +2537,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Servile",
     "partOfSpeech": "adj.",
     "definition": "Excessive willingness to serve.",
-    "example Sentence": "Gave a servile bow.",
+    "exampleSentence": "Gave a servile bow.",
     "synonyms": [
       "Submissive",
       "fawning"
@@ -2551,7 +2551,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Sparse",
     "partOfSpeech": "adj.",
     "definition": "Thinly dispersed/scattered.",
-    "example Sentence": "Vegetation was sparse.",
+    "exampleSentence": "Vegetation was sparse.",
     "synonyms": [
       "Scanty",
       "meager"
@@ -2565,7 +2565,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Specious",
     "partOfSpeech": "adj.",
     "definition": "Plausible but actually wrong.",
-    "example Sentence": "A specious argument.",
+    "exampleSentence": "A specious argument.",
     "synonyms": [
       "Spurious",
       "misleading"
@@ -2579,7 +2579,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Spiteful",
     "partOfSpeech": "adj.",
     "definition": "Showing or caused by malice.",
-    "example Sentence": "Made a spiteful comment.",
+    "exampleSentence": "Made a spiteful comment.",
     "synonyms": [
       "Malicious",
       "cruel"
@@ -2593,7 +2593,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Splenetic",
     "partOfSpeech": "adj.",
     "definition": "Bad-tempered; spiteful.",
-    "example Sentence": "A splenetic outburst.",
+    "exampleSentence": "A splenetic outburst.",
     "synonyms": [
       "Irascible",
       "bilious"
@@ -2607,7 +2607,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Spontaneous",
     "partOfSpeech": "adj.",
     "definition": "Sudden inner impulse.",
-    "example Sentence": "Spontaneous applause.",
+    "exampleSentence": "Spontaneous applause.",
     "synonyms": [
       "Impromptu",
       "rash"
@@ -2621,7 +2621,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Stupefied",
     "partOfSpeech": "adj.",
     "definition": "Unable to think properly.",
-    "example Sentence": "Stupefied by the news.",
+    "exampleSentence": "Stupefied by the news.",
     "synonyms": [
       "Dazed",
       "stunned"
@@ -2635,7 +2635,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Submissive",
     "partOfSpeech": "adj.",
     "definition": "Ready to conform to authority.",
-    "example Sentence": "Expected to be submissive.",
+    "exampleSentence": "Expected to be submissive.",
     "synonyms": [
       "Compliant",
       "docile"
@@ -2649,7 +2649,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Subservient",
     "partOfSpeech": "adj.",
     "definition": "Prepared to obey unquestioningly.",
-    "example Sentence": "Subservient to boss's whim.",
+    "exampleSentence": "Subservient to boss's whim.",
     "synonyms": [
       "Servile",
       "docile"
@@ -2663,7 +2663,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Subtle",
     "partOfSpeech": "adj.",
     "definition": "So delicate as to be difficult to analyze.",
-    "example Sentence": "Subtle difference in color.",
+    "exampleSentence": "Subtle difference in color.",
     "synonyms": [
       "Slight",
       "faint"
@@ -2677,7 +2677,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Succinct",
     "partOfSpeech": "adj.",
     "definition": "Briefly and clearly expressed.",
-    "example Sentence": "Keep answer succinct.",
+    "exampleSentence": "Keep answer succinct.",
     "synonyms": [
       "Concise",
       "brief"
@@ -2691,7 +2691,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Sycophantic",
     "partOfSpeech": "adj.",
     "definition": "Behaving in obsequious way.",
-    "example Sentence": "Sycophantic flatterers.",
+    "exampleSentence": "Sycophantic flatterers.",
     "synonyms": [
       "Fawning",
       "servile"
@@ -2705,7 +2705,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Tacit",
     "partOfSpeech": "adj.",
     "definition": "Understood without being stated.",
-    "example Sentence": "There was a tacit agreement.",
+    "exampleSentence": "There was a tacit agreement.",
     "synonyms": [
       "Implicit",
       "inferred"
@@ -2719,7 +2719,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Taciturn",
     "partOfSpeech": "adj.",
     "definition": "Saying little.",
-    "example Sentence": "Taciturn man rarely spoke.",
+    "exampleSentence": "Taciturn man rarely spoke.",
     "synonyms": [
       "Silent",
       "reserved"
@@ -2733,7 +2733,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Tactful",
     "partOfSpeech": "adj.",
     "definition": "Skill and sensitivity in dealing with others.",
-    "example Sentence": "Gave a tactful critique.",
+    "exampleSentence": "Gave a tactful critique.",
     "synonyms": [
       "Diplomatic",
       "polite"
@@ -2747,7 +2747,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Thrifty",
     "partOfSpeech": "adj.",
     "definition": "Using resources carefully.",
-    "example Sentence": "Very thrifty using coupons.",
+    "exampleSentence": "Very thrifty using coupons.",
     "synonyms": [
       "Frugal",
       "stingy"
@@ -2761,7 +2761,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Timid",
     "partOfSpeech": "adj.",
     "definition": "Lack of courage/confidence.",
-    "example Sentence": "Timid child hid behind mother.",
+    "exampleSentence": "Timid child hid behind mother.",
     "synonyms": [
       "Shy",
       "fearful"
@@ -2775,7 +2775,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Timorous",
     "partOfSpeech": "adj.",
     "definition": "Showing nervousness/fear.",
-    "example Sentence": "A timorous mouse.",
+    "exampleSentence": "A timorous mouse.",
     "synonyms": [
       "Fearful",
       "shy"
@@ -2789,7 +2789,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Transparent",
     "partOfSpeech": "adj.",
     "definition": "Allowing light to pass through.",
-    "example Sentence": "Water was transparent.",
+    "exampleSentence": "Water was transparent.",
     "synonyms": [
       "Clear",
       "obvious"
@@ -2803,7 +2803,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Treacherous",
     "partOfSpeech": "adj.",
     "definition": "Guilty of betrayal/deception.",
-    "example Sentence": "Mountain pass was treacherous.",
+    "exampleSentence": "Mountain pass was treacherous.",
     "synonyms": [
       "Dangerous",
       "perfidious"
@@ -2817,7 +2817,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Trenchant",
     "partOfSpeech": "adj.",
     "definition": "Vigorous or incisive in expression.",
-    "example Sentence": "Trenchant criticism.",
+    "exampleSentence": "Trenchant criticism.",
     "synonyms": [
       "Sharp",
       "biting"
@@ -2831,7 +2831,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Unanimous",
     "partOfSpeech": "adj.",
     "definition": "Fully in agreement.",
-    "example Sentence": "Jury reached unanimous verdict.",
+    "exampleSentence": "Jury reached unanimous verdict.",
     "synonyms": [
       "United",
       "agreed"
@@ -2845,7 +2845,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Uncanny",
     "partOfSpeech": "adj.",
     "definition": "Strange or mysterious.",
-    "example Sentence": "Uncanny ability to guess.",
+    "exampleSentence": "Uncanny ability to guess.",
     "synonyms": [
       "Eerie",
       "weird"
@@ -2859,7 +2859,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Unconscionable",
     "partOfSpeech": "adj.",
     "definition": "Not right or reasonable.",
-    "example Sentence": "Unconscionable behavior.",
+    "exampleSentence": "Unconscionable behavior.",
     "synonyms": [
       "Unethical",
       "wrong"
@@ -2873,7 +2873,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Unctuous",
     "partOfSpeech": "adj.",
     "definition": "Excessively flattering; oily.",
-    "example Sentence": "An unctuous greeting.",
+    "exampleSentence": "An unctuous greeting.",
     "synonyms": [
       "Fawning",
       "greasy"
@@ -2887,7 +2887,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Underlying",
     "partOfSpeech": "adj.",
     "definition": "Significant cause; not obvious.",
-    "example Sentence": "Underlying cause of problem.",
+    "exampleSentence": "Underlying cause of problem.",
     "synonyms": [
       "Fundamental",
       "basic"
@@ -2901,7 +2901,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Vacuous",
     "partOfSpeech": "adj.",
     "definition": "Lack of thought; mindless.",
-    "example Sentence": "Gave a vacuous smile.",
+    "exampleSentence": "Gave a vacuous smile.",
     "synonyms": [
       "Inane",
       "empty"
@@ -2915,7 +2915,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Valid",
     "partOfSpeech": "adj.",
     "definition": "Sound basis in logic or fact.",
-    "example Sentence": "Valid reason for absence.",
+    "exampleSentence": "Valid reason for absence.",
     "synonyms": [
       "Logical",
       "sound"
@@ -2929,7 +2929,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Vapid",
     "partOfSpeech": "adj.",
     "definition": "Offering nothing challenging.",
-    "example Sentence": "A vapid conversation.",
+    "exampleSentence": "A vapid conversation.",
     "synonyms": [
       "Insipid",
       "bland"
@@ -2943,7 +2943,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Variable",
     "partOfSpeech": "adj.",
     "definition": "Not consistent; liable to change.",
-    "example Sentence": "Weather is very variable.",
+    "exampleSentence": "Weather is very variable.",
     "synonyms": [
       "Fickle",
       "shifting"
@@ -2957,7 +2957,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Vexatious",
     "partOfSpeech": "adj.",
     "definition": "Causing annoyance or worry.",
-    "example Sentence": "A vexatious problem.",
+    "exampleSentence": "A vexatious problem.",
     "synonyms": [
       "Annoying",
       "irksome"
@@ -2971,7 +2971,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Viable",
     "partOfSpeech": "adj.",
     "definition": "Capable of working successfully.",
-    "example Sentence": "Looking for viable solution.",
+    "exampleSentence": "Looking for viable solution.",
     "synonyms": [
       "Feasible",
       "possible"
@@ -2985,7 +2985,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Volatile",
     "partOfSpeech": "adj.",
     "definition": "Liable to change rapidly.",
-    "example Sentence": "Political situation is volatile.",
+    "exampleSentence": "Political situation is volatile.",
     "synonyms": [
       "Unstable",
       "explosive"
@@ -2999,7 +2999,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Voluble",
     "partOfSpeech": "adj.",
     "definition": "Speaking incessantly/fluently.",
-    "example Sentence": "Voluble speaker could talk for hours.",
+    "exampleSentence": "Voluble speaker could talk for hours.",
     "synonyms": [
       "Talkative",
       "loquacious"
@@ -3013,7 +3013,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Voracious",
     "partOfSpeech": "adj.",
     "definition": "Wanting great quantities.",
-    "example Sentence": "She is a voracious reader.",
+    "exampleSentence": "She is a voracious reader.",
     "synonyms": [
       "Insatiable",
       "greedy"
@@ -3027,7 +3027,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Vulnerable",
     "partOfSpeech": "adj.",
     "definition": "Susceptible to attack.",
-    "example Sentence": "Defenses were vulnerable.",
+    "exampleSentence": "Defenses were vulnerable.",
     "synonyms": [
       "Weak",
       "exposed"
@@ -3041,7 +3041,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Wry",
     "partOfSpeech": "adj.",
     "definition": "Expressing dry mocking humor.",
-    "example Sentence": "Gave a wry smile.",
+    "exampleSentence": "Gave a wry smile.",
     "synonyms": [
       "Droll",
       "mocking"
@@ -3055,7 +3055,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Zealous",
     "partOfSpeech": "adj.",
     "definition": "Showing great energy/zeal.",
-    "example Sentence": "A zealous supporter.",
+    "exampleSentence": "A zealous supporter.",
     "synonyms": [
       "Ardent",
       "fervent"
@@ -3069,7 +3069,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
     "word": "Zenith",
     "partOfSpeech": "adj.",
     "definition": "Time at which something is peak.",
-    "example Sentence": "The zenith of her fame.",
+    "exampleSentence": "The zenith of her fame.",
     "synonyms": [
       "Peak",
       "summit"
