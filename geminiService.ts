@@ -495,7 +495,7 @@ export const FULL_PREP_VOCAB: VocabularyWord[] = [
   { "word": "Xenophobia", "partOfSpeech": "n.", "definition": "Dislike of or prejudice against people from other countries.", "exampleSentence": "The politician was accused of xenophobia.", "synonyms": ["Prejudice", "intolerance"], "antonyms": ["Tolerance", "acceptance"], "source": "" },
   { "word": "Zealous", "partOfSpeech": "adj.", "definition": "Having or showing zeal; passionate.", "exampleSentence": "He was a zealous supporter of the cause.", "synonyms": ["Passionate", "enthusiastic"], "antonyms": ["Apathetic", "indifferent"], "source": "" },
   { "word": "Zeitgeist", "partOfSpeech": "n.", "definition": "The defining spirit or mood of a particular period of history as shown by the ideas and beliefs of the time.", "exampleSentence": "The novel captured the zeitgeist of the 1960s.", "synonyms": ["Spirit of the age"], "antonyms": [], "source": "" },
-  { "word": "Zenith-level", "partOfSpeech": "adj.", "definition": "At the highest point; reaching a peak.", "exampleSentence": "He was at zenith-level performance.", "synonyms": ["Highest", "peak"], "antonyms": ["Nadir"], "source": "" }
+  { "word": "Zenith", "partOfSpeech": "adj.", "definition": "At the highest point; reaching a peak.", "exampleSentence": "He was at zenith-level performance.", "synonyms": ["Highest", "peak"], "antonyms": ["Nadir"], "source": "" }
 ];
 
 const LOCAL_SPELLING_POOL: Question[] = [
