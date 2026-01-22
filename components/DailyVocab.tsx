@@ -30,6 +30,9 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
   // --- NEW STATE: Starred Review Mode ---
   const [isStarredReviewMode, setIsStarredReviewMode] = useState(false);
   
+  // --- NEW STATE: Force Show All Flashcards ---
+  const [forceShowAll, setForceShowAll] = useState(false);
+  
   // Search State
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -173,17 +176,21 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
 
   // Determine Flashcard Deck (Starred vs All)
   // In Starred Review Mode, the deck is naturally all starred words.
-  // In Daily Mode, we can still filter by starred if we want, but usually default to the daily list.
+  // In Daily Mode, we filter by starred if they exist, unless forceShowAll is true.
   useEffect(() => {
     let newDeck: VocabularyWord[] = [];
     
     if (isStarredReviewMode) {
         newDeck = dailyWords; // dailyWords is already just the starred words
     } else {
-        // In daily mode, if user has starred words IN THE LIST, prioritize them for flashcards? 
-        // Or just show all. Let's show all for now to avoid confusion, or prioritize like before.
         const starredInDaily = dailyWords.filter(w => starredSet.has(w.word));
-        newDeck = starredInDaily.length > 0 ? starredInDaily : dailyWords;
+        
+        // LOGIC UPDATE: If forceShowAll is true OR there are no starred words, show full deck
+        if (forceShowAll || starredInDaily.length === 0) {
+            newDeck = dailyWords;
+        } else {
+            newDeck = starredInDaily;
+        }
     }
 
     setFlashcardDeck(newDeck);
@@ -193,7 +200,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
         return prev;
     });
 
-  }, [dailyWords, starredSet, isStarredReviewMode]);
+  }, [dailyWords, starredSet, isStarredReviewMode, forceShowAll]);
   
   const matchingPairs = useMemo(() => {
     if (mode !== 'matching' || matchingGameWords.length === 0) {
@@ -714,20 +721,36 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
         </div>
       )}
       
-      {/* ... [Rest of Flashcards, Matching, Racecar, Test modes omitted for brevity as they remain largely unchanged except for data flow] ... */}
-      
       {mode === 'flashcards' && (
         <div className="flex flex-col items-center py-12">
-           <div className="mb-6 bg-slate-100 px-4 py-1.5 rounded-full text-xs font-black uppercase text-slate-500 tracking-widest flex items-center gap-2">
-              {dailyWords.some(w => starredSet.has(w.word)) ? (
-                  <>
-                     <span className="text-yellow-500">★</span> 
-                     <span>Reviewing Starred ({flashcardDeck.length})</span>
-                  </>
-              ) : (
-                  <span>Reviewing All ({flashcardDeck.length})</span>
-              )}
-           </div>
+           {/* UPDATED UI: Toggle Button or Status Badge */}
+           {!isStarredReviewMode && dailyWords.some(w => starredSet.has(w.word)) ? (
+               <div className="flex gap-2 mb-8 bg-slate-100 p-1.5 rounded-2xl">
+                   <button 
+                     onClick={() => setForceShowAll(false)}
+                     className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${!forceShowAll ? 'bg-white text-yellow-600 shadow-md ring-1 ring-black/5' : 'text-slate-400 hover:text-slate-600'}`}
+                   >
+                     <span className="mr-1">★</span> Starred Only ({dailyWords.filter(w => starredSet.has(w.word)).length})
+                   </button>
+                   <button 
+                     onClick={() => setForceShowAll(true)}
+                     className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${forceShowAll ? 'bg-white text-indigo-600 shadow-md ring-1 ring-black/5' : 'text-slate-400 hover:text-slate-600'}`}
+                   >
+                     All Words ({dailyWords.length})
+                   </button>
+               </div>
+           ) : (
+               <div className="mb-6 bg-slate-100 px-4 py-1.5 rounded-full text-xs font-black uppercase text-slate-500 tracking-widest flex items-center gap-2">
+                  {isStarredReviewMode ? (
+                      <>
+                         <span className="text-yellow-500">★</span> 
+                         <span>Reviewing Starred ({flashcardDeck.length})</span>
+                      </>
+                  ) : (
+                      <span>Reviewing All ({flashcardDeck.length})</span>
+                  )}
+               </div>
+           )}
 
            <div className="w-full max-w-2xl h-[28rem] relative perspective-1000 cursor-pointer" onClick={() => setIsFlipped(!isFlipped)}>
               <div className={`relative w-full h-full transition-transform duration-700 transform-style-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
@@ -768,7 +791,6 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
         </div>
       )}
 
-      {/* Re-including other components for completeness */}
       {mode === 'matching' && (
         <div className="max-w-5xl mx-auto py-4">
           {isMatchingLoading ? (
