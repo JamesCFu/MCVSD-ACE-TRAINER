@@ -31,7 +31,8 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
   const [isStarredReviewMode, setIsStarredReviewMode] = useState(false);
   
   // --- NEW STATE: Force Show All Flashcards ---
-  const [forceShowAll, setForceShowAll] = useState(false);
+  // Default to true so deck doesn't switch context immediately upon starring a word
+  const [forceShowAll, setForceShowAll] = useState(true);
   
   // Search State
   const [searchQuery, setSearchQuery] = useState('');
