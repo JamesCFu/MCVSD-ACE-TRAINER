@@ -111,6 +111,10 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     });
   };
 
+  // --- WEEKLY SCHEDULE LOGIC ---
+  const currentWeek = Math.ceil(viewingDay / 7);
+  const dayOfWeek = ((viewingDay - 1) % 7) + 1; // 1-7
+
   const dailyWords = useMemo(() => {
     if (!words || words.length === 0) return [];
     
@@ -119,52 +123,60 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
         return words.filter(w => starredSet.has(w.word)).sort((a, b) => a.word.localeCompare(b.word));
     }
 
-    // --- 2. STANDARD DAILY STAGE LOGIC ---
-    const WORDS_PER_DAY = 25;
-    const REVIEW_WORDS_COUNT = 5;
-    
-    // A. Sequential 25 words for the day
-    const startIndex = ((viewingDay - 1) * WORDS_PER_DAY) % words.length;
-    const mainBatch: VocabularyWord[] = [];
-    
-    for (let i = 0; i < Math.min(WORDS_PER_DAY, words.length); i++) {
-        const idx = (startIndex + i) % words.length;
-        if (words[idx]) mainBatch.push(words[idx]);
-    }
+    // --- 2. WEEKLY SCHEDULE ---
+    const WORDS_PER_WEEK = 100;
+    const LEARNING_DAYS = 4;
+    const WORDS_PER_LEARNING_DAY = WORDS_PER_WEEK / LEARNING_DAYS; // 25
 
-    // B. Identify the pool of words NOT in the main batch
-    const restOfPool = words.filter(w => !mainBatch.some(mb => mb.word === w.word));
+    const weeklyStartIndex = (currentWeek - 1) * WORDS_PER_WEEK;
     
-    // C. Prioritize Starred Words
-    // We filter the rest of the pool for starred words
-    const starredInPool = restOfPool.filter(w => starredSet.has(w.word));
-    const nonStarredInPool = restOfPool.filter(w => !starredSet.has(w.word));
-    
-    // Helper sort function - Uses viewingDay AND currentSeed to shuffle differently every stage.
-    // This ensures that we get a RANDOM 5 starred words each stage from the available pool.
-    const sortFn = (a: VocabularyWord, b: VocabularyWord) => {
-       const hashA = hashString(a.word + `stage-${viewingDay}-seed-${currentSeed}`);
-       const hashB = hashString(b.word + `stage-${viewingDay}-seed-${currentSeed}`);
-       return hashA - hashB;
-    };
+    // Safety check if user exceeds available words
+    if (weeklyStartIndex >= words.length) return [];
 
-    // Grab up to 5 starred words first (randomized by stage hash)
-    const starredSelected = [...starredInPool].sort(sortFn).slice(0, REVIEW_WORDS_COUNT);
-    
-    // Fill remainder with random non-starred words (randomized by stage hash)
-    const remainingSlots = REVIEW_WORDS_COUNT - starredSelected.length;
-    let randomSelected: VocabularyWord[] = [];
-    
-    if (remainingSlots > 0) {
-       randomSelected = [...nonStarredInPool].sort(sortFn).slice(0, remainingSlots);
+    let selectedBatch: VocabularyWord[] = [];
+
+    if (dayOfWeek <= LEARNING_DAYS) {
+        // --- LEARNING DAYS (1-4) ---
+        // Day 1: 0-24, Day 2: 25-49, etc. relative to the week's start
+        const dayOffset = (dayOfWeek - 1) * WORDS_PER_LEARNING_DAY;
+        const start = weeklyStartIndex + dayOffset;
+        const end = start + WORDS_PER_LEARNING_DAY;
+        
+        selectedBatch = words.slice(start, end);
+
+        // Optional: Add 5 review words from PREVIOUS weeks to maintain spaced repetition
+        if (currentWeek > 1) {
+             const previousWords = words.slice(0, weeklyStartIndex);
+             const sortFn = (a: VocabularyWord, b: VocabularyWord) => {
+                const hashA = hashString(a.word + `week-${currentWeek}-day-${dayOfWeek}`);
+                const hashB = hashString(b.word + `week-${currentWeek}-day-${dayOfWeek}`);
+                return hashA - hashB;
+             };
+             // Pick 5 random words from history
+             const reviews = previousWords.sort(sortFn).slice(0, 5);
+             selectedBatch = [...selectedBatch, ...reviews];
+        }
+
+    } else {
+        // --- REVIEW DAYS (5-7) ---
+        // Get all 100 words for the current week
+        const weekWords = words.slice(weeklyStartIndex, weeklyStartIndex + WORDS_PER_WEEK);
+        
+        if (dayOfWeek === 5) {
+            // Review Part 1: First 50 words
+            selectedBatch = weekWords.slice(0, 50);
+        } else if (dayOfWeek === 6) {
+            // Review Part 2: Last 50 words
+            selectedBatch = weekWords.slice(50, 100);
+        } else {
+            // Day 7: Grand Review (All 100)
+            selectedBatch = weekWords;
+        }
     }
     
-    const reviewBatch = [...starredSelected, ...randomSelected];
+    return selectedBatch.sort((a, b) => a.word.localeCompare(b.word));
     
-    return [...mainBatch, ...reviewBatch].sort((a, b) => a.word.localeCompare(b.word));
-    
-    // Included currentSeed in dependencies to refresh randomization on day advance
-  }, [words, viewingDay, isStarredReviewMode, currentSeed]); 
+  }, [words, viewingDay, isStarredReviewMode, currentSeed, starredSet, currentWeek, dayOfWeek]); 
 
   // Filtered List for Search
   const filteredDailyWords = useMemo(() => {
@@ -206,8 +218,11 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
     if (mode !== 'matching' || matchingGameWords.length === 0) {
       return { words: [], defs: [] };
     }
-    const wordsList = matchingGameWords.map(w => ({ id: w.word, text: w.word }));
-    const defsList = matchingGameWords.map(w => ({ id: w.word, text: w.shortDef }));
+    // Limit matching game to 8 pairs max to prevent overcrowding UI on heavy review days
+    const gameSlice = matchingGameWords.slice(0, 8); 
+    
+    const wordsList = gameSlice.map(w => ({ id: w.word, text: w.word }));
+    const defsList = gameSlice.map(w => ({ id: w.word, text: w.shortDef }));
     
     return {
       words: [...wordsList].sort(() => Math.random() - 0.5),
@@ -237,10 +252,13 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
       if (dailyWords.length > 0 && mode === 'matching') {
         setIsMatchingLoading(true);
         try {
-          const shortDefs = await generateShortDefinitions(dailyWords);
+          // If it's a review day with 50-100 words, just pick random 10 for the matching game to keep it fast
+          const subset = dailyWords.sort(() => Math.random() - 0.5).slice(0, 10);
+          const shortDefs = await generateShortDefinitions(subset);
           setMatchingGameWords(shortDefs);
         } catch (error) {
-          const fallbackDefs = dailyWords.map(w => ({
+          const subset = dailyWords.slice(0, 10);
+          const fallbackDefs = subset.map(w => ({
             word: w.word,
             shortDef: w.definition.split(' ').slice(0, 5).join(' ') + '...'
           }));
@@ -390,7 +408,11 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
         setRaceFeedback('correct');
         setRaceBoost(boostType);
 
-        const nextProgress = Math.min(100, raceProgress + distanceGain);
+        // Adjust progress increment based on total words to ensure race isn't too long/short
+        // Base distance is 100 / count. 
+        const baseIncrement = Math.max(5, 100 / raceWords.length);
+        const nextProgress = Math.min(100, raceProgress + baseIncrement + (boostType === 'turbo' ? 5 : boostType === 'speed' ? 2 : 0));
+        
         setRaceProgress(nextProgress);
         onAwardXP(20);
         
@@ -577,13 +599,32 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
   const isCurrentMaxDay = viewingDay === maxDay;
   const currentDailyBest = stats.dailyRaceRecords?.[viewingDay];
 
+  // Header Text Logic
+  let dayTitle = "";
+  let daySubtitle = "";
+  if (isStarredReviewMode) {
+      dayTitle = `Starred Review (${dailyWords.length})`;
+      daySubtitle = "Reviewing all vocabulary terms you have marked with a star.";
+  } else {
+      dayTitle = `Week ${currentWeek} • Day ${dayOfWeek}`;
+      if (dayOfWeek <= 4) {
+          daySubtitle = `Learning Phase: New Words ${(dayOfWeek-1)*25 + 1}-${dayOfWeek*25} of Week ${currentWeek}.`;
+      } else if (dayOfWeek === 5) {
+          daySubtitle = `Review Phase 1: Consolidating first 50 words of the week.`;
+      } else if (dayOfWeek === 6) {
+          daySubtitle = `Review Phase 2: Consolidating last 50 words of the week.`;
+      } else {
+          daySubtitle = `Grand Review: Master all 100 words from Week ${currentWeek}.`;
+      }
+  }
+
   return (
     <div className="max-w-6xl mx-auto animate-in fade-in duration-500 pb-20">
       <header className="mb-8 flex flex-col md:flex-row justify-between items-start gap-6">
         <div className="flex-1">
           <div className="flex items-center gap-4 mb-2">
             <h2 className="text-4xl font-black text-slate-900 tracking-tight uppercase">
-                {isStarredReviewMode ? `Starred Review (${dailyWords.length})` : `Daily Focus (${(dailyWords.length-5)*viewingDay}/${words.length})`}
+                {dayTitle}
             </h2>
             
             {/* NEW STAR REVIEW BUTTON */}
@@ -608,9 +649,7 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
             )}
           </div>
           <p className="text-slate-500 font-medium italic">
-            {isStarredReviewMode 
-                ? "Reviewing all vocabulary terms you have marked with a star." 
-                : `Mastering 25 main and 5 review terms for Stage ${viewingDay}. (Review prioritizes ★ starred words)`}
+            {daySubtitle}
           </p>
         </div>
         
@@ -659,7 +698,9 @@ const DailyVocab: React.FC<DailyVocabProps> = ({ stats, setStats, words, isLoadi
             </div>
             
             <div className="text-right flex-shrink-0 bg-white px-6 py-3.5 rounded-2xl shadow-sm border border-slate-100 min-w-[100px] w-full md:w-auto h-16 flex items-center justify-center">
-                <div className="text-2xl font-black text-slate-800 text-center uppercase tracking-tighter">Day {viewingDay}</div>
+                <div className="text-xl font-black text-slate-800 text-center uppercase tracking-tighter leading-tight">
+                    Week {currentWeek}<br/><span className="text-indigo-500 text-sm">Day {dayOfWeek}</span>
+                </div>
             </div>
         </div>
         )}
