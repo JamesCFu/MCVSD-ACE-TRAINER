@@ -40,7 +40,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activeView, setActiveView, mi
           <div className="mb-10 flex items-center justify-between px-2">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-indigo-500 rounded-xl flex items-center justify-center font-black text-xl shadow-lg ring-4 ring-indigo-500/20">🚀</div>
-              <h1 className="text-xl font-black tracking-tighter">Academic <span className="text-indigo-400">Trainer</span></h1>
+              <h1 className="text-xl font-black tracking-tighter">Blast Off <span className="text-indigo-400">Academy</span></h1>
             </div>
             {/* Collapse Arrow for Desktop */}
             <button onClick={() => setIsSidebarOpen(false)} className="hidden md:block text-indigo-400 hover:text-white transition-colors">
